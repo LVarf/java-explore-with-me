@@ -2,7 +2,6 @@ package ru.practicum.ewmcore.model.participationRequest;
 
 import lombok.Data;
 import ru.practicum.ewmcore.model.event.Event;
-import ru.practicum.ewmcore.model.event.EventStateEnum;
 import ru.practicum.ewmcore.model.user.User;
 
 import javax.persistence.Column;

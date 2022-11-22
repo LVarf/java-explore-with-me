@@ -6,5 +6,5 @@ import ru.practicum.ewmcore.model.user.User;
 
 @Component
 @RequiredArgsConstructor
-public class UserSpecification extends AbstractSpecification<User>{
+public class UserSpecification extends AbstractSpecification<User> {
 }

@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Data
-@Table(name = "users", schema = "public")
+@Table(name = "users", schema = "ewm_core")
 public class User {
 
     @Id

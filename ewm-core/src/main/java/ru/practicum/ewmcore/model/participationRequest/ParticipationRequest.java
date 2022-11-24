@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Data
-@Table(name = "participation_request", schema = "public")
+@Table(name = "participation_request", schema = "ewm_core")
 public class ParticipationRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

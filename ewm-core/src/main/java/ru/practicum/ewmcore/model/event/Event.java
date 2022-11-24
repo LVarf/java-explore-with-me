@@ -1,7 +1,10 @@
 package ru.practicum.ewmcore.model.event;
 
 import lombok.Data;
+import lombok.ToString;
 import ru.practicum.ewmcore.model.category.Category;
+import ru.practicum.ewmcore.model.compilation.Compilation;
+import ru.practicum.ewmcore.model.records.EventToCompilation;
 import ru.practicum.ewmcore.model.user.User;
 
 import javax.persistence.Column;
@@ -12,13 +15,16 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.sql.Timestamp;
+import java.util.Set;
 
 @Entity
 @Data
-@Table(name = "events", schema = "public")
+@Table(name = "events", schema = "ewm_core")
 public class Event {
 
     @Id
@@ -38,6 +44,9 @@ public class Event {
     private Timestamp eventDate; //дата события для дто (в формате "yyyy-MM-dd HH:mm:ss")
     @ManyToOne(fetch = FetchType.LAZY)
     private User initiator;
+    @OneToMany(mappedBy = "event")
+    @ToString.Exclude
+    private Set<EventToCompilation> eventToCompilations;
     @Column
     private Float locationLat;
     @Column

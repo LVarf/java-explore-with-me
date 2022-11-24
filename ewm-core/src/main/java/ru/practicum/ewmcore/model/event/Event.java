@@ -3,7 +3,6 @@ package ru.practicum.ewmcore.model.event;
 import lombok.Data;
 import lombok.ToString;
 import ru.practicum.ewmcore.model.category.Category;
-import ru.practicum.ewmcore.model.compilation.Compilation;
 import ru.practicum.ewmcore.model.records.EventToCompilation;
 import ru.practicum.ewmcore.model.user.User;
 
@@ -15,7 +14,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;

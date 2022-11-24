@@ -20,7 +20,7 @@ import java.util.Optional;
 public class PublicController {
 
     @GetMapping("/events")
-    public List<EventShortDto> readAllEvents(@RequestParam("text") String text,
+    public String/*List<EventShortDto> */readAllEvents(@RequestParam("text") String text/*,
                                              @RequestParam("categories") Long categories,
                                              @RequestParam("paid") Boolean paid,
                                              @RequestParam("rangeStart") String rangeStart,
@@ -28,8 +28,8 @@ public class PublicController {
                                              @RequestParam("sort") String sort,
                                              @RequestParam("from") Integer from,
                                              @RequestParam("size") Integer size,
-                                             Pageable pageable) {
-        return List.of();
+                                             Pageable pageable*/) {
+        return /*List.of()*/text;
     }
 
     @GetMapping("/events/{id}")

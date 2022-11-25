@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -32,8 +33,8 @@ public class Event {
     private String annotation;
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
-    @Column
-    private Integer confirmedRequests;
+    @Transient
+    private Integer confirmedRequests; //вычисляемое поле
     @Column
     private Timestamp createdOn; //дата создания для дто (в формате "yyyy-MM-dd HH:mm:ss")
     @Column
@@ -62,6 +63,6 @@ public class Event {
     private EventStateEnum state;
     @Column
     private String title;
-    @Column
-    private Integer views;
+    @Transient
+    private Integer views; //вычисляемое поле
 }

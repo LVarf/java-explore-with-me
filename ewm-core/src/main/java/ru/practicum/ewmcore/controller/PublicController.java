@@ -19,6 +19,12 @@ import java.util.Optional;
 @RequestMapping
 public class PublicController {
 
+    /*@GetMapping("/some/path/{id}") //про ip клиента
+public void logIPAndPath(@PathVariable long id, HttpServletRequest request) {
+    log.info("client ip: {}", request.getRemoteAddr());
+    log.info("endpoint path: {}", request.getRequestURI());
+} */
+
     @GetMapping("/events")
     public String/*List<EventShortDto> */readAllEvents(@RequestParam("text") String text/*,
                                              @RequestParam("categories") Long categories,

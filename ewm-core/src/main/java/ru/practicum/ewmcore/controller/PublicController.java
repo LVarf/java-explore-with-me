@@ -1,23 +1,25 @@
 package ru.practicum.ewmcore.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.ewmcore.error.ErrorHandler;
 import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
 public class PublicController {
+    private final ErrorHandler errorHandler;
 
     /*@GetMapping("/some/path/{id}") //про ip клиента
 public void logIPAndPath(@PathVariable long id, HttpServletRequest request) {
@@ -26,16 +28,19 @@ public void logIPAndPath(@PathVariable long id, HttpServletRequest request) {
 } */
 
     @GetMapping("/events")
-    public String/*List<EventShortDto> */readAllEvents(@RequestParam("text") String text/*,
-                                             @RequestParam("categories") Long categories,
-                                             @RequestParam("paid") Boolean paid,
-                                             @RequestParam("rangeStart") String rangeStart,
-                                             @RequestParam("rangeEnd") String rangeEnd,
+    public Page<EventShortDto> readAllEvents(@RequestParam("text") String text,
+                                             @RequestParam(value = "categories", required = false) Long categories,
+                                             @RequestParam(value = "paid", required = false) Boolean paid,
+                                             @RequestParam(value = "rangeStart", required = false) String rangeStart,
+                                             @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
+                                             @RequestParam(value = "onlyAvailable", defaultValue = "false")
+                                             Boolean onlyAvailable,/*
                                              @RequestParam("sort") String sort,
                                              @RequestParam("from") Integer from,
-                                             @RequestParam("size") Integer size,
-                                             Pageable pageable*/) {
-        return /*List.of()*/text;
+                                             @RequestParam("size") Integer size,*/
+                                             Pageable pageable) {
+
+        return Page.empty();
     }
 
     @GetMapping("/events/{id}")
@@ -44,11 +49,11 @@ public void logIPAndPath(@PathVariable long id, HttpServletRequest request) {
     }
 
     @GetMapping("/compilations")
-    public List<CompilationDto> readAllCompilations(@RequestParam("pinned") Boolean pinned,
+    public Page<CompilationDto> readAllCompilations(@RequestParam("pinned") Boolean pinned,
                                                     @RequestParam("from") Integer from,
                                                     @RequestParam("size") Integer size,
                                                     Pageable pageable) {
-        return List.of();
+        return Page.empty();
     }
 
     @GetMapping("/compilations/{compId}")
@@ -57,10 +62,10 @@ public void logIPAndPath(@PathVariable long id, HttpServletRequest request) {
     }
 
     @GetMapping("/categories")
-    public List<CategoryDto> readAllCategories(@RequestParam("from") Integer from,
+    public Page<CategoryDto> readAllCategories(@RequestParam("from") Integer from,
                                                @RequestParam("size") Integer size,
                                                Pageable pageable) {
-        return List.of();
+        return Page.empty();
     }
 
     @GetMapping("/compilations/{catId}")

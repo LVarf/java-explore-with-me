@@ -2,23 +2,23 @@ package ru.practicum.ewmcore.validator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import ru.practicum.ewmcore.converter.TimeUtils;
 import ru.practicum.ewmcore.error.ApiError;
-import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.user.User;
 import ru.practicum.ewmcore.repository.UserRepository;
 
 import javax.validation.ValidationException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class UserValidator {
 
-    private final static String CATEGORY_NOT_FOUND = "Categories not found";
+    private final TimeUtils timeUtils;
     private UserRepository userRepository;
     public void validateOnRead(Long userId, ValidationMode validationMode)
             throws ValidationException {
@@ -30,7 +30,10 @@ public class UserValidator {
         final User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
             log.info("User id: {} not found", userId);
-            apiError.setMessage("Categories are not found");
+            apiError.setMessage("The user is not found")
+                    .setStatus(HttpStatus.FORBIDDEN)
+                    .setReason("The required object was not found.")
+                    .setTimestamp(timeUtils.timestampToString(Timestamp.valueOf(LocalDateTime.now())));
             throw apiError;
         }
     }

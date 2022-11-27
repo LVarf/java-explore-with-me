@@ -22,7 +22,7 @@ public class EventShortDtoConverter implements RootModelConverter<EventShortDto,
     public EventShortDto convertFromEntity(final Event entity) {
         final EventShortDto model = new EventShortDto();
         BeanUtils.copyProperties(entity, model);
-        var eventDate = entity.getEventDate();
+        final var eventDate = entity.getEventDate();
         model.setEventDate(timeUtils.timestampToString(eventDate));
         return model;
     }
@@ -30,8 +30,8 @@ public class EventShortDtoConverter implements RootModelConverter<EventShortDto,
     @Override
     public Event convertToEntity(final EventShortDto entity) {
         final Event model = new Event();
-        BeanUtils.copyProperties(model, entity);
-        final String eventDate = entity.getEventDate();
+        BeanUtils.copyProperties(entity, model);
+        final var eventDate = entity.getEventDate();
         model.setEventDate(timeUtils.stringToTimestamp(eventDate));
         return model;
     }

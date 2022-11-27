@@ -17,24 +17,36 @@ import ru.practicum.ewmcore.service.utils.SortConverterMixin;
 @RequiredArgsConstructor
 public class EventFullDtoConverter implements RootModelConverter<EventFullDto, Event>,
         SortConverterMixin {
+    private final TimeUtils timeUtils;
 
     @Override
     public EventFullDto convertFromEntity(final Event entity) {
         final EventFullDto model = new EventFullDto();
         BeanUtils.copyProperties(entity, model);
+        final var eventDate = entity.getEventDate();
+        final var createdOn = entity.getCreatedOn();
+        final var publishedOn = entity.getPublishedOn();
+        model.setEventDate(timeUtils.timestampToString(eventDate));
+        model.setCreatedOn(timeUtils.timestampToString(createdOn));
+        model.setPublishedOn(timeUtils.timestampToString(publishedOn));
         return model;
     }
 
     @Override
-    public Event convertToEntity(final EventFullDto model) {
-        final Event entity = new Event();
-        BeanUtils.copyProperties(model, entity);
-        return entity;
+    public Event convertToEntity(final EventFullDto entity) {
+        final Event model = new Event();
+        BeanUtils.copyProperties(entity, model);
+        final var eventDate = entity.getEventDate();
+        final var createdOn = entity.getCreatedOn();
+        final var publishedOn = entity.getPublishedOn();
+        model.setEventDate(timeUtils.stringToTimestamp(eventDate));
+        model.setCreatedOn(timeUtils.stringToTimestamp(createdOn));
+        model.setPublishedOn(timeUtils.stringToTimestamp(publishedOn));
+        return model;
     }
 
     @Override
-    public Event mergeToEntity(final EventFullDto model, final Event originalEntity) {
-        final Event entity = new Event();
+    public Event mergeToEntity(final EventFullDto model, final Event entity) {
         BeanUtils.copyProperties(model, entity);
         return entity;
     }

@@ -4,8 +4,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmcore.model.event.Event;
+import ru.practicum.ewmcore.model.event.EventFullDto;
+import ru.practicum.ewmcore.model.event.EventShortDto;
+
+import java.util.Optional;
 
 public interface EventInternalService {
     @Transactional(readOnly = true)
-    Page<Event> readAllByInitiatorId(Long id, Pageable pageable);
+    Page<EventShortDto> readAllByInitiatorId(Long id, Pageable pageable);
+
+    @Transactional
+    Optional<EventFullDto> updateEventByUser(Long userId, EventFullDto event);
 }

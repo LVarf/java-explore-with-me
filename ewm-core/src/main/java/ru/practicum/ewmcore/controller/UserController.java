@@ -18,7 +18,6 @@ import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
 import ru.practicum.ewmcore.service.userService.UserPublicService;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -30,11 +29,12 @@ public class UserController {
     public Page<EventShortDto> readAllEvents(@PathVariable Long userId,
                                              @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC,
                                                      page = 0, size = 10) Pageable pageable) {
-        return userService.readAllPublic(userId, pageable);
+        return userService.readAllEventsPublic(userId, pageable);
     }
 
     @PatchMapping("/events")
-    public Optional<EventShortDto> updateAllEvents(@PathVariable Long userId) {
+    public Optional<EventFullDto> updateEvent(@PathVariable Long userId,
+                                               @RequestBody EventFullDto event) {
         return Optional.empty();
     }
 

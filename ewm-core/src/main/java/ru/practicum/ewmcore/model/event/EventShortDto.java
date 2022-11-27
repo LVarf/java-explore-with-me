@@ -10,6 +10,7 @@ public class EventShortDto {
     private String annotation;
     private CategoryDto category;
     private Integer confirmedRequests;
+    private String description;
     private String eventDate; //дата события для дто (в формате "yyyy-MM-dd HH:mm:ss")
     private UserShortDto initiator;
     private boolean paid;

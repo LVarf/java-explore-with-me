@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.converter.EventShortDtoConverter;
+import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.user.UserShortDto;
 import ru.practicum.ewmcore.repository.EventRepository;
@@ -22,17 +23,22 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserInternalService, UserPublicService{
     private final UserRepository userRepository;
-    private final EventRepository eventRepository;
     private final UserValidator userValidator;
-    private final EventShortDtoConverter eventShortDtoConverter;
     private final EventInternalService eventInternalService;
 
+    private final EventShortDtoConverter eventShortDtoConverter;
+
     @Override
-    public Page<EventShortDto> readAllPublic(Long userId, Pageable pageable) {
+    public Page<EventShortDto> readAllEventsPublic(Long userId, Pageable pageable) {
         log.debug("Public read all events by user id {}", userId);
         userValidator.validateOnRead(userId, ValidationMode.DEFAULT);
-        final var events = eventInternalService.readAllByInitiatorId(userId, pageable);
-        return events.map(eventShortDtoConverter::convertFromEntity);
+        return eventInternalService.readAllByInitiatorId(userId, pageable);
+    }
+
+    @Override
+    public Optional<EventFullDto> updateEventPublic(Long userId, EventFullDto event) {
+        userValidator.validateOnRead(userId, ValidationMode.DEFAULT);
+        return eventInternalService.updateEventByUser(userId, event);
     }
 
     private List<UserShortDto> readShortImpl(Long userId) {
@@ -42,7 +48,7 @@ public class UserServiceImpl implements UserInternalService, UserPublicService{
 
 
     @Override
-    public Optional<EventShortDto> readPublic() {
+    public Optional<EventShortDto> readEventPublic() {
         return Optional.empty();
     }
 

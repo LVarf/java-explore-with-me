@@ -22,7 +22,7 @@ public class ErrorHandler {
 
     @ExceptionHandler({ApiError.class})
     public ResponseEntity<Object> apiErrorException(final ApiError e,
-                                                                   ServletWebRequest request) {
+                                                    ServletWebRequest request) {
         final var ex = new ApiErrorDto();
         BeanUtils.copyProperties(e, ex);
         log.error(RETURN_ERROR_LOG, e.getStatus(), e.getMessage(), getRequestPath(request));
@@ -39,6 +39,7 @@ public class ErrorHandler {
         log.error(RETURN_ERROR_LOG, e.getCause(), e.getMessage(), getRequestPath(request));
         return new ResponseEntity<>(ex, HttpStatus.BAD_REQUEST);
     }
+
     private ResponseEntity<Object> handleExceptionInternal(HttpStatus status, ApiError apiError) {
         return new ResponseEntity<>(apiError, status);
     }

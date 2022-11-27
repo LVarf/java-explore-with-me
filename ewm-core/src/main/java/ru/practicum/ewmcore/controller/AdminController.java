@@ -17,7 +17,7 @@ import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventStateEnum;
-import ru.practicum.ewmcore.model.user.UserDto;
+import ru.practicum.ewmcore.model.user.UserFullDto;
 
 import java.util.Optional;
 
@@ -70,7 +70,7 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public Page<UserDto> readUser(@RequestParam(value = "ids", required = false) Long[] ids,
+    public Page<UserFullDto> readUser(@RequestParam(value = "ids", required = false) Long[] ids,
                                             /*@RequestParam(value = "from", defaultValue = "0") int from,
                                              @RequestParam(value = "size", defaultValue = "10") int size,
                                              @RequestParam("size") Integer size,*/
@@ -79,7 +79,7 @@ public class AdminController {
     }
 
     @PostMapping("/users")
-    public Optional<UserDto> createUser(@RequestBody UserDto user) {
+    public Optional<UserFullDto> createUser(@RequestBody UserFullDto user) {
         return Optional.of(user);
     }
 

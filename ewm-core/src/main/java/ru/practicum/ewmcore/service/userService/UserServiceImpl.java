@@ -1,0 +1,58 @@
+package ru.practicum.ewmcore.service.userService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import ru.practicum.ewmcore.converter.EventShortDtoConverter;
+import ru.practicum.ewmcore.model.event.EventShortDto;
+import ru.practicum.ewmcore.model.user.UserShortDto;
+import ru.practicum.ewmcore.repository.EventRepository;
+import ru.practicum.ewmcore.repository.UserRepository;
+import ru.practicum.ewmcore.service.eventService.EventInternalService;
+import ru.practicum.ewmcore.validator.UserValidator;
+import ru.practicum.ewmcore.validator.ValidationMode;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserInternalService, UserPublicService{
+    private final UserRepository userRepository;
+    private final EventRepository eventRepository;
+    private final UserValidator userValidator;
+    private final EventShortDtoConverter eventShortDtoConverter;
+    private final EventInternalService eventInternalService;
+
+    @Override
+    public Page<EventShortDto> readAllPublic(Long userId, Pageable pageable) {
+        log.debug("Public read all events by user id {}", userId);
+        userValidator.validateOnRead(userId, ValidationMode.DEFAULT);
+        final var events = eventInternalService.readAllByInitiatorId(userId, pageable);
+        return events.map(eventShortDtoConverter::convertFromEntity);
+    }
+
+    private List<UserShortDto> readShortImpl(Long userId) {
+        return null;
+    }
+
+
+
+    @Override
+    public Optional<EventShortDto> readPublic() {
+        return Optional.empty();
+    }
+
+    /*private Page<UserFullDto> enrichPage(Pageable pageable, Page<UserFullDto> repositoryPage) {
+        final var page = pageConverter.convertToPage(repositoryPage, pageable);
+        final List<UserFullDto> pageContent = page.first.stream()
+                .map(converter::convertFromEntity)
+                .map(directoryItemDto -> enrichVersion(directoryItemDto, validFrom))
+                .filter(Objects::nonNull).map(this::enrichDirectory).map(this::enrichAttributes)
+                .collect(Collectors.toList());
+        return new PageImpl<>(pageContent, page.second, repositoryPage.getTotalElements());
+    }*/
+}

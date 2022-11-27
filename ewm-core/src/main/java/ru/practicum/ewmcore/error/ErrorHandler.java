@@ -1,8 +1,6 @@
 package ru.practicum.ewmcore.error;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
@@ -20,14 +18,14 @@ import org.springframework.web.context.request.ServletWebRequest;
 @ControllerAdvice
 @Slf4j
 public class ErrorHandler {
-    private static final String RETURN_ERROR_TEMPLATE_LOG = "Returning HTTP {}: {}, path: `{}'";
+    private static final String RETURN_ERROR_LOG = "Returning HTTP {}: {}, path: `{}'";
 
     @ExceptionHandler({ApiError.class})
     public ResponseEntity<Object> apiErrorException(final ApiError e,
                                                                    ServletWebRequest request) {
         final var ex = new ApiErrorDto();
         BeanUtils.copyProperties(e, ex);
-        log.error(RETURN_ERROR_TEMPLATE_LOG, e.getStatus(), e.getMessage(), getRequestPath(request));
+        log.error(RETURN_ERROR_LOG, e.getStatus(), e.getMessage(), getRequestPath(request));
         return new ResponseEntity<>(ex, ex.getStatus());
     }
 
@@ -38,7 +36,7 @@ public class ErrorHandler {
             ServletWebRequest request) {
         final var ex = new ApiErrorDto().setStatus(HttpStatus.BAD_REQUEST);
         BeanUtils.copyProperties(e, ex);
-        log.error(RETURN_ERROR_TEMPLATE_LOG, e.getCause(), e.getMessage(), getRequestPath(request));
+        log.error(RETURN_ERROR_LOG, e.getCause(), e.getMessage(), getRequestPath(request));
         return new ResponseEntity<>(ex, HttpStatus.BAD_REQUEST);
     }
     private ResponseEntity<Object> handleExceptionInternal(HttpStatus status, ApiError apiError) {

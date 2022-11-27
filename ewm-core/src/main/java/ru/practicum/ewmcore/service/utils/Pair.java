@@ -2,6 +2,7 @@ package ru.practicum.ewmcore.service.utils;
 
 import java.util.Objects;
 
+@Deprecated
 public class Pair<T, U> {
     public final T first;
     public final U second;

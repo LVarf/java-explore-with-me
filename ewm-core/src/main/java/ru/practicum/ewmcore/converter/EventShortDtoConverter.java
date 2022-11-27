@@ -2,7 +2,6 @@ package ru.practicum.ewmcore.converter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
@@ -16,20 +15,25 @@ import ru.practicum.ewmcore.service.utils.SortConverterMixin;
 @RequiredArgsConstructor
 public class EventShortDtoConverter implements RootModelConverter<EventShortDto, Event>,
         SortConverterMixin {
+    private final TimeUtils timeUtils;
     //private final SortUtils sortUtils;
 
     @Override
     public EventShortDto convertFromEntity(final Event entity) {
         final EventShortDto model = new EventShortDto();
         BeanUtils.copyProperties(entity, model);
+        var eventDate = entity.getEventDate();
+        model.setEventDate(timeUtils.timestampToString(eventDate));
         return model;
     }
 
     @Override
-    public Event convertToEntity(final EventShortDto model) {
-        final Event entity = new Event();
+    public Event convertToEntity(final EventShortDto entity) {
+        final Event model = new Event();
         BeanUtils.copyProperties(model, entity);
-        return entity;
+        final String eventDate = entity.getEventDate();
+        model.setEventDate(timeUtils.stringToTimestamp(eventDate));
+        return model;
     }
 
     @Override

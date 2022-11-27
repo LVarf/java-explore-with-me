@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Objects;
 
+@Deprecated
 @Component
 @Slf4j
 public class PageConverter<T> {

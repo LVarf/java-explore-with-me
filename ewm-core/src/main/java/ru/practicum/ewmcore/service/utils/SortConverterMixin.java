@@ -6,6 +6,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 public interface SortConverterMixin {
 
     default Pageable convertSort(Pageable pageable) {

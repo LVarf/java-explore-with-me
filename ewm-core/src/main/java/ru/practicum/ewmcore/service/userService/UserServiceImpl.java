@@ -52,8 +52,9 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
 
 
     @Override
-    public Optional<EventShortDto> readEventPublic() {
-        return Optional.empty();
+    public Optional<EventFullDto> readEventPublic(Long userId, Long eventId) {
+        userValidator.validateOnRead(userId, ValidationMode.DEFAULT);
+        return eventInternalService.readEvent(userId, eventId);
     }
 
     /*private Page<UserFullDto> enrichPage(Pageable pageable, Page<UserFullDto> repositoryPage) {

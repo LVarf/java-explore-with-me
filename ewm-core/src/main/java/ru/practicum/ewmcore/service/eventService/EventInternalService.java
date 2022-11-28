@@ -18,4 +18,7 @@ public interface EventInternalService {
 
     @Transactional
     Optional<EventFullDto> createEvent(EventFullDto event);
+
+    @Transactional(readOnly = true)
+    Optional<EventFullDto> readEvent(Long userId, Long eventId);
 }

@@ -33,7 +33,7 @@ public class EventInternalServiceImpl implements EventInternalService {
     public Optional<EventFullDto> updateEventByUser(Long userId, EventFullDto event) {
         final var eventFromDb = eventRepository.findById(event.getId());
         eventValidator.validationOnExist(eventFromDb.orElse(null));
-        eventValidator.validationOnUpdate(eventFullDtoConverter.convertFromEntity(eventFromDb.orElseThrow()), userId);
+        eventValidator.validationOnUpdate(userId, eventFullDtoConverter.convertFromEntity(eventFromDb.orElseThrow()));
         final var eventFromSave = eventRepository
                 .save(eventFullDtoConverter.mergeToEntity(event, eventFromDb.get()));
         return Optional.of(eventFullDtoConverter.convertFromEntity(eventFromSave));
@@ -45,5 +45,13 @@ public class EventInternalServiceImpl implements EventInternalService {
         final var eventFromSave = eventRepository
                 .save(eventFullDtoConverter.convertToEntity(event));
         return Optional.of(eventFullDtoConverter.convertFromEntity(eventFromSave));
+    }
+
+    @Override
+    public Optional<EventFullDto> readEvent(Long userId, Long eventId) {
+        final var eventFromDb = eventRepository.findById(eventId).orElseThrow();
+        eventValidator.validationOnRead(userId, eventFullDtoConverter.convertFromEntity(eventFromDb));
+        //enrichCategory
+        return eventRepository.findById(eventId).map(eventFullDtoConverter::convertFromEntity);
     }
 }

@@ -45,9 +45,9 @@ public class UserController {
     }
 
     @GetMapping("/events/{eventId}")
-    public Page<EventFullDto> readEvent(@PathVariable Long userId,
+    public Optional<EventFullDto> readEvent(@PathVariable Long userId,
                                         @PathVariable Long eventId) {
-        return Page.empty();
+        return userService.readEventPublic(userId, eventId);
     }
 
     @PatchMapping("/events/{eventId}")

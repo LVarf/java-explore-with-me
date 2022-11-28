@@ -13,7 +13,7 @@ public interface UserPublicService {
     Page<EventShortDto> readAllEventsPublic(Long userId, Pageable pageable);
 
     @Transactional(readOnly = true)
-    Optional<EventShortDto> readEventPublic();
+    Optional<EventFullDto> readEventPublic(Long userId, Long eventId);
 
     @Transactional
     Optional<EventFullDto> updateEventPublic(Long id, EventFullDto event);

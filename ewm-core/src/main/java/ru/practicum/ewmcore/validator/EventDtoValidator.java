@@ -18,17 +18,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class EventDtoValidator extends AbstractValidation{
+public class EventDtoValidator extends AbstractValidation {
     private final TimeUtils timeUtils;
     private CategoryInternalService categoryInternalService;
 
-    public void validateOnRead(EventShortDto eventShortDto, ValidationMode validationMode) {
+    public void validationOnRead(Long userId, EventFullDto event) {
         final var apiError = new ApiError();
+        checkInitiatorIdEqualsUserId(userId, event, apiError);
         // validateCategoriesExist(eventShortDto.getCategory(), apiError);
     }
 
@@ -50,9 +50,9 @@ public class EventDtoValidator extends AbstractValidation{
         }
     }
 
-    public void validationOnUpdate(EventFullDto event, Long userId) {
+    public void validationOnUpdate(Long userId, EventFullDto event) {
         final var apiError = new ApiError();
-        checkInitiatorIdOnUpdate(event, userId, apiError);
+        checkInitiatorIdEqualsUserId(userId, event, apiError);
         checkStateOnUpdate(event, apiError);
         checkTime(event, apiError);
     }
@@ -69,7 +69,7 @@ public class EventDtoValidator extends AbstractValidation{
         }
     }
 
-    private void checkInitiatorIdOnUpdate(EventFullDto event, Long userId, ApiError apiError) {
+    private void checkInitiatorIdEqualsUserId(Long userId, EventFullDto event, ApiError apiError) {
         if (!event.getInitiator().getId().equals(userId)) {
             log.info("The user {} is not initiator the event {}", userId, event.getId());
             apiError.setMessage("The user is not initiator the event")
@@ -114,7 +114,7 @@ public class EventDtoValidator extends AbstractValidation{
     }
 
     private void validationSpaces(EventFullDto eventFull, EventShortDto eventShort) {
-        if (eventFull!= null) {
+        if (eventFull != null) {
             validationSpacesInStringField(eventFull.getAnnotation());
             validationSpacesInStringField(eventFull.getTitle());
             validationSpacesInStringField(eventFull.getDescription());

@@ -29,6 +29,7 @@ public class EventFullDtoConverter implements RootModelConverter<EventFullDto, E
         model.setEventDate(timeUtils.timestampToString(eventDate));
         model.setCreatedOn(timeUtils.timestampToString(createdOn));
         model.setPublishedOn(timeUtils.timestampToString(publishedOn));
+        model.setCategory(entity.getCategory().getId());
         return model;
     }
 

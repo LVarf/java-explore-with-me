@@ -9,7 +9,7 @@ import ru.practicum.ewmcore.model.user.UserShortDto;
 public class EventFullDto {
     private Long id;
     private String annotation;
-    private CategoryDto category;
+    private Long category;
     private Integer confirmedRequests;
     private String createdOn; //дата создания для дто (в формате "yyyy-MM-dd HH:mm:ss")
     private String description;

@@ -8,7 +8,7 @@ import ru.practicum.ewmcore.model.user.UserShortDto;
 public class EventShortDto {
     private Long id;
     private String annotation;
-    private CategoryDto category;
+    private Long category;
     private Integer confirmedRequests;
     private String description;
     private String eventDate; //дата события для дто (в формате "yyyy-MM-dd HH:mm:ss")

@@ -13,17 +13,17 @@ import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.event.EventStateEnum;
 import ru.practicum.ewmcore.service.categoryService.CategoryInternalService;
 
-import javax.validation.ValidationException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class EventDtoValidator {
+public class EventDtoValidator extends AbstractValidation{
     private final TimeUtils timeUtils;
     private CategoryInternalService categoryInternalService;
 
@@ -54,7 +54,7 @@ public class EventDtoValidator {
         final var apiError = new ApiError();
         checkInitiatorIdOnUpdate(event, userId, apiError);
         checkStateOnUpdate(event, apiError);
-        checkTimeOnUpdate(event, apiError);
+        checkTime(event, apiError);
     }
 
     public void validationOnExist(Event event) {
@@ -92,7 +92,7 @@ public class EventDtoValidator {
         }
     }
 
-    private void checkTimeOnUpdate(EventFullDto event, ApiError apiError) {
+    private void checkTime(EventFullDto event, ApiError apiError) {
         final var timeEvent = timeUtils.stringToTimestamp(event.getEventDate());
         final var timeNow = Timestamp.valueOf(LocalDateTime.now().plusHours(2));
         if (timeEvent.before(timeNow)) {
@@ -102,6 +102,22 @@ public class EventDtoValidator {
                     .setReason("For the requested operation the conditions are not met")
                     .setTimestamp(timeUtils.timestampToString(Timestamp.valueOf(LocalDateTime.now())));
             throw apiError;
+        }
+    }
+
+    public void validationOnCreate(EventFullDto event) {
+        final var apiError = new ApiError();
+        checkTime(event, apiError);
+        //checkFieldsNotNull
+        //checkLengthRequired
+        validationSpaces(event, null);
+    }
+
+    private void validationSpaces(EventFullDto eventFull, EventShortDto eventShort) {
+        if (eventFull!= null) {
+            validationSpacesInStringField(eventFull.getAnnotation());
+            validationSpacesInStringField(eventFull.getTitle());
+            validationSpacesInStringField(eventFull.getDescription());
         }
     }
 }

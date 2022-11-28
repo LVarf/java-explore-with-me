@@ -15,4 +15,7 @@ public interface EventInternalService {
 
     @Transactional
     Optional<EventFullDto> updateEventByUser(Long userId, EventFullDto event);
+
+    @Transactional
+    Optional<EventFullDto> createEvent(EventFullDto event);
 }

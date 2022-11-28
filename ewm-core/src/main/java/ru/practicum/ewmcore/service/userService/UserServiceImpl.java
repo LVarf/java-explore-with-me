@@ -5,11 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.ewmcore.converter.EventFullDtoConverter;
 import ru.practicum.ewmcore.converter.EventShortDtoConverter;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
+import ru.practicum.ewmcore.model.user.UserFullDto;
 import ru.practicum.ewmcore.model.user.UserShortDto;
-import ru.practicum.ewmcore.repository.EventRepository;
 import ru.practicum.ewmcore.repository.UserRepository;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
 import ru.practicum.ewmcore.validator.UserValidator;
@@ -21,11 +22,10 @@ import java.util.Optional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserInternalService, UserPublicService{
+public class UserServiceImpl implements UserInternalService, UserPublicService {
     private final UserRepository userRepository;
     private final UserValidator userValidator;
     private final EventInternalService eventInternalService;
-
     private final EventShortDtoConverter eventShortDtoConverter;
 
     @Override
@@ -41,10 +41,14 @@ public class UserServiceImpl implements UserInternalService, UserPublicService{
         return eventInternalService.updateEventByUser(userId, event);
     }
 
+    public Optional<EventFullDto> createEventPublic(Long userId, EventFullDto event) {
+        userValidator.validateOnRead(userId, ValidationMode.DEFAULT);
+        return  eventInternalService.createEvent(event);
+    }
+
     private List<UserShortDto> readShortImpl(Long userId) {
         return null;
     }
-
 
 
     @Override

@@ -39,9 +39,9 @@ public class UserController {
     }
 
     @PutMapping("/events")
-    public Optional<EventFullDto> createAllEvents(@PathVariable Long userId,
+    public Optional<EventFullDto> createEvent(@PathVariable Long userId,
                                                   @RequestBody EventFullDto event) {
-        return Optional.of(event);
+        return userService.createEventPublic(userId, event);
     }
 
     @GetMapping("/events/{eventId}")

@@ -29,12 +29,21 @@ public class EventInternalServiceImpl implements EventInternalService {
         return events.map(eventShortDtoConverter::convertFromEntity);
     }
 
+    @Override
     public Optional<EventFullDto> updateEventByUser(Long userId, EventFullDto event) {
         final var eventFromDb = eventRepository.findById(event.getId());
         eventValidator.validationOnExist(eventFromDb.orElse(null));
         eventValidator.validationOnUpdate(eventFullDtoConverter.convertFromEntity(eventFromDb.orElseThrow()), userId);
         final var eventFromSave = eventRepository
                 .save(eventFullDtoConverter.mergeToEntity(event, eventFromDb.get()));
+        return Optional.of(eventFullDtoConverter.convertFromEntity(eventFromSave));
+    }
+
+    public Optional<EventFullDto> createEvent(EventFullDto event) {
+        eventValidator.validationOnCreate(event);
+        //enrichCategory
+        final var eventFromSave = eventRepository
+                .save(eventFullDtoConverter.convertToEntity(event));
         return Optional.of(eventFullDtoConverter.convertFromEntity(eventFromSave));
     }
 }

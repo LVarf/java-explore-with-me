@@ -51,9 +51,9 @@ public class UserController {
     }
 
     @PatchMapping("/events/{eventId}")
-    public Optional<EventFullDto> updateEvent(@PathVariable Long userId,
+    public Optional<EventFullDto> updateEventOnCancel(@PathVariable Long userId,
                                               @PathVariable Long eventId) {
-        return Optional.empty();
+        return userService.updateEventOnCancel(userId, eventId);
     }
 
     @GetMapping("/events/{eventId}/requests")

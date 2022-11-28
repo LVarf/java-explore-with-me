@@ -57,6 +57,13 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
         return eventInternalService.readEvent(userId, eventId);
     }
 
+
+    @Override
+    public Optional<EventFullDto> updateEventOnCancel(Long userId, Long eventId) {
+        userValidator.validateOnRead(userId, ValidationMode.DEFAULT);
+        return eventInternalService.updateEventOnCancel(userId, eventId);
+    }
+
     /*private Page<UserFullDto> enrichPage(Pageable pageable, Page<UserFullDto> repositoryPage) {
         final var page = pageConverter.convertToPage(repositoryPage, pageable);
         final List<UserFullDto> pageContent = page.first.stream()

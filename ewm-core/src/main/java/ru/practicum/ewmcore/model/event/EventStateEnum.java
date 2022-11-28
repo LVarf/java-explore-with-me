@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum EventStateEnum {
-    PENDING(1),
-    PUBLISHED(2),
-    CANCELED(3);
+    PENDING(1), //в ожидании
+    PUBLISHED(2), //опубликован
+    CANCELED(3); //отменён
 
     private final int id;
 }

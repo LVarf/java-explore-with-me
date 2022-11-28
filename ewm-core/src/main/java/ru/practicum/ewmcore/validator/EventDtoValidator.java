@@ -32,6 +32,22 @@ public class EventDtoValidator extends AbstractValidation {
         // validateCategoriesExist(eventShortDto.getCategory(), apiError);
     }
 
+    public void validationOnCancel(EventFullDto event) {
+        final var apiError = new ApiError();
+        checkEventPendingState(event, apiError);
+    }
+
+    private void checkEventPendingState(EventFullDto event, ApiError apiError) {
+        if (event.getState() != null && event.getState() != EventStateEnum.PENDING) {
+            log.info("The event {} state is {}. It is not PENDING", event.getId(), event.getState());
+            apiError.setMessage("The event state is not PENDING")
+                    .setStatus(HttpStatus.FORBIDDEN)
+                    .setReason("For the requested operation the conditions are not met")
+                    .setTimestamp(timeUtils.timestampToString(Timestamp.valueOf(LocalDateTime.now())));
+            throw apiError;
+        }
+    }
+
     private void validateCategoriesExist(long[] categories, ApiError apiError) {
         final List<CategoryDto> categoryDtoList = new ArrayList<>();
         for (long id : categories) {

@@ -20,4 +20,7 @@ public interface UserPublicService {
 
     @Transactional
     Optional<EventFullDto> createEventPublic(Long userId, EventFullDto event);
+
+    @Transactional
+    Optional<EventFullDto> updateEventOnCancel(Long userId, Long eventId);
 }

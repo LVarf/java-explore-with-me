@@ -9,6 +9,7 @@ import ru.practicum.ewmcore.converter.EventFullDtoConverter;
 import ru.practicum.ewmcore.converter.EventShortDtoConverter;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
+import ru.practicum.ewmcore.model.event.EventStateEnum;
 import ru.practicum.ewmcore.repository.EventRepository;
 import ru.practicum.ewmcore.validator.EventDtoValidator;
 
@@ -17,7 +18,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class EventInternalServiceImpl implements EventInternalService {
+public class EventServiceImpl implements EventInternalService {
     private final EventRepository eventRepository;
     private final EventShortDtoConverter eventShortDtoConverter;
     private final EventFullDtoConverter eventFullDtoConverter;
@@ -49,9 +50,21 @@ public class EventInternalServiceImpl implements EventInternalService {
 
     @Override
     public Optional<EventFullDto> readEvent(Long userId, Long eventId) {
-        final var eventFromDb = eventRepository.findById(eventId).orElseThrow();
-        eventValidator.validationOnRead(userId, eventFullDtoConverter.convertFromEntity(eventFromDb));
+        final var eventFromDb = eventRepository.findById(eventId);
+        eventValidator.validationOnExist(eventFromDb.orElse(null));
+        eventValidator.validationOnRead(userId, eventFullDtoConverter.convertFromEntity(eventFromDb.get()));
         //enrichCategory
         return eventRepository.findById(eventId).map(eventFullDtoConverter::convertFromEntity);
+    }
+
+    @Override
+    public Optional<EventFullDto> updateEventOnCancel(Long userId, Long eventId) {
+        final var eventFromDb = eventRepository.findById(eventId);
+        eventValidator.validationOnExist(eventFromDb.orElse(null));
+        eventValidator.validationOnRead(userId, eventFullDtoConverter.convertFromEntity(eventFromDb.get()));
+        eventValidator.validationOnCancel(eventFromDb.map(eventFullDtoConverter::convertFromEntity).get());
+        final var eventForSave = eventFromDb.get();
+        eventForSave.setState(EventStateEnum.CANCELED);
+        return Optional.of(eventFullDtoConverter.convertFromEntity(eventRepository.save(eventForSave)));
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
+import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
 
 import java.util.Optional;
 
@@ -23,4 +24,7 @@ public interface UserPublicService {
 
     @Transactional
     Optional<EventFullDto> updateEventOnCancel(Long userId, Long eventId);
+
+    @Transactional(readOnly = true)
+    Optional<ParticipationRequestDto> readRequestPublic(Long userId, Long eventId);
 }

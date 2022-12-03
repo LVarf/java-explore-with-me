@@ -5,14 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewmcore.converter.EventFullDtoConverter;
 import ru.practicum.ewmcore.converter.EventShortDtoConverter;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
-import ru.practicum.ewmcore.model.user.UserFullDto;
+import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
 import ru.practicum.ewmcore.model.user.UserShortDto;
 import ru.practicum.ewmcore.repository.UserRepository;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
+import ru.practicum.ewmcore.service.participationRequest.ParticipationRequestInternalService;
 import ru.practicum.ewmcore.validator.UserValidator;
 import ru.practicum.ewmcore.validator.ValidationMode;
 
@@ -26,6 +26,7 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
     private final UserRepository userRepository;
     private final UserValidator userValidator;
     private final EventInternalService eventInternalService;
+    private final ParticipationRequestInternalService requestInternalService;
     private final EventShortDtoConverter eventShortDtoConverter;
 
     @Override
@@ -62,6 +63,12 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
     public Optional<EventFullDto> updateEventOnCancel(Long userId, Long eventId) {
         userValidator.validateOnRead(userId, ValidationMode.DEFAULT);
         return eventInternalService.updateEventOnCancel(userId, eventId);
+    }
+
+    @Override
+    public Optional<ParticipationRequestDto> readRequestPublic(Long userId, Long eventId) {
+        userValidator.validateOnRead(userId, ValidationMode.DEFAULT);
+        return requestInternalService.findRequestUserOnEvent(userId, eventId);
     }
 
     /*private Page<UserFullDto> enrichPage(Pageable pageable, Page<UserFullDto> repositoryPage) {

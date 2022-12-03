@@ -8,6 +8,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +39,7 @@ public class UserController {
         return Optional.empty();
     }
 
-    @PutMapping("/events")
+    @PostMapping("/events")
     public Optional<EventFullDto> createEvent(@PathVariable Long userId,
                                                   @RequestBody EventFullDto event) {
         return userService.createEventPublic(userId, event);
@@ -59,7 +60,7 @@ public class UserController {
     @GetMapping("/events/{eventId}/requests")
     public Optional<ParticipationRequestDto> readRequests(@PathVariable Long userId,
                                                           @PathVariable Long eventId) {
-        return Optional.empty();
+        return userService.readRequestPublic(userId, eventId);
     }
 
     @PatchMapping("/events/{eventId}/requests/{reqId}/confirm")

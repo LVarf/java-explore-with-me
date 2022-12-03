@@ -36,7 +36,7 @@ public class UserController {
     @PatchMapping("/events")
     public Optional<EventFullDto> updateEvent(@PathVariable Long userId,
                                                @RequestBody EventFullDto event) {
-        return Optional.empty();
+        return userService.updateEventPublic(userId, event);
     }
 
     @PostMapping("/events")

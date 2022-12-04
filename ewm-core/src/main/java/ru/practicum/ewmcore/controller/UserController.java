@@ -92,6 +92,6 @@ public class UserController {
     @PatchMapping("/requests/{requestsId}/cansel")
     public Optional<ParticipationRequestDto> updateRequest(@PathVariable Long userId,
                                                            @PathVariable Long requestsId) {
-        return Optional.empty();
+        return userService.updateRequestPublic(userId, requestsId);
     }
 }

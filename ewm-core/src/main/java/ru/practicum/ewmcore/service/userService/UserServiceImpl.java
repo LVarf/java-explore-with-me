@@ -95,6 +95,12 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
         return requestInternalService.createRequest(userId, eventId);
     }
 
+    @Override
+    public Optional<ParticipationRequestDto> updateRequestPublic(Long userId, Long requestsId) {
+        userValidator.validateOnRead(userId, ValidationMode.DEFAULT);
+        return requestInternalService.createRequest(userId, requestsId);
+    }
+
     /*private Page<UserFullDto> enrichPage(Pageable pageable, Page<UserFullDto> repositoryPage) {
         final var page = pageConverter.convertToPage(repositoryPage, pageable);
         final List<UserFullDto> pageContent = page.first.stream()

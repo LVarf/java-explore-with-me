@@ -37,4 +37,6 @@ public interface UserPublicService {
     Optional<List<ParticipationRequestDto>> readRequests(Long userId);
 
     Optional<ParticipationRequestDto> createRequestPublic(Long userId, Long eventId);
+
+    Optional<ParticipationRequestDto> updateRequestPublic(Long userId, Long requestsId);
 }

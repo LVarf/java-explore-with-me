@@ -89,6 +89,11 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
         return requestInternalService.readRequestsByRequesterId(userId);
     }
 
+    public Optional<ParticipationRequestDto> createRequest(Long userId, Long eventId) {
+
+        return Optional.empty();
+    }
+
     /*private Page<UserFullDto> enrichPage(Pageable pageable, Page<UserFullDto> repositoryPage) {
         final var page = pageConverter.convertToPage(repositoryPage, pageable);
         final List<UserFullDto> pageContent = page.first.stream()

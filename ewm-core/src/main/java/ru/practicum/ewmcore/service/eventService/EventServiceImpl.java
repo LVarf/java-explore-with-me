@@ -67,4 +67,10 @@ public class EventServiceImpl implements EventInternalService {
         eventForSave.setState(EventStateEnum.CANCELED);
         return Optional.of(eventFullDtoConverter.convertFromEntity(eventRepository.save(eventForSave)));
     }
+
+    @Override
+    public Optional<EventFullDto> updateEvent(EventFullDto event) {
+        final var eventForSave = eventFullDtoConverter.convertToEntity(event);
+        return Optional.of(eventFullDtoConverter.convertFromEntity(eventRepository.save(eventForSave)));
+    }
 }

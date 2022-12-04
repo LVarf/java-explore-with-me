@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ParticipationRequestStateEnum {
     PENDING(1),
-    PUBLISHED(2),
-    CANCELED(3);
+    CONFIRMED(2),
+    REJECTED(3);
 
     private final int id;
 }

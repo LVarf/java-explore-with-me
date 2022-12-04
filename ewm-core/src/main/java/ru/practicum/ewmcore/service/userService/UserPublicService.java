@@ -27,4 +27,7 @@ public interface UserPublicService {
 
     @Transactional(readOnly = true)
     Optional<ParticipationRequestDto> readRequestPublic(Long userId, Long eventId);
+
+    @Transactional
+    Optional<ParticipationRequestDto> confirmRequestPublic(Long userId, Long eventId, Long reqId);
 }

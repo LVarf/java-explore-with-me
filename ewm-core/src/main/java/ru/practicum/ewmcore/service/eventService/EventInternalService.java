@@ -3,7 +3,6 @@ package ru.practicum.ewmcore.service.eventService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewmcore.model.event.Event;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
 
@@ -23,5 +22,8 @@ public interface EventInternalService {
     Optional<EventFullDto> readEvent(Long userId, Long eventId);
 
     @Transactional
-    public Optional<EventFullDto> updateEventOnCancel(Long userId, Long eventId);
+    Optional<EventFullDto> updateEventOnCancel(Long userId, Long eventId);
+
+    @Transactional
+    Optional<EventFullDto> updateEvent(EventFullDto eventFullDto);
 }

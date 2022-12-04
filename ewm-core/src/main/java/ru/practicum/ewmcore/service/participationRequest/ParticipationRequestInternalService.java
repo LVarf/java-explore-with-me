@@ -7,5 +7,7 @@ import java.util.Optional;
 
 public interface ParticipationRequestInternalService {
 
-    public Optional<ParticipationRequestDto> findRequestUserOnEvent(Long userId, Long eventId);
+    Optional<ParticipationRequestDto> findRequestUserOnEvent(Long userId, Long eventId);
+
+    Optional<ParticipationRequestDto> confirmRequest(Long userId, Long eventId, Long reqId);
 }

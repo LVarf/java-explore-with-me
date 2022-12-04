@@ -74,7 +74,7 @@ public class AdminController {
                                             /*@RequestParam(value = "from", defaultValue = "0") int from,
                                              @RequestParam(value = "size", defaultValue = "10") int size,
                                              @RequestParam("size") Integer size,*/
-                                  Pageable pageable) {
+                                      Pageable pageable) {
         return Page.empty();
     }
 
@@ -106,7 +106,7 @@ public class AdminController {
 
     @PatchMapping("/compilations/{compId}/events/{eventId}")
     public String addEventToCompilation(@PathVariable Long compId,
-                                                                @PathVariable Long eventId) {
+                                        @PathVariable Long eventId) {
         return null;
     }
 

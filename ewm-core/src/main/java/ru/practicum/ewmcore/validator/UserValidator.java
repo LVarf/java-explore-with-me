@@ -20,6 +20,7 @@ public class UserValidator {
 
     private final TimeUtils timeUtils;
     private UserRepository userRepository;
+
     public void validateOnRead(Long userId, ValidationMode validationMode)
             throws ValidationException {
         final var apiError = new ApiError();

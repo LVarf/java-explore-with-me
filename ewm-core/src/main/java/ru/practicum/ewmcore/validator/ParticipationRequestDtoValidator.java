@@ -6,20 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import ru.practicum.ewmcore.converter.TimeUtils;
 import ru.practicum.ewmcore.error.ApiError;
-import ru.practicum.ewmcore.model.category.CategoryDto;
-import ru.practicum.ewmcore.model.event.Event;
-import ru.practicum.ewmcore.model.event.EventFullDto;
-import ru.practicum.ewmcore.model.event.EventShortDto;
-import ru.practicum.ewmcore.model.event.EventStateEnum;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequest;
-import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
 import ru.practicum.ewmcore.service.categoryService.CategoryInternalService;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor

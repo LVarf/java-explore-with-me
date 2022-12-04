@@ -9,7 +9,6 @@ import ru.practicum.ewmcore.model.event.Event;
 import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.service.utils.RootModelConverter;
 import ru.practicum.ewmcore.service.utils.SortConverterMixin;
-//import ru.practicum.ewmcore.service.utils.SortUtils;
 
 @Component
 @RequiredArgsConstructor

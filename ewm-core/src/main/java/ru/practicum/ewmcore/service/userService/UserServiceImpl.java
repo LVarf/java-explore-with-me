@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
 
     public Optional<EventFullDto> createEventPublic(Long userId, EventFullDto event) {
         userValidator.validateOnRead(userId, ValidationMode.DEFAULT);
-        return  eventInternalService.createEvent(event);
+        return eventInternalService.createEvent(event);
     }
 
     private List<UserShortDto> readShortImpl(Long userId) {

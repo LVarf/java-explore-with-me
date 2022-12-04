@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +25,7 @@ import java.util.Optional;
 @RequestMapping(path = "/users/{userId}")
 public class UserController {
     private final UserPublicService userService;
+
     @GetMapping("/events")
     public Page<EventShortDto> readAllEvents(@PathVariable Long userId,
                                              @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC,
@@ -35,25 +35,25 @@ public class UserController {
 
     @PatchMapping("/events")
     public Optional<EventFullDto> updateEvent(@PathVariable Long userId,
-                                               @RequestBody EventFullDto event) {
+                                              @RequestBody EventFullDto event) {
         return userService.updateEventPublic(userId, event);
     }
 
     @PostMapping("/events")
     public Optional<EventFullDto> createEvent(@PathVariable Long userId,
-                                                  @RequestBody EventFullDto event) {
+                                              @RequestBody EventFullDto event) {
         return userService.createEventPublic(userId, event);
     }
 
     @GetMapping("/events/{eventId}")
     public Optional<EventFullDto> readEvent(@PathVariable Long userId,
-                                        @PathVariable Long eventId) {
+                                            @PathVariable Long eventId) {
         return userService.readEventPublic(userId, eventId);
     }
 
     @PatchMapping("/events/{eventId}")
     public Optional<EventFullDto> updateEventOnCancel(@PathVariable Long userId,
-                                              @PathVariable Long eventId) {
+                                                      @PathVariable Long eventId) {
         return userService.updateEventOnCancel(userId, eventId);
     }
 

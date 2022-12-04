@@ -3,11 +3,9 @@ package ru.practicum.ewmcore.specification.filter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Data
@@ -28,7 +26,7 @@ public class ClientFilterParam {
         switch (operator) {
             case LT:
             case LE:
-                return new ClientFilterParam(operator, property, value, value );
+                return new ClientFilterParam(operator, property, value, value);
             case IN:
                 final List<String> objects = Arrays.stream(values).skip(offset).collect(Collectors.toList());
                 return new ClientFilterParam(operator, property, objects, null);

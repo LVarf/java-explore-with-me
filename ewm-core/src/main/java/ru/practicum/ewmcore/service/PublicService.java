@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.converter.EventShortDtoConverter;
 import ru.practicum.ewmcore.model.event.EventShortDto;
-//import ru.practicum.ewmcore.service.utils.PageConverter;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 import ru.practicum.ewmcore.validator.EventDtoValidator;
 
@@ -14,7 +13,6 @@ import java.sql.Timestamp;
 @Service
 @RequiredArgsConstructor
 public class PublicService {
-    //private final PageConverter<Event> pageConverter;
     private final EventShortDtoConverter shortConverter;
     private final EventDtoValidator validator;
 

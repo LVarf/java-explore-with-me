@@ -1,7 +1,6 @@
 package ru.practicum.ewmcore.model.event;
 
 import lombok.Data;
-import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.location.Location;
 import ru.practicum.ewmcore.model.user.UserShortDto;
 

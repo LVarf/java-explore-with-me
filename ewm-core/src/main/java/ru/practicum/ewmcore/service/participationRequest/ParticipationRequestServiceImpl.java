@@ -43,7 +43,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
         if (eventFromDb.getConfirmedRequests() == eventFromDb.getParticipantLimit()) {
             final List<ParticipationRequest> requestsOnReject = requestRepository
                     .findByStatus(ParticipationRequestStateEnum.PENDING);
-            for(ParticipationRequest request: requestsOnReject) {
+            for (ParticipationRequest request : requestsOnReject) {
                 request.setStatus(ParticipationRequestStateEnum.REJECTED);
                 requestRepository.save(request);
             }

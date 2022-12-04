@@ -1,10 +1,7 @@
 package ru.practicum.ewmcore.converter;
 
-//public class EventFullDtoConverter {
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;

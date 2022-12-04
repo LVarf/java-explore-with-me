@@ -83,17 +83,17 @@ public class UserController {
         return userService.readRequests(userId);
     }
 
-    @PatchMapping("/requests/{requestsId}/cansel")
-    public Optional<ParticipationRequestDto> updateRequest(@PathVariable Long userId,
-                                                           @PathVariable Long requestsId) {
-        return Optional.empty();
-    }
-
     @PostMapping("/requests")
     public Optional<ParticipationRequestDto> createRequest(@PathVariable Long userId,
                                                            @RequestParam(value = "eventId") Long eventId) {
         //если для события лимит заявок равен 0 или отключена пре-модерация заявок,
         // то подтверждение заявок не требуется
+        return Optional.empty();
+    }
+
+    @PatchMapping("/requests/{requestsId}/cansel")
+    public Optional<ParticipationRequestDto> updateRequest(@PathVariable Long userId,
+                                                           @PathVariable Long requestsId) {
         return Optional.empty();
     }
 }

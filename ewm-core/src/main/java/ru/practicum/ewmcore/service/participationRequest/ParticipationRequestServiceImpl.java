@@ -40,7 +40,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
         }
         requestValidator.validationOnLimit(eventFromDb.getParticipantLimit(), eventFromDb.getConfirmedRequests());
         updateRequestToConfirm(eventFromDb, requestFromDb);
-        if (eventFromDb.getConfirmedRequests() == eventFromDb.getParticipantLimit()) {
+        if (eventFromDb.getConfirmedRequests().equals(eventFromDb.getParticipantLimit())) {
             final List<ParticipationRequest> requestsOnReject = requestRepository
                     .findByStatus(ParticipationRequestStateEnum.PENDING);
             for (ParticipationRequest request : requestsOnReject) {

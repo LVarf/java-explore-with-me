@@ -51,7 +51,7 @@ public class ParticipationRequestDtoValidator extends AbstractValidation {
 
     private void checkMatchedEventId(Long eventId,
                                      ParticipationRequest request, ApiError apiError) {
-        if (request.getEvent().getId() != eventId) {
+        if (!request.getEvent().getId().equals(eventId)) {
             log.info("Event ids are not matched");
             apiError.setMessage("Event ids are not matched")
                     .setStatus(HttpStatus.FORBIDDEN)

@@ -19,7 +19,10 @@ public interface EventInternalService {
     Optional<EventFullDto> createEvent(EventFullDto event);
 
     @Transactional(readOnly = true)
-    Optional<EventFullDto> readEvent(Long userId, Long eventId);
+    Optional<EventFullDto> readEventByInitiator(Long userId, Long eventId);
+
+    @Transactional(readOnly = true)
+    Optional<EventFullDto> readEvent(Long eventId);
 
     @Transactional
     Optional<EventFullDto> updateEventOnCancel(Long userId, Long eventId);

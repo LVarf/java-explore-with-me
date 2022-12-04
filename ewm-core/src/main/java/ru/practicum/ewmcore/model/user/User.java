@@ -1,6 +1,7 @@
 package ru.practicum.ewmcore.model.user;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.Table;
 @Entity
 @Data
 @Table(name = "users", schema = "ewm_core")
+@Accessors(chain = true)
 public class User {
 
     @Id

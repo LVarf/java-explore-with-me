@@ -49,12 +49,19 @@ public class EventServiceImpl implements EventInternalService {
     }
 
     @Override
-    public Optional<EventFullDto> readEvent(Long userId, Long eventId) {
+    public Optional<EventFullDto> readEventByInitiator(Long userId, Long eventId) {
         final var eventFromDb = eventRepository.findById(eventId);
         eventValidator.validationOnExist(eventFromDb.orElse(null));
         eventValidator.validationOnRead(userId, eventFullDtoConverter.convertFromEntity(eventFromDb.get()));
         //enrichCategory
         return eventRepository.findById(eventId).map(eventFullDtoConverter::convertFromEntity);
+    }
+
+    @Override
+    public Optional<EventFullDto> readEvent(Long eventId) {
+        final var eventFromDb = eventRepository.findById(eventId);
+        eventValidator.validationOnExist(eventFromDb.orElse(null));
+        return eventFromDb.map(eventFullDtoConverter::convertFromEntity);
     }
 
     @Override

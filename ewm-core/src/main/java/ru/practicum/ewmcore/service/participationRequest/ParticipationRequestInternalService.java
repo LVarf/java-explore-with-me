@@ -14,4 +14,6 @@ public interface ParticipationRequestInternalService {
     Optional<ParticipationRequestDto> rejectRequest(Long userId, Long eventId, Long reqId);
 
     Optional<List<ParticipationRequestDto>> readRequestsByRequesterId(Long requesterId);
+
+    Optional<ParticipationRequestDto> createRequest(Long userId, Long eventId);
 }

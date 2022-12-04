@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
     @Override
     public Optional<EventFullDto> readEventPublic(Long userId, Long eventId) {
         userValidator.validateOnRead(userId, ValidationMode.DEFAULT);
-        return eventInternalService.readEvent(userId, eventId);
+        return eventInternalService.readEventByInitiator(userId, eventId);
     }
 
 
@@ -89,9 +89,10 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
         return requestInternalService.readRequestsByRequesterId(userId);
     }
 
-    public Optional<ParticipationRequestDto> createRequest(Long userId, Long eventId) {
-
-        return Optional.empty();
+    @Override
+    public Optional<ParticipationRequestDto> createRequestPublic(Long userId, Long eventId) {
+        userValidator.validateOnRead(userId, ValidationMode.DEFAULT);
+        return requestInternalService.createRequest(userId, eventId);
     }
 
     /*private Page<UserFullDto> enrichPage(Pageable pageable, Page<UserFullDto> repositoryPage) {

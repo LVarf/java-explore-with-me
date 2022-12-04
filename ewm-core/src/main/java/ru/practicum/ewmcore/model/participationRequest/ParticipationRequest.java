@@ -1,6 +1,7 @@
 package ru.practicum.ewmcore.model.participationRequest;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import ru.practicum.ewmcore.model.event.Event;
 import ru.practicum.ewmcore.model.user.User;
 
@@ -19,6 +20,7 @@ import java.sql.Timestamp;
 @Entity
 @Data
 @Table(name = "participation_request", schema = "ewm_core")
+@Accessors(chain = true)
 public class ParticipationRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

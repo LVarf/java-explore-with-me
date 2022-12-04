@@ -2,6 +2,7 @@ package ru.practicum.ewmcore.model.event;
 
 import lombok.Data;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import ru.practicum.ewmcore.model.category.Category;
 import ru.practicum.ewmcore.model.records.EventToCompilation;
 import ru.practicum.ewmcore.model.user.User;
@@ -24,6 +25,7 @@ import java.util.Set;
 @Entity
 @Data
 @Table(name = "events", schema = "ewm_core")
+@Accessors(chain = true)
 public class Event {
 
     @Id

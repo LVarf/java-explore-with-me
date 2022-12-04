@@ -9,4 +9,6 @@ public interface ParticipationRequestInternalService {
     Optional<ParticipationRequestDto> findRequestUserOnEvent(Long userId, Long eventId);
 
     Optional<ParticipationRequestDto> confirmRequest(Long userId, Long eventId, Long reqId);
+
+    Optional<ParticipationRequestDto> rejectRequest(Long userId, Long eventId, Long reqId);
 }

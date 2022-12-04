@@ -51,6 +51,16 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
         return Optional.of(requestConverter.convertFromEntity(requestFromDb));
     }
 
+    @Override
+    public Optional<ParticipationRequestDto> rejectRequest(Long userId, Long eventId, Long reqId) {
+        eventService.readEvent(userId, eventId).orElseThrow();
+        final var requestFromDb = requestRepository.findById(reqId).orElse(null);
+        requestValidator.validationOnConfirm(eventId, requestFromDb);
+        requestFromDb.setStatus(ParticipationRequestStateEnum.REJECTED);
+        requestRepository.save(requestFromDb);
+        return Optional.of(requestConverter.convertFromEntity(requestFromDb));
+    }
+
     private void updateRequestToConfirm(EventFullDto eventFromDb, ParticipationRequest requestFromDb) {
         requestFromDb.setStatus(ParticipationRequestStateEnum.CONFIRMED);
         requestRepository.save(requestFromDb);

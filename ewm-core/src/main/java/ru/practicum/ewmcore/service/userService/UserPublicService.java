@@ -30,4 +30,6 @@ public interface UserPublicService {
 
     @Transactional
     Optional<ParticipationRequestDto> confirmRequestPublic(Long userId, Long eventId, Long reqId);
+
+    Optional<ParticipationRequestDto> rejectRequestPublic(Long userId, Long eventId, Long reqId);
 }

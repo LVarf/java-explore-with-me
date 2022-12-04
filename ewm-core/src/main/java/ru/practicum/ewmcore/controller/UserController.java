@@ -64,17 +64,17 @@ public class UserController {
     }
 
     @PatchMapping("/events/{eventId}/requests/{reqId}/confirm")
-    public Optional<ParticipationRequestDto> updateRequestsConfirm(@PathVariable Long userId,
+    public Optional<ParticipationRequestDto> updateRequestConfirm(@PathVariable Long userId,
                                                                    @PathVariable Long eventId,
                                                                    @PathVariable Long reqId) {
         return userService.confirmRequestPublic(userId, eventId, reqId);
     }
 
     @PatchMapping("/events/{eventId}/requests/{reqId}/reject")
-    public Optional<ParticipationRequestDto> updateRequests(@PathVariable Long userId,
+    public Optional<ParticipationRequestDto> updateRequestReject(@PathVariable Long userId,
                                                             @PathVariable Long eventId,
                                                             @PathVariable Long reqId) {
-        return Optional.empty();
+        return userService.rejectRequestPublic(userId, eventId, reqId);
     }
 
     @GetMapping("/requests")

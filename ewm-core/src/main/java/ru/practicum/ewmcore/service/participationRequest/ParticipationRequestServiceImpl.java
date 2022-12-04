@@ -14,6 +14,7 @@ import ru.practicum.ewmcore.validator.ParticipationRequestDtoValidator;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -59,6 +60,12 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
         requestFromDb.setStatus(ParticipationRequestStateEnum.REJECTED);
         requestRepository.save(requestFromDb);
         return Optional.of(requestConverter.convertFromEntity(requestFromDb));
+    }
+
+    @Override
+    public Optional<List<ParticipationRequestDto>> readRequestsByRequesterId(Long requesterId) {
+        final var requests = requestRepository.findByRequester(requesterId);
+        return Optional.of(requests.stream().map(requestConverter::convertFromEntity).collect(Collectors.toList()));
     }
 
     private void updateRequestToConfirm(EventFullDto eventFromDb, ParticipationRequest requestFromDb) {

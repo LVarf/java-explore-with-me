@@ -18,6 +18,7 @@ import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
 import ru.practicum.ewmcore.service.userService.UserPublicService;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -78,8 +79,8 @@ public class UserController {
     }
 
     @GetMapping("/requests")
-    public Optional<ParticipationRequestDto> readRequest(@PathVariable Long userId) {
-        return Optional.empty();
+    public Optional<List<ParticipationRequestDto>> readRequests(@PathVariable Long userId) {
+        return userService.readRequests(userId);
     }
 
     @PatchMapping("/requests/{requestsId}/cansel")

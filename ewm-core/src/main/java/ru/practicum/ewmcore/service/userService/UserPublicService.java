@@ -7,6 +7,7 @@ import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserPublicService {
@@ -32,4 +33,6 @@ public interface UserPublicService {
     Optional<ParticipationRequestDto> confirmRequestPublic(Long userId, Long eventId, Long reqId);
 
     Optional<ParticipationRequestDto> rejectRequestPublic(Long userId, Long eventId, Long reqId);
+
+    Optional<List<ParticipationRequestDto>> readRequests(Long userId);
 }

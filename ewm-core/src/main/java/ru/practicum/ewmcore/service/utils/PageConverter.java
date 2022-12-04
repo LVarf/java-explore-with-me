@@ -13,7 +13,7 @@ import java.util.Objects;
 @Slf4j
 public class PageConverter<T> {
 
-    public Pair<List<T>, Pageable> convertToPage (Page<T> allTopLevel, Pageable pageable) {
+    public Pair<List<T>, Pageable> convertToPage(Page<T> allTopLevel, Pageable pageable) {
         final Pageable pageableObj;
         pageableObj = Objects.requireNonNullElseGet(pageable, Pageable::unpaged);
         final List<T> pageConverterRaw = allTopLevel.getContent();

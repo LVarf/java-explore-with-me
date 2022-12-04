@@ -60,7 +60,7 @@ public class ParticipationRequestDtoValidator extends AbstractValidation {
     }
 
     private void checkInitiatorIsRequester(Long initiatorId, Long requesterId, ApiError apiError) {
-        if (initiatorId == requesterId) {
+        if (initiatorId.equals(requesterId)) {
             log.info("Initiator can't made request on his own event");
             apiError.setMessage("Initiator can't made request on his own event")
                     .setStatus(HttpStatus.FORBIDDEN)

@@ -38,5 +38,5 @@ public interface UserPublicService {
 
     Optional<ParticipationRequestDto> createRequestPublic(Long userId, Long eventId);
 
-    Optional<ParticipationRequestDto> updateRequestPublic(Long userId, Long requestsId);
+    Optional<ParticipationRequestDto> updateRequestCanselPublic(Long userId, Long requestsId);
 }

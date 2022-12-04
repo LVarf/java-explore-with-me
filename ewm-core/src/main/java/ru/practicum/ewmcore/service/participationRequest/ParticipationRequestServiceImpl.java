@@ -91,6 +91,14 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
         return Optional.of(requestFromDb).map(requestConverter::convertFromEntity);
     }
 
+    @Override
+    public Optional<ParticipationRequestDto> updateRequestCansel(Long userId, Long reqId) {
+        final var request = requestRepository.findById(reqId).orElse(null);
+        requestValidator.validationOnCansel(userId, request);
+        request.setStatus(ParticipationRequestStateEnum.CANCELED);
+        return Optional.of(requestRepository.save(request)).map(requestConverter::convertFromEntity);
+    }
+
     private void updateRequestToConfirm(EventFullDto eventFromDb, ParticipationRequest requestFromDb) {
         requestFromDb.setStatus(ParticipationRequestStateEnum.CONFIRMED);
         requestRepository.save(requestFromDb);

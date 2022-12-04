@@ -29,6 +29,23 @@ public class ParticipationRequestDtoValidator extends AbstractValidation {
         checkMatchedEventId(eventId, request, apiError);
     }
 
+    public void validationOnCansel(Long userId, ParticipationRequest request) {
+        final var apiError = new ApiError();
+        validationOnExist(request, apiError);
+        checkRequesterId(userId, request.getRequester().getId(), apiError);
+    }
+
+    private void checkRequesterId(Long userId, Long requesterId, ApiError apiError) {
+        if (!userId.equals(requesterId)) {
+            log.info("User and requester are not matched");
+            apiError.setMessage("User and requester are not matched")
+                    .setStatus(HttpStatus.FORBIDDEN)
+                    .setReason("For the requested operation the conditions are not met")
+                    .setTimestamp(timeUtils.timestampToString(Timestamp.valueOf(LocalDateTime.now())));
+            throw apiError;
+        }
+    }
+
     public void validationOnCreate(Long userId, EventFullDto event) {
         final var apiError = new ApiError();
         checkInitiatorIsRequester(event.getInitiator().getId(), userId, apiError);

@@ -96,9 +96,9 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
     }
 
     @Override
-    public Optional<ParticipationRequestDto> updateRequestPublic(Long userId, Long requestsId) {
+    public Optional<ParticipationRequestDto> updateRequestCanselPublic(Long userId, Long requestsId) {
         userValidator.validateOnRead(userId, ValidationMode.DEFAULT);
-        return requestInternalService.createRequest(userId, requestsId);
+        return requestInternalService.updateRequestCansel(userId, requestsId);
     }
 
     /*private Page<UserFullDto> enrichPage(Pageable pageable, Page<UserFullDto> repositoryPage) {

@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.converter.EventFullDtoConverter;
 import ru.practicum.ewmcore.converter.ParticipationRequestDtoConverter;
-import ru.practicum.ewmcore.converter.TimeUtils;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequest;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;

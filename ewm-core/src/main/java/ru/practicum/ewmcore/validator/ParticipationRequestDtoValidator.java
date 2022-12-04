@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import ru.practicum.ewmcore.converter.TimeUtils;
 import ru.practicum.ewmcore.error.ApiError;
-import ru.practicum.ewmcore.model.event.Event;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventStateEnum;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequest;
@@ -15,7 +14,6 @@ import ru.practicum.ewmcore.service.categoryService.CategoryInternalService;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -39,7 +37,7 @@ public class ParticipationRequestDtoValidator extends AbstractValidation {
     }
 
     private void checkPublished(EventFullDto event, ApiError apiError) {
-        if(!event.getState().equals(EventStateEnum.PUBLISHED)) {
+        if (!event.getState().equals(EventStateEnum.PUBLISHED)) {
             log.info("Requester can't made a request if the event is not published {}", event.getId());
             apiError.setMessage("Requester can't made a request if the event is not published")
                     .setStatus(HttpStatus.FORBIDDEN)

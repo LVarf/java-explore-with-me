@@ -1,12 +1,11 @@
-DROP TABLE IF EXISTS ewm_core.category CASCADE;
-DROP TABLE IF EXISTS ewm_core.compilation CASCADE;
-DROP TABLE IF EXISTS ewm_core.users CASCADE;
-DROP TABLE IF EXISTS ewm_core.events CASCADE;
-DROP TABLE IF EXISTS ewm_core.event_to_compilation CASCADE;
-DROP TABLE IF EXISTS ewm_core.participation_request CASCADE;
-DROP SCHEMA IF EXISTS ewm_core CASCADE;
+DROP TABLE IF EXISTS category CASCADE;
+DROP TABLE IF EXISTS compilation CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS events CASCADE;
+DROP TABLE IF EXISTS event_to_compilation CASCADE;
+DROP TABLE IF EXISTS participation_request CASCADE;
 
-CREATE SCHEMA IF NOT EXISTS ewm_core AUTHORIZATION ewm;
+CREATE SCHEMA IF NOT EXISTS ewm_core;
 
 CREATE TABLE IF NOT EXISTS ewm_core.category
 (
@@ -15,7 +14,7 @@ CREATE TABLE IF NOT EXISTS ewm_core.category
     CONSTRAINT category_pkey PRIMARY KEY (id)
 );
 COMMENT ON TABLE ewm_core.category IS 'Категории';
-COMMENT ON COLUMN ewm_core.category.name IS 'Название категории';
+COMMENT ON COLUMN ewm_core.category."name" IS 'Название категории';
 
 CREATE TABLE IF NOT EXISTS ewm_core.compilation
 (
@@ -36,7 +35,7 @@ CREATE TABLE IF NOT EXISTS ewm_core.users
     CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 COMMENT ON TABLE ewm_core.users IS 'Пользователи';
-COMMENT ON COLUMN ewm_core.users.name IS 'Имя пользователя';
+COMMENT ON COLUMN ewm_core.users."name" IS 'Имя пользователя';
 COMMENT ON COLUMN ewm_core.users.email IS 'Почтовый адрес пользователя';
 
 CREATE TABLE IF NOT EXISTS ewm_core.events
@@ -74,7 +73,7 @@ COMMENT ON COLUMN ewm_core.events.published_on IS 'Дата и время пуб
 COMMENT ON COLUMN ewm_core.events.request_moderation IS 'Нужна ли пре-модерация заявок на участие';
 COMMENT ON COLUMN ewm_core.events.state IS 'Список состояний жизненного цикла события: PENDING, PUBLISHED, CANCELED';
 COMMENT ON COLUMN ewm_core.events.title IS 'Заголовок';
-COMMENT ON COLUMN ewm_core.events.views IS 'Количество просмотрев события';
+COMMENT ON COLUMN ewm_core.events."views" IS 'Количество просмотрев события';
 COMMENT ON COLUMN ewm_core.events.category_id IS 'Категория';
 COMMENT ON COLUMN ewm_core.events.initiator_id IS 'Идентификатор пользователя';
 

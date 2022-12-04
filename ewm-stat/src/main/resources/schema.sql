@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS ewm_stat.hits CASCADE;
+DROP TABLE IF EXISTS hits CASCADE;
 
-CREATE SCHEMA IF NOT EXISTS ewm_stat AUTHORIZATION ewm;
+CREATE SCHEMA IF NOT EXISTS ewm_stat;
 
 CREATE TABLE IF NOT EXISTS ewm_stat.hits
 (
@@ -15,4 +15,4 @@ COMMENT ON TABLE ewm_stat.hits IS 'Статистика посещений';
 COMMENT ON COLUMN ewm_stat.hits.app IS 'Идентификатор сервиса для которого записывается информация';
 COMMENT ON COLUMN ewm_stat.hits.uri IS 'URI для которого был осуществлен запрос';
 COMMENT ON COLUMN ewm_stat.hits.ip IS 'IP-адрес пользователя, осуществившего запрос';
-COMMENT ON COLUMN ewm_stat.hits.timestamp IS 'Дата и время, когда был совершен запрос к эндпоинту (в формате "yyyy-MM-dd HH:mm:ss")';
+COMMENT ON COLUMN ewm_stat.hits."timestamp" IS 'Дата и время, когда был совершен запрос к эндпоинту (в формате "yyyy-MM-dd HH:mm:ss")';

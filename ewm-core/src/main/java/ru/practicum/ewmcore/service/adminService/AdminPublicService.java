@@ -13,4 +13,6 @@ public interface AdminPublicService {
     Optional<EventFullDto> updateEventById(Long eventId, EventFullDto event);
 
     Optional<EventFullDto> publishEvent(Long eventId);
+
+    Optional<EventFullDto> rejectEvent(Long eventId);
 }

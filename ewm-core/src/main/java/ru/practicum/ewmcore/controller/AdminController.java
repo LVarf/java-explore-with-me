@@ -81,8 +81,8 @@ public class AdminController {
     }
 
     @PatchMapping("/events/{eventId}/reject")
-    public Page<EventFullDto> readEvent(@PathVariable Long eventId) {
-        return Page.empty();
+    public Optional<EventFullDto> rejectEvent(@PathVariable Long eventId) {
+        return adminService.rejectEvent(eventId);
     }
 
     @PatchMapping("/categories")

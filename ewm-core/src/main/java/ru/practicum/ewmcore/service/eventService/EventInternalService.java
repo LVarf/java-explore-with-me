@@ -39,4 +39,7 @@ public interface EventInternalService {
 
     @Transactional
     Optional<EventFullDto> updateEventOnPublish(Long eventId);
+
+    @Transactional
+    Optional<EventFullDto> updateEventToReject(Long eventId);
 }

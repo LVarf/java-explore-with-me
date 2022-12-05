@@ -32,4 +32,9 @@ public class AdminServiceImpl implements AdminPublicService {
     public Optional<EventFullDto> publishEvent(Long eventId) {
         return eventService.updateEventOnPublish(eventId);
     }
+
+    @Override
+    public Optional<EventFullDto> rejectEvent(Long eventId) {
+        return eventService.updateEventToReject(eventId);
+    }
 }

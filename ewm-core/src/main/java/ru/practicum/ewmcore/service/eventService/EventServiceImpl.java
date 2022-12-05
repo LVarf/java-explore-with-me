@@ -15,6 +15,7 @@ import ru.practicum.ewmcore.specification.EventSpecification;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 import ru.practicum.ewmcore.validator.EventDtoValidator;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service
@@ -106,6 +107,16 @@ public class EventServiceImpl implements EventInternalService {
         eventValidator.validationOnExist(eventFromDb);
         eventValidator.validationOnPublished(eventFullDtoConverter.convertFromEntity(eventFromDb));
         eventFromDb.setState(EventStateEnum.PUBLISHED);
+        final var eventFromSave = eventRepository.save(eventFromDb);
+        return Optional.of(eventFromSave).map(eventFullDtoConverter::convertFromEntity);
+    }
+
+    @Override
+    public Optional<EventFullDto> updateEventToReject(Long eventId) {
+        final var eventFromDb = eventRepository.findById(eventId).orElse(null);
+        eventValidator.validationOnExist(eventFromDb);
+        eventValidator.validationOnReject(eventFullDtoConverter.convertFromEntity(eventFromDb));
+        eventFromDb.setState(EventStateEnum.REJECTED);
         final var eventFromSave = eventRepository.save(eventFromDb);
         return Optional.of(eventFromSave).map(eventFullDtoConverter::convertFromEntity);
     }

@@ -43,10 +43,26 @@ public class EventDtoValidator extends AbstractValidation {
         checkEventPendingState(event, apiError);
     }
 
+    public void validationOnReject(EventFullDto event) {
+        final var apiError = new ApiError();
+        checkEventPublishedState(event, apiError);
+    }
+
     private void checkEventPendingState(EventFullDto event, ApiError apiError) {
         if (event.getState() != null && event.getState() != EventStateEnum.PENDING) {
             log.info("The event {} state is {}. It is not PENDING", event.getId(), event.getState());
             apiError.setMessage("The event state is not PENDING")
+                    .setStatus(HttpStatus.FORBIDDEN)
+                    .setReason("For the requested operation the conditions are not met")
+                    .setTimestamp(timeUtils.timestampToString(Timestamp.valueOf(LocalDateTime.now())));
+            throw apiError;
+        }
+    }
+
+    private void checkEventPublishedState(EventFullDto event, ApiError apiError) {
+        if (event.getState() != null && event.getState().equals(EventStateEnum.PUBLISHED)) {
+            log.info("The event {} state is PUBLISHED", event.getId());
+            apiError.setMessage("The event state is PUBLISHED")
                     .setStatus(HttpStatus.FORBIDDEN)
                     .setReason("For the requested operation the conditions are not met")
                     .setTimestamp(timeUtils.timestampToString(Timestamp.valueOf(LocalDateTime.now())));

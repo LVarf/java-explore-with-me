@@ -1,11 +1,12 @@
-DROP TABLE IF EXISTS category CASCADE;
-DROP TABLE IF EXISTS compilation CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
-DROP TABLE IF EXISTS events CASCADE;
-DROP TABLE IF EXISTS event_to_compilation CASCADE;
-DROP TABLE IF EXISTS participation_request CASCADE;
+DROP TABLE IF EXISTS ewm_core.category CASCADE;
+DROP TABLE IF EXISTS ewm_core.compilation CASCADE;
+DROP TABLE IF EXISTS ewm_core.users CASCADE;
+DROP TABLE IF EXISTS ewm_core.events CASCADE;
+DROP TABLE IF EXISTS ewm_core.event_to_compilation CASCADE;
+DROP TABLE IF EXISTS ewm_core.participation_request CASCADE;
+DROP SCHEMA IF EXISTS ewm_core CASCADE;
 
-CREATE SCHEMA IF NOT EXISTS ewm_core;
+CREATE SCHEMA IF NOT EXISTS ewm_core AUTHORIZATION ewm;
 
 CREATE TABLE IF NOT EXISTS ewm_core.category
 (
@@ -78,7 +79,7 @@ COMMENT ON COLUMN ewm_core.events.category_id IS 'Категория';
 COMMENT ON COLUMN ewm_core.events.initiator_id IS 'Идентификатор пользователя';
 
 ALTER TABLE ewm_core.events
-    ADD CONSTRAINT fk_to_user FOREIGN KEY (initiator_id) REFERENCES ewm_core.users (id);
+    ADD CONSTRAINT fk_to_user_klfg FOREIGN KEY (initiator_id) REFERENCES ewm_core.users (id);
 ALTER TABLE ewm_core.events
     ADD CONSTRAINT fk_to_category FOREIGN KEY (category_id) REFERENCES ewm_core.category (id);
 

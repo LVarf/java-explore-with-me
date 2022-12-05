@@ -29,7 +29,7 @@ public class ClientFilterParam {
             case LT:
             case LE:
                 return new ClientFilterParam(operator, property, value, value);
-            case IN:
+            case BETWEEN:
                 final List<String> objects = Arrays.stream(values).skip(offset).collect(Collectors.toList());
                 return new ClientFilterParam(operator, property, objects, null);
             default:

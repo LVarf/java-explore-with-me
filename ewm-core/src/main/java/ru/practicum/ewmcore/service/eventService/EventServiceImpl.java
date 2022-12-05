@@ -11,6 +11,8 @@ import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.event.EventStateEnum;
 import ru.practicum.ewmcore.repository.EventRepository;
+import ru.practicum.ewmcore.specification.EventSpecification;
+import ru.practicum.ewmcore.specification.filter.ClientFilter;
 import ru.practicum.ewmcore.validator.EventDtoValidator;
 
 import java.util.Optional;
@@ -23,6 +25,7 @@ public class EventServiceImpl implements EventInternalService {
     private final EventShortDtoConverter eventShortDtoConverter;
     private final EventFullDtoConverter eventFullDtoConverter;
     private final EventDtoValidator eventValidator;
+    private final EventSpecification eventSpecification;
 
     @Override
     public Page<EventShortDto> readAllByInitiatorId(Long id, Pageable pageable) {
@@ -38,6 +41,13 @@ public class EventServiceImpl implements EventInternalService {
         final var eventFromSave = eventRepository
                 .save(eventFullDtoConverter.mergeToEntity(event, eventFromDb.get()));
         return Optional.of(eventFullDtoConverter.convertFromEntity(eventFromSave));
+    }
+
+    @Override
+    public Page<EventFullDto> readAllEventsByFilters(ClientFilter filters, Pageable pageable) {
+        final var eventsFromDb = eventRepository
+                .findAll(eventSpecification.findAllSpecification(filters), pageable);
+        return eventsFromDb.map(eventFullDtoConverter::convertFromEntity);
     }
 
     public Optional<EventFullDto> createEvent(EventFullDto event) {

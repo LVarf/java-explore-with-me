@@ -4,7 +4,7 @@ public enum Comparison {
     EQ, //equals
     EQ_IGNORE_CASE, //equals ignore case
     NE, //not equals
-    IN, //between
+    BETWEEN, //between
     LIKE,
     NOT_LIKE,
     LIKE_IGNORE_CASE,

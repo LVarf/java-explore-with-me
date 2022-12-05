@@ -18,6 +18,7 @@ import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventStateEnum;
 import ru.practicum.ewmcore.model.user.UserFullDto;
+import ru.practicum.ewmcore.service.adminService.AdminPublicService;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 import ru.practicum.ewmcore.specification.filter.ClientFilterParam;
 import ru.practicum.ewmcore.specification.filter.Comparison;
@@ -30,6 +31,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping(path = "/admin")
 public class AdminController {
+    private final AdminPublicService adminService;
+
     @GetMapping("/events")
     public Page<EventFullDto> readAllEvents(@RequestParam(value = "users", required = false) Long[] users,
                                             @RequestParam(value = "states", required = false) EventStateEnum[] states,
@@ -38,15 +41,32 @@ public class AdminController {
                                             @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
                                             Pageable pageable) {
         final List<ClientFilterParam> params = new ArrayList<>();
-        params.add(new ClientFilterParam().setProperty("users").setOperator(Comparison.EQ).setMainValue(users));
-        params.add(new ClientFilterParam().setProperty("states").setOperator(Comparison.EQ).setMainValue(states));
-        params.add(new ClientFilterParam().setProperty("categories")
-                .setOperator(Comparison.EQ).setMainValue(categories));
-        params.add(new ClientFilterParam().setProperty("rangeStart").setOperator(Comparison.GE).setMainValue(users));
-        params.add(new ClientFilterParam().setProperty("rangeEnd").setOperator(Comparison.LE).setMainValue(users));
+        if (users.length > 0) {
+            for (int i = 0; i < users.length; i++) {
+                params.add(new ClientFilterParam().setProperty("userId")
+                        .setOperator(Comparison.EQ).setMainValue(users[i]));
+            }
+        }
+        if (states.length > 0) {
+            for (int i = 0; i < states.length; i++) {
+                params.add(new ClientFilterParam().setProperty("state")
+                        .setOperator(Comparison.EQ).setMainValue(states[i]));
+            }
+        }
+        if (categories.length > 0) {
+            for (int i = 0; i < categories.length; i++) {
+                params.add(new ClientFilterParam().setProperty("category")
+                        .setOperator(Comparison.EQ).setMainValue(categories[i]));
+            }
+        }
+        if (rangeStart != null) {
+            params.add(new ClientFilterParam().setProperty("rangeStart").setOperator(Comparison.GE).setMainValue(rangeStart));
+        }
+        if (rangeEnd != null) {
+            params.add(new ClientFilterParam().setProperty("rangeEnd").setOperator(Comparison.LE).setMainValue(rangeEnd));
+        }
         final ClientFilter filters = new ClientFilter(params);
-        filters.getFilters();
-        return Page.empty();
+        return adminService.readAllByFilters(filters, pageable);
     }
 
     @PutMapping("/events/{eventId}")
@@ -82,9 +102,6 @@ public class AdminController {
 
     @GetMapping("/users")
     public Page<UserFullDto> readUser(@RequestParam(value = "ids", required = false) Long[] ids,
-                                            /*@RequestParam(value = "from", defaultValue = "0") int from,
-                                             @RequestParam(value = "size", defaultValue = "10") int size,
-                                             @RequestParam("size") Integer size,*/
                                       Pageable pageable) {
         return Page.empty();
     }

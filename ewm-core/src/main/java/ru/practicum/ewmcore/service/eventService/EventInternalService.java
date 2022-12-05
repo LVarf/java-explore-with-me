@@ -5,12 +5,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
+import ru.practicum.ewmcore.specification.filter.ClientFilter;
 
 import java.util.Optional;
 
 public interface EventInternalService {
     @Transactional(readOnly = true)
     Page<EventShortDto> readAllByInitiatorId(Long id, Pageable pageable);
+
+    @Transactional(readOnly = true)
+    Page<EventFullDto> readAllEventsByFilters(ClientFilter filters, Pageable pageable);
 
     @Transactional
     Optional<EventFullDto> updateEventByUser(Long userId, EventFullDto event);

@@ -30,7 +30,6 @@ public class AdminServiceImpl implements AdminPublicService {
 
     @Override
     public Optional<EventFullDto> publishEvent(Long eventId) {
-
-        return Optional.empty();
+        return eventService.updateEventOnPublish(eventId);
     }
 }

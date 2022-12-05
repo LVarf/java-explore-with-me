@@ -71,7 +71,11 @@ COMMENT ON COLUMN ewm_core.events.category_id IS 'Категория';
 COMMENT ON COLUMN ewm_core.events.initiator_id IS 'Идентификатор пользователя';
 
 ALTER TABLE ewm_core.events
-    ADD CONSTRAINT fk_to_user_klfg FOREIGN KEY (initiator_id) REFERENCES ewm_core.users (id);
+    DROP CONSTRAINT IF EXISTS fk_to_user;
+ALTER TABLE ewm_core.events
+    ADD CONSTRAINT fk_to_user FOREIGN KEY (initiator_id) REFERENCES ewm_core.users (id);
+ALTER TABLE ewm_core.events
+    DROP CONSTRAINT IF EXISTS fk_to_category;
 ALTER TABLE ewm_core.events
     ADD CONSTRAINT fk_to_category FOREIGN KEY (category_id) REFERENCES ewm_core.category (id);
 
@@ -86,7 +90,11 @@ COMMENT ON COLUMN ewm_core.event_to_compilation.compilation_id IS 'Ссылка 
 COMMENT ON COLUMN ewm_core.event_to_compilation.event_id IS 'Ссылка на запись в таблице event';
 
 ALTER TABLE ewm_core.event_to_compilation
+    DROP CONSTRAINT IF EXISTS fk_to_event_from_event_to_compilation;
+ALTER TABLE ewm_core.event_to_compilation
     ADD CONSTRAINT fk_to_event_from_event_to_compilation FOREIGN KEY (event_id) REFERENCES ewm_core.events (id);
+ALTER TABLE ewm_core.event_to_compilation
+    DROP CONSTRAINT IF EXISTS fk_to_compilation_from_event_to_compilation;
 ALTER TABLE ewm_core.event_to_compilation
     ADD CONSTRAINT fk_to_compilation_from_event_to_compilation FOREIGN KEY (compilation_id) REFERENCES ewm_core.compilation (id);
 
@@ -106,7 +114,11 @@ COMMENT ON COLUMN ewm_core.participation_request.requester_id IS 'Идентиф
 COMMENT ON COLUMN ewm_core.participation_request.status IS 'Статус заявки';
 
 ALTER TABLE ewm_core.participation_request
+    DROP CONSTRAINT IF EXISTS fk_to_event_from_participation_request;
+ALTER TABLE ewm_core.participation_request
     ADD CONSTRAINT fk_to_event_from_participation_request FOREIGN KEY (event_id) REFERENCES ewm_core.events (id);
+ALTER TABLE ewm_core.participation_request
+    DROP CONSTRAINT IF EXISTS fk_to_user_from_participation_request;
 ALTER TABLE ewm_core.participation_request
     ADD CONSTRAINT fk_to_user_from_participation_request FOREIGN KEY (requester_id) REFERENCES ewm_core.users (id);
 

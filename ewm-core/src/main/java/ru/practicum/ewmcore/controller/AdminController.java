@@ -97,7 +97,7 @@ public class AdminController {
 
     @DeleteMapping("/categories/{catId}")
     public String deleteCategory(@PathVariable Long catId) {
-        return null;
+        return adminService.deleteCategory(catId);
     }
 
     @GetMapping("/users")

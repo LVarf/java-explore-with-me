@@ -50,4 +50,9 @@ public class AdminServiceImpl implements AdminPublicService {
     public Optional<CategoryDto> createCategory(CategoryDto categoryDto) {
         return categoryService.createCategory(categoryDto);
     }
+
+    @Override
+    public String deleteCategory(Long catId) {
+        return null;
+    }
 }

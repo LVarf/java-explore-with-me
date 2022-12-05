@@ -20,4 +20,6 @@ public interface AdminPublicService {
     Optional<CategoryDto> updateCategory(CategoryDto category);
 
     Optional<CategoryDto> createCategory(CategoryDto categoryDto);
+
+    String deleteCategory(Long catId);
 }

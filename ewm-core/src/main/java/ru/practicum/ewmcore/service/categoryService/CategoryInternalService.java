@@ -10,4 +10,6 @@ public interface CategoryInternalService {
     Optional<CategoryDto> updateCategoryInternal(CategoryDto categoryDto);
 
     Optional<CategoryDto> createCategory(CategoryDto categoryDto);
+
+    String deleteCategoryInternal(Long catId);
 }

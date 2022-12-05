@@ -7,6 +7,7 @@ import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface EventInternalService {
@@ -42,4 +43,7 @@ public interface EventInternalService {
 
     @Transactional
     Optional<EventFullDto> updateEventToReject(Long eventId);
+
+    @Transactional(readOnly = true)
+    List<EventFullDto> readAllByCategoryId(Long catId);
 }

@@ -37,14 +37,14 @@ public class AdminController {
                                             @RequestParam(value = "rangeStart", required = false) String rangeStart,
                                             @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
                                             Pageable pageable) {
-        final List<ClientFilterParam> params = new ArrayList<>();
-        params.add(new ClientFilterParam().setProperty("users").setOperator(Comparison.EQ).setMainValue(users));
-        params.add(new ClientFilterParam().setProperty("states").setOperator(Comparison.EQ).setMainValue(states));
-        params.add(new ClientFilterParam().setProperty("categories")
-                .setOperator(Comparison.EQ).setMainValue(categories));
-        params.add(new ClientFilterParam().setProperty("rangeStart").setOperator(Comparison.GE).setMainValue(users));
-        params.add(new ClientFilterParam().setProperty("rangeEnd").setOperator(Comparison.LE).setMainValue(users));
-        final ClientFilter filters = new ClientFilter(params);
+//        final List<ClientFilterParam> params = new ArrayList<>();
+//        params.add(new ClientFilterParam().setProperty("users").setOperator(Comparison.EQ).setMainValue(users));
+//        params.add(new ClientFilterParam().setProperty("states").setOperator(Comparison.EQ).setMainValue(states));
+//        params.add(new ClientFilterParam().setProperty("categories")
+//                .setOperator(Comparison.EQ).setMainValue(categories));
+//        params.add(new ClientFilterParam().setProperty("rangeStart").setOperator(Comparison.GE).setMainValue(users));
+//        params.add(new ClientFilterParam().setProperty("rangeEnd").setOperator(Comparison.LE).setMainValue(users));
+//        final ClientFilter filters = new ClientFilter(params);
         return Page.empty();
     }
 

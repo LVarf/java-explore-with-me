@@ -18,7 +18,12 @@ import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventStateEnum;
 import ru.practicum.ewmcore.model.user.UserFullDto;
+import ru.practicum.ewmcore.specification.filter.ClientFilter;
+import ru.practicum.ewmcore.specification.filter.ClientFilterParam;
+import ru.practicum.ewmcore.specification.filter.Comparison;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -31,10 +36,15 @@ public class AdminController {
                                             @RequestParam(value = "categories", required = false) Long[] categories,
                                             @RequestParam(value = "rangeStart", required = false) String rangeStart,
                                             @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
-                                            /*@RequestParam("sort") String sort,
-                                             @RequestParam("from") Integer from,
-                                             @RequestParam("size") Integer size,*/
                                             Pageable pageable) {
+        final List<ClientFilterParam> params = new ArrayList<>();
+        params.add(new ClientFilterParam().setProperty("users").setOperator(Comparison.EQ).setMainValue(users));
+        params.add(new ClientFilterParam().setProperty("states").setOperator(Comparison.EQ).setMainValue(states));
+        params.add(new ClientFilterParam().setProperty("categories")
+                .setOperator(Comparison.EQ).setMainValue(categories));
+        params.add(new ClientFilterParam().setProperty("rangeStart").setOperator(Comparison.GE).setMainValue(users));
+        params.add(new ClientFilterParam().setProperty("rangeEnd").setOperator(Comparison.LE).setMainValue(users));
+        final ClientFilter filters = new ClientFilter(params);
         return Page.empty();
     }
 

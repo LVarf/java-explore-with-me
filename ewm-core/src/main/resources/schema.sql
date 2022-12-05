@@ -1,11 +1,3 @@
-DROP TABLE IF EXISTS ewm_core.category CASCADE;
-DROP TABLE IF EXISTS ewm_core.compilation CASCADE;
-DROP TABLE IF EXISTS ewm_core.users CASCADE;
-DROP TABLE IF EXISTS ewm_core.events CASCADE;
-DROP TABLE IF EXISTS ewm_core.event_to_compilation CASCADE;
-DROP TABLE IF EXISTS ewm_core.participation_request CASCADE;
-DROP SCHEMA IF EXISTS ewm_core CASCADE;
-
 CREATE SCHEMA IF NOT EXISTS ewm_core AUTHORIZATION ewm;
 
 CREATE TABLE IF NOT EXISTS ewm_core.category

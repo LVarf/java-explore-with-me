@@ -9,6 +9,8 @@ import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -19,5 +21,10 @@ public class AdminServiceImpl implements AdminPublicService {
     public Page<EventFullDto> readAllByFilters(ClientFilter filters, Pageable pageable) {
         eventService.readAllEventsByFilters(filters, pageable);
         return Page.empty();
+    }
+
+    @Override
+    public Optional<EventFullDto> updateEventById(Long eventId, EventFullDto event) {
+        return eventService.updateEventById(eventId, event);
     }
 }

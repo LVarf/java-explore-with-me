@@ -72,7 +72,7 @@ public class AdminController {
     @PutMapping("/events/{eventId}")
     public Optional<EventFullDto> updateEvent(@PathVariable Long eventId,
                                               @RequestBody EventFullDto event) {
-        return Optional.empty();
+        return adminService.updateEventById(eventId, event);
     }
 
     @PatchMapping("/events/{eventId}/publish")

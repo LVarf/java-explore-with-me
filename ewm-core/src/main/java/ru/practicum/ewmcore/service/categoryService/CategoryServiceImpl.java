@@ -19,7 +19,7 @@ public class CategoryServiceImpl implements CategoryInternalService {
     private final CategoryValidator validator;
     @Override
     public Optional<CategoryDto> readInternal(Long id) {
-        return Optional.empty();
+        return repository.findById(id).map(converter::convertFromEntity);
     }
 
     @Override
@@ -28,6 +28,13 @@ public class CategoryServiceImpl implements CategoryInternalService {
         validator.validationOnExist(converter.convertFromEntity(categoryFromDb));
         validator.validationNameCategory(categoryDto);
         final var categoryFromSave = repository.save(converter.mergeToEntity(categoryDto, categoryFromDb));
+        return Optional.of(categoryFromSave).map(converter::convertFromEntity);
+    }
+
+    @Override
+    public Optional<CategoryDto> createCategory(CategoryDto categoryDto) {
+        validator.validationNameCategory(categoryDto);
+        final var categoryFromSave = repository.save(converter.convertToEntity(categoryDto));
         return Optional.of(categoryFromSave).map(converter::convertFromEntity);
     }
 

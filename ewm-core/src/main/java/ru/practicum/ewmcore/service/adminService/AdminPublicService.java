@@ -18,4 +18,6 @@ public interface AdminPublicService {
     Optional<EventFullDto> rejectEvent(Long eventId);
 
     Optional<CategoryDto> updateCategory(CategoryDto category);
+
+    Optional<CategoryDto> createCategory(CategoryDto categoryDto);
 }

@@ -45,4 +45,9 @@ public class AdminServiceImpl implements AdminPublicService {
     public Optional<CategoryDto> updateCategory(CategoryDto category) {
         return categoryService.updateCategoryInternal(category);
     }
+
+    @Override
+    public Optional<CategoryDto> createCategory(CategoryDto categoryDto) {
+        return categoryService.createCategory(categoryDto);
+    }
 }

@@ -8,4 +8,6 @@ public interface CategoryInternalService {
     Optional<CategoryDto> readInternal(Long id);
 
     Optional<CategoryDto> updateCategoryInternal(CategoryDto categoryDto);
+
+    Optional<CategoryDto> createCategory(CategoryDto categoryDto);
 }

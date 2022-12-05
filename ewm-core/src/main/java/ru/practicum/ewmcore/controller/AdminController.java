@@ -92,7 +92,7 @@ public class AdminController {
 
     @PostMapping("/categories")
     public Optional<CategoryDto> createCategory(@RequestBody CategoryDto category) {
-        return Optional.of(category);
+        return adminService.createCategory(category);
     }
 
     @DeleteMapping("/categories/{catId}")

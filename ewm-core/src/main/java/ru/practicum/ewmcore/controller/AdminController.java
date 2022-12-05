@@ -77,7 +77,7 @@ public class AdminController {
 
     @PatchMapping("/events/{eventId}/publish")
     public Optional<EventFullDto> publishEvent(@PathVariable Long eventId) {
-        return Optional.empty();
+        return adminService.publishEvent(eventId);
     }
 
     @PatchMapping("/events/{eventId}/reject")

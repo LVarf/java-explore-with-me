@@ -99,4 +99,14 @@ public class EventServiceImpl implements EventInternalService {
                 .save(eventFullDtoConverter.mergeToEntity(eventFullDto, eventFromDb));
         return updateEvent(eventFullDtoConverter.convertFromEntity(eventFromSave));
     }
+
+    @Override
+    public Optional<EventFullDto> updateEventOnPublish(Long eventId) {
+        final var eventFromDb = eventRepository.findById(eventId).orElse(null);
+        eventValidator.validationOnExist(eventFromDb);
+        eventValidator.validationOnPublished(eventFullDtoConverter.convertFromEntity(eventFromDb));
+        eventFromDb.setState(EventStateEnum.PUBLISHED);
+        final var eventFromSave = eventRepository.save(eventFromDb);
+        return Optional.of(eventFromSave).map(eventFullDtoConverter::convertFromEntity);
+    }
 }

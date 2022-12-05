@@ -37,6 +37,12 @@ public class EventDtoValidator extends AbstractValidation {
         checkEventPendingState(event, apiError);
     }
 
+    public void validationOnPublished(EventFullDto event) {
+        final var apiError = new ApiError();
+        checkTime(event, apiError);
+        checkEventPendingState(event, apiError);
+    }
+
     private void checkEventPendingState(EventFullDto event, ApiError apiError) {
         if (event.getState() != null && event.getState() != EventStateEnum.PENDING) {
             log.info("The event {} state is {}. It is not PENDING", event.getId(), event.getState());
@@ -124,8 +130,6 @@ public class EventDtoValidator extends AbstractValidation {
     public void validationOnCreate(EventFullDto event) {
         final var apiError = new ApiError();
         checkTime(event, apiError);
-        //checkFieldsNotNull
-        //checkLengthRequired
         validationSpaces(event, null);
     }
 

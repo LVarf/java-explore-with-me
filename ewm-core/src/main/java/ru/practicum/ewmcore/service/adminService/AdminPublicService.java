@@ -11,4 +11,6 @@ public interface AdminPublicService {
     Page<EventFullDto> readAllByFilters(ClientFilter filters, Pageable pageable);
 
     Optional<EventFullDto> updateEventById(Long eventId, EventFullDto event);
+
+    Optional<EventFullDto> publishEvent(Long eventId);
 }

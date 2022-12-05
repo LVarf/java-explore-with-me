@@ -27,4 +27,10 @@ public class AdminServiceImpl implements AdminPublicService {
     public Optional<EventFullDto> updateEventById(Long eventId, EventFullDto event) {
         return eventService.updateEventById(eventId, event);
     }
+
+    @Override
+    public Optional<EventFullDto> publishEvent(Long eventId) {
+
+        return Optional.empty();
+    }
 }

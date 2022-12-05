@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
+import ru.practicum.ewmcore.service.categoryService.CategoryInternalService;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 
@@ -16,6 +18,7 @@ import java.util.Optional;
 @Slf4j
 public class AdminServiceImpl implements AdminPublicService {
     private final EventInternalService eventService;
+    private final CategoryInternalService categoryService;
 
     @Override
     public Page<EventFullDto> readAllByFilters(ClientFilter filters, Pageable pageable) {
@@ -36,5 +39,10 @@ public class AdminServiceImpl implements AdminPublicService {
     @Override
     public Optional<EventFullDto> rejectEvent(Long eventId) {
         return eventService.updateEventToReject(eventId);
+    }
+
+    @Override
+    public Optional<CategoryDto> updateCategory(CategoryDto category) {
+        return categoryService.updateCategoryInternal(category);
     }
 }

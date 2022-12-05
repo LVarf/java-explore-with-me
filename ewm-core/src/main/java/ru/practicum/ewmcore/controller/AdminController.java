@@ -87,7 +87,7 @@ public class AdminController {
 
     @PatchMapping("/categories")
     public Optional<CategoryDto> updateCategory(@RequestBody CategoryDto category) {
-        return Optional.of(category);
+        return adminService.updateCategory(category);
     }
 
     @PostMapping("/categories")

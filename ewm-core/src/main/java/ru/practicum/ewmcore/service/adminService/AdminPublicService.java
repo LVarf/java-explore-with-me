@@ -32,4 +32,6 @@ public interface AdminPublicService {
     String deleteUser(Long userId);
 
     Optional<CompilationDto> createCompilation(CompilationDto compilationDto);
+
+    String deleteCompilation(Long compId);
 }

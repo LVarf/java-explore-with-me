@@ -134,7 +134,7 @@ public class AdminController {
 
     @DeleteMapping("/compilations/{compId}")
     public String deleteCompilation(@PathVariable Long compId) {
-        return null;
+        return adminService.deleteCompilation(compId);
     }
 
     @DeleteMapping("/compilations/{compId}/events/{eventId}")

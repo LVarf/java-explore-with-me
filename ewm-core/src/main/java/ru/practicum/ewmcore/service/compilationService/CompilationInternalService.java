@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface CompilationInternalService {
 
     Optional<CompilationDto> createCompilationInternal(CompilationDto compilationDto);
+
+    String deleteCompilationInternal(Long compId);
 }

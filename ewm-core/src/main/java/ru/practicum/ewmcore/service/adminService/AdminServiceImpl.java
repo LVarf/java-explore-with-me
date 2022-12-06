@@ -81,4 +81,9 @@ public class AdminServiceImpl implements AdminPublicService {
     public Optional<CompilationDto> createCompilation(CompilationDto compilationDto) {
         return compilationService.createCompilationInternal(compilationDto);
     }
+
+    @Override
+    public String deleteCompilation(Long compId) {
+        return compilationService.deleteCompilationInternal(compId);
+    }
 }

@@ -91,4 +91,9 @@ public class AdminServiceImpl implements AdminPublicService {
     public String deleteEventFromCompilation(Long eventId, Long compId) {
         return compilationService.deleteEventFromCompilationInternal(eventId, compId);
     }
+
+    @Override
+    public String updateAddEventToCompilation(Long eventId, Long compId) {
+        return compilationService.updateAddEventToCompilationInternal(eventId, compId);
+    }
 }

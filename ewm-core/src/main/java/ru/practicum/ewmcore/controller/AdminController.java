@@ -146,7 +146,7 @@ public class AdminController {
     @PatchMapping("/compilations/{compId}/events/{eventId}")
     public String addEventToCompilation(@PathVariable Long compId,
                                         @PathVariable Long eventId) {
-        return null;
+        return adminService.updateAddEventToCompilation(eventId, compId);
     }
 
     @DeleteMapping("/compilations/{compId}/pin")

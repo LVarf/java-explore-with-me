@@ -36,4 +36,6 @@ public interface AdminPublicService {
     String deleteCompilation(Long compId);
 
     String deleteEventFromCompilation(Long eventId, Long compId);
+
+    String updateAddEventToCompilation(Long eventId, Long compId);
 }

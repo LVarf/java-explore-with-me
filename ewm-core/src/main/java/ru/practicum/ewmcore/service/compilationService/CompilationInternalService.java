@@ -13,4 +13,8 @@ public interface CompilationInternalService {
     String deleteEventFromCompilationInternal(Long eventId, Long compId);
 
     String updateAddEventToCompilationInternal(Long eventId, Long compId);
+
+    String deleteCompilationFromHeadPageInternal(Long compId);
+
+    String addCompilationToHeadPageInternal(Long compId);
 }

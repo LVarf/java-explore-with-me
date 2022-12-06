@@ -151,12 +151,12 @@ public class AdminController {
 
     @DeleteMapping("/compilations/{compId}/pin")
     public String deleteCompilationFromHeadPage(@PathVariable Long compId) {
-        return null;
+        return adminService.deleteCompilationFromHeadPage(compId);
     }
 
     @PatchMapping("/compilations/{compId}/pin")
     public String addCompilationToHeadPage(@PathVariable Long compId) {
-        return null;
+        return adminService.addCompilationToHeadPage(compId);
     }
 
 }

@@ -9,6 +9,7 @@ import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.user.UserFullDto;
+import ru.practicum.ewmcore.service.PublicService;
 import ru.practicum.ewmcore.service.categoryService.CategoryInternalService;
 import ru.practicum.ewmcore.service.compilationService.CompilationInternalService;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
@@ -95,5 +96,14 @@ public class AdminServiceImpl implements AdminPublicService {
     @Override
     public String updateAddEventToCompilation(Long eventId, Long compId) {
         return compilationService.updateAddEventToCompilationInternal(eventId, compId);
+    }
+
+    public String deleteCompilationFromHeadPage(Long compId) {
+        return compilationService.deleteCompilationFromHeadPageInternal(compId);
+    }
+
+    @Override
+    public String addCompilationToHeadPage(Long compId) {
+        return compilationService.addCompilationToHeadPageInternal(compId);
     }
 }

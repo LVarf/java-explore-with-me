@@ -38,4 +38,8 @@ public interface AdminPublicService {
     String deleteEventFromCompilation(Long eventId, Long compId);
 
     String updateAddEventToCompilation(Long eventId, Long compId);
+
+    String deleteCompilationFromHeadPage(Long compId);
+
+    String addCompilationToHeadPage(Long compId);
 }

@@ -25,6 +25,10 @@ public class CompilationServiceImpl implements CompilationInternalService {
     private static final String COMPILATION_IS_NOT_DELETED = "Подборка не удалена";
     private static final String EVENT_IS_ADDED_TO_COMPILATION = "Событие добавлено";
     private static final String EVENT_IS_NOT_ADDED_TO_COMPILATION= "Событие не добавлено";
+    private static final String COMPILATION_PINNED_IS_TRUE_SUCCESS = "Подборка закреплена";
+    private static final String COMPILATION_PINNED_IS_TRUE_FAIL = "Подборка не закреплена";
+    private static final String COMPILATION_PINNED_IS_FALSE_SUCCESS = "Подборка откреплена";
+    private static final String COMPILATION_PINNED_IS_FALSE_FAIL = "Подборка не откреплена";
     private final CompilationRepository repository;
     private final EventInternalService eventService;
     private final CompilationDtoConverter converter;
@@ -63,6 +67,28 @@ public class CompilationServiceImpl implements CompilationInternalService {
             return EVENT_IS_ADDED_TO_COMPILATION;
         }
         return EVENT_IS_NOT_ADDED_TO_COMPILATION;
+    }
+
+    @Override
+    public String deleteCompilationFromHeadPageInternal(Long compId) {
+        final var compilationFromDb = repository.findById(compId).orElse(null);
+        if (compilationFromDb != null) {
+            compilationFromDb.setPinned(false);
+            repository.save(compilationFromDb);
+            return COMPILATION_PINNED_IS_FALSE_SUCCESS;
+        }
+        return COMPILATION_PINNED_IS_FALSE_FAIL;
+    }
+
+    @Override
+    public String addCompilationToHeadPageInternal(Long compId) {
+        final var compilationFromDb = repository.findById(compId).orElse(null);
+        if (compilationFromDb != null) {
+            compilationFromDb.setPinned(true);
+            repository.save(compilationFromDb);
+            return COMPILATION_PINNED_IS_TRUE_SUCCESS;
+        }
+        return COMPILATION_PINNED_IS_TRUE_FAIL;
     }
 
     private Compilation enrichEventToCompilations(Set<Long> eventsIds, Compilation compilation) {

@@ -34,10 +34,7 @@ public void logIPAndPath(@PathVariable long id, HttpServletRequest request) {
                                              @RequestParam(value = "rangeStart", required = false) String rangeStart,
                                              @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
                                              @RequestParam(value = "onlyAvailable", defaultValue = "false")
-                                             Boolean onlyAvailable,/*
-                                             @RequestParam("sort") String sort,
-                                             @RequestParam("from") Integer from,
-                                             @RequestParam("size") Integer size,*/
+                                             Boolean onlyAvailable,
                                              Pageable pageable) {
 
         return Page.empty();

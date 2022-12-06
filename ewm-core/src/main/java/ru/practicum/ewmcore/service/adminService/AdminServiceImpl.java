@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
+import ru.practicum.ewmcore.model.user.UserFullDto;
 import ru.practicum.ewmcore.service.categoryService.CategoryInternalService;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
@@ -54,5 +55,9 @@ public class AdminServiceImpl implements AdminPublicService {
     @Override
     public String deleteCategory(Long catId) {
         return categoryService.deleteCategoryInternal(catId);
+    }
+
+    public Page<UserFullDto> findAllUsers(ClientFilter filter, Pageable pageable) {
+        return Page.empty();
     }
 }

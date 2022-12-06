@@ -103,7 +103,18 @@ public class AdminController {
     @GetMapping("/users")
     public Page<UserFullDto> readUser(@RequestParam(value = "ids", required = false) Long[] ids,
                                       Pageable pageable) {
-        return Page.empty();
+        final var filterParams = new ArrayList<ClientFilterParam>();
+        if (ids.length > 0) {
+            for (int i = 0; i < ids.length; i++) {
+                final var filterParam = new ClientFilterParam();
+                filterParam.setOperator(Comparison.EQ);
+                filterParam.setProperty("userId");
+                filterParam.setMainValue(ids[i]);
+                filterParams.add(filterParam);
+            }
+        }
+        final var filter = new ClientFilter(filterParams);
+        return adminService.findAllUsers(filter, pageable);
     }
 
     @PostMapping("/users")

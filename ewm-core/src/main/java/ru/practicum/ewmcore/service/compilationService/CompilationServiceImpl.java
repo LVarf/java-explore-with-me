@@ -37,11 +37,16 @@ public class CompilationServiceImpl implements CompilationInternalService {
     @Override
     public String deleteCompilationInternal(Long compId) {
         final var compilationFromDb = repository.findById(compId).orElse(null);
-        if (compilationFromDb == null) {
+        if (compilationFromDb != null) {
             repository.delete(compilationFromDb);
             return COMPILATION_IS_DELETED;
         }
         return COMPILATION_IS_NOT_DELETED;
+    }
+
+    @Override
+    public String deleteEventFromCompilationInternal(Long eventId, Long compId) {
+        return eventToCompilationService.deleteEventFromCompilation(eventId, compId);
     }
 
     private Compilation enrichEventToCompilations(Set<Long> eventsIds, Compilation compilation) {

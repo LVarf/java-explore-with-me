@@ -138,9 +138,9 @@ public class AdminController {
     }
 
     @DeleteMapping("/compilations/{compId}/events/{eventId}")
-    public String deleteEventFromCompilation(@PathVariable Long compId,
-                                             @PathVariable Long eventId) {
-        return null;
+    public String deleteEventFromCompilation(@PathVariable Long eventId,
+                                             @PathVariable Long compId) {
+        return adminService.deleteEventFromCompilation(eventId, compId);
     }
 
     @PatchMapping("/compilations/{compId}/events/{eventId}")

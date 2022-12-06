@@ -6,4 +6,6 @@ import ru.practicum.ewmcore.model.records.EventToCompilation;
 
 public interface EventToCompilationInternalService {
     EventToCompilation createEventToCompilation(Event event, Compilation compilation);
+
+    String deleteEventFromCompilation(Long eventId, Long compId);
 }

@@ -34,4 +34,6 @@ public interface AdminPublicService {
     Optional<CompilationDto> createCompilation(CompilationDto compilationDto);
 
     String deleteCompilation(Long compId);
+
+    String deleteEventFromCompilation(Long eventId, Long compId);
 }

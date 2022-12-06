@@ -86,4 +86,9 @@ public class AdminServiceImpl implements AdminPublicService {
     public String deleteCompilation(Long compId) {
         return compilationService.deleteCompilationInternal(compId);
     }
+
+    @Override
+    public String deleteEventFromCompilation(Long eventId, Long compId) {
+        return compilationService.deleteEventFromCompilationInternal(eventId, compId);
+    }
 }

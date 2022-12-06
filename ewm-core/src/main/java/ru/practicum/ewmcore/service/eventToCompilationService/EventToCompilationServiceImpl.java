@@ -12,6 +12,9 @@ import ru.practicum.ewmcore.repository.EventToCompilationRepository;
 @RequiredArgsConstructor
 @Slf4j
 public class EventToCompilationServiceImpl implements EventToCompilationInternalService {
+
+    private static final String EVENT_FROM_COMPILATION_IS_DELETED = "Событие удалено из подборки";
+    private static final String EVENT_FROM_COMPILATION_IS_NOT_DELETED = "Событие не удалено из подборки";
     private final EventToCompilationRepository repository;
 
     @Override
@@ -20,5 +23,16 @@ public class EventToCompilationServiceImpl implements EventToCompilationInternal
         eventToCompilation.setEvent(event);
         eventToCompilation.setCompilation(compilation);
         return repository.save(eventToCompilation);
+    }
+
+    @Override
+    public String deleteEventFromCompilation(Long eventId, Long compId) {
+        final var eventToCompilationFromDb = repository
+                .findByEventIdAndCompilationId(eventId, compId).orElse(null);
+        if (eventToCompilationFromDb != null) {
+            repository.delete(eventToCompilationFromDb);
+            return EVENT_FROM_COMPILATION_IS_DELETED;
+        }
+        return EVENT_FROM_COMPILATION_IS_NOT_DELETED;
     }
 }

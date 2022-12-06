@@ -9,4 +9,6 @@ public interface CompilationInternalService {
     Optional<CompilationDto> createCompilationInternal(CompilationDto compilationDto);
 
     String deleteCompilationInternal(Long compId);
+
+    String deleteEventFromCompilationInternal(Long eventId, Long compId);
 }

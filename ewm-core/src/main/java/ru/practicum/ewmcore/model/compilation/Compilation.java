@@ -25,7 +25,7 @@ public class Compilation {
     @ToString.Exclude
     private Set<EventToCompilation> eventToCompilations;
     @Column
-    private boolean pinned;
+    private Boolean pinned;
     @Column
     private String title;
 }

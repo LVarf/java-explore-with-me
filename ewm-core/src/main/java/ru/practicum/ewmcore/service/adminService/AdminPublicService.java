@@ -3,6 +3,7 @@ package ru.practicum.ewmcore.service.adminService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.ewmcore.model.category.CategoryDto;
+import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.user.UserFullDto;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
@@ -29,4 +30,6 @@ public interface AdminPublicService {
     Optional<UserFullDto> createUser(UserFullDto userFullDto);
 
     String deleteUser(Long userId);
+
+    Optional<CompilationDto> createCompilation(CompilationDto compilationDto);
 }

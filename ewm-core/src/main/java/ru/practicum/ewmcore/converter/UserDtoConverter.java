@@ -1,13 +1,16 @@
 package ru.practicum.ewmcore.converter;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
 import ru.practicum.ewmcore.model.user.User;
 import ru.practicum.ewmcore.model.user.UserFullDto;
 import ru.practicum.ewmcore.service.utils.RootModelConverter;
 import ru.practicum.ewmcore.service.utils.SortConverterMixin;
 
+@Component
 public class UserDtoConverter implements RootModelConverter<UserFullDto, User>,
         SortConverterMixin {
     @Override

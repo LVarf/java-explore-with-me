@@ -1,11 +1,13 @@
 package ru.practicum.ewmcore.model.compilation;
 
-import ru.practicum.ewmcore.model.event.Event;
+import lombok.Data;
 
+import java.util.Set;
 
+@Data
 public class CompilationDto {
     private Long id;
-    private Event events;
-    private boolean pinned;
+    private Set<Long> events;
+    private Boolean pinned;
     private String title;
 }

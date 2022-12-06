@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import javax.persistence.criteria.Predicate;
 
 public abstract class AbstractSpecification<T> {
+    private static final String ID = "id";
     private static final String USER_ID = "userId";
     private static final String STATE = "state";
     private static final String CATEGORY = "category";
@@ -48,6 +49,7 @@ public abstract class AbstractSpecification<T> {
     private Predicate convertFilterParamToPredicate(final ClientFilterParam clientFilterParam, final Root<T> root,
                                                     final CriteriaBuilder criteriaBuilder) {
         switch (clientFilterParam.getProperty()) {
+            case ID:
             case USER_ID:
             case STATE:
             case CATEGORY:

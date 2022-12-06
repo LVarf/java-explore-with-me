@@ -129,7 +129,7 @@ public class AdminController {
 
     @PostMapping("/compilations")
     public Optional<CompilationDto> createCompilation(@RequestBody CompilationDto compilation) {
-        return Optional.of(compilation);
+        return adminService.createCompilation(compilation);
     }
 
     @DeleteMapping("/compilations/{compId}")

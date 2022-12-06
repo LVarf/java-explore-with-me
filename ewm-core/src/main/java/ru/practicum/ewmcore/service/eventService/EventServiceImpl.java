@@ -7,16 +7,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.converter.EventFullDtoConverter;
 import ru.practicum.ewmcore.converter.EventShortDtoConverter;
+import ru.practicum.ewmcore.model.event.Event;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.event.EventStateEnum;
 import ru.practicum.ewmcore.repository.EventRepository;
 import ru.practicum.ewmcore.specification.EventSpecification;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
+import ru.practicum.ewmcore.specification.filter.ClientFilterParam;
+import ru.practicum.ewmcore.specification.filter.Comparison;
 import ru.practicum.ewmcore.validator.EventDtoValidator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +36,7 @@ public class EventServiceImpl implements EventInternalService {
 
     @Override
     public Page<EventShortDto> readAllByInitiatorId(Long id, Pageable pageable) {
-        final var events = repository.findAllByInitiator(id, pageable);
+        final var events = repository.findAllByInitiatorId(id, pageable);
         return events.map(eventShortDtoConverter::convertFromEntity);
     }
 
@@ -124,8 +129,22 @@ public class EventServiceImpl implements EventInternalService {
 
     @Override
     public List<EventFullDto> readAllByCategoryId(Long catId) {
-        final var eventsFromDb = repository.findByCategory(catId);
+        final var eventsFromDb = repository.findByCategoryId(catId);
         return eventsFromDb.stream()
                 .map(eventFullDtoConverter::convertFromEntity).collect(Collectors.toList());
+    }
+
+    @Override
+    public Set<Event> readAllByFilter(Set<Long> eventIds) {
+        final var filterParams = new ArrayList<ClientFilterParam>();
+        for (Long eventId : eventIds) {
+            final var filterParam = new ClientFilterParam();
+            filterParam.setProperty("id");
+            filterParam.setOperator(Comparison.EQ);
+            filterParam.setMainValue(eventId);
+            filterParams.add(filterParam);
+        }
+        final var filter = new ClientFilter(filterParams);
+        return repository.findAll(specification.findAllSpecification(filter));
     }
 }

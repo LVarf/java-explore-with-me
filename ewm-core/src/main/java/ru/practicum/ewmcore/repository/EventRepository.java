@@ -8,13 +8,16 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.ewmcore.model.event.Event;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    Page<Event> findAllByInitiator(Long userId, Pageable pageable);
+    Page<Event> findAllByInitiatorId(Long userId, Pageable pageable);
 
     Page<Event> findAll(Specification<Event> specification, Pageable pageable);
 
-    List<Event> findByCategory(Long catId);
+    List<Event> findByCategoryId(Long catId);
+
+    Set<Event> findAll(Specification<Event> specification);
 }

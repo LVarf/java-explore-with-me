@@ -12,4 +12,6 @@ public interface UserInternalService {
     public Page<UserFullDto> findAllUsersInternal(ClientFilter filter, Pageable pageable);
 
     Optional<UserFullDto> createUserInternal(UserFullDto userFullDto);
+
+    String deleteUserInternal(Long userId);
 }

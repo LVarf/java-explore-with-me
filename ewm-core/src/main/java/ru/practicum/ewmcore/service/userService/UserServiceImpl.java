@@ -27,6 +27,7 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserInternalService, UserPublicService {
+    private static final String USER_IS_DELETED = "Пользователь удалён";
     private final UserRepository repository;
     private final UserValidator validator;
     private final EventInternalService eventInternalService;
@@ -119,13 +120,10 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
         return Optional.of(userFromSave).map(userFullDtoConverter::convertFromEntity);
     }
 
-    /*private Page<UserFullDto> enrichPage(Pageable pageable, Page<UserFullDto> repositoryPage) {
-        final var page = pageConverter.convertToPage(repositoryPage, pageable);
-        final List<UserFullDto> pageContent = page.first.stream()
-                .map(converter::convertFromEntity)
-                .map(directoryItemDto -> enrichVersion(directoryItemDto, validFrom))
-                .filter(Objects::nonNull).map(this::enrichDirectory).map(this::enrichAttributes)
-                .collect(Collectors.toList());
-        return new PageImpl<>(pageContent, page.second, repositoryPage.getTotalElements());
-    }*/
+    @Override
+    public String deleteUserInternal(Long userId) {
+        final var userFromDb = repository.findById(userId);
+        repository.delete(userFromDb.get());
+        return USER_IS_DELETED;
+    }
 }

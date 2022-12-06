@@ -27,4 +27,6 @@ public interface AdminPublicService {
     Page<UserFullDto> findAllUsers(ClientFilter filter, Pageable pageable);
 
     Optional<UserFullDto> createUser(UserFullDto userFullDto);
+
+    String deleteUser(Long userId);
 }

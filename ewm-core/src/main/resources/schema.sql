@@ -73,7 +73,7 @@ COMMENT ON COLUMN ewm_core.events.initiator_id IS 'Идентификатор п
 ALTER TABLE ewm_core.events
     DROP CONSTRAINT IF EXISTS fk_to_user;
 ALTER TABLE ewm_core.events
-    ADD CONSTRAINT fk_to_user FOREIGN KEY (initiator_id) REFERENCES ewm_core.users (id);
+    ADD CONSTRAINT fk_to_user FOREIGN KEY (initiator_id) REFERENCES ewm_core.users (id) ON DELETE CASCADE;
 ALTER TABLE ewm_core.events
     DROP CONSTRAINT IF EXISTS fk_to_category;
 ALTER TABLE ewm_core.events
@@ -92,11 +92,13 @@ COMMENT ON COLUMN ewm_core.event_to_compilation.event_id IS 'Ссылка на �
 ALTER TABLE ewm_core.event_to_compilation
     DROP CONSTRAINT IF EXISTS fk_to_event_from_event_to_compilation;
 ALTER TABLE ewm_core.event_to_compilation
-    ADD CONSTRAINT fk_to_event_from_event_to_compilation FOREIGN KEY (event_id) REFERENCES ewm_core.events (id);
+    ADD CONSTRAINT fk_to_event_from_event_to_compilation FOREIGN KEY (event_id)
+        REFERENCES ewm_core.events (id) ON DELETE CASCADE;
 ALTER TABLE ewm_core.event_to_compilation
     DROP CONSTRAINT IF EXISTS fk_to_compilation_from_event_to_compilation;
 ALTER TABLE ewm_core.event_to_compilation
-    ADD CONSTRAINT fk_to_compilation_from_event_to_compilation FOREIGN KEY (compilation_id) REFERENCES ewm_core.compilation (id);
+    ADD CONSTRAINT fk_to_compilation_from_event_to_compilation FOREIGN KEY (compilation_id)
+        REFERENCES ewm_core.compilation (id) ON DELETE CASCADE;
 
 CREATE TABLE IF NOT EXISTS ewm_core.participation_request
 (
@@ -116,11 +118,13 @@ COMMENT ON COLUMN ewm_core.participation_request.status IS 'Статус зая�
 ALTER TABLE ewm_core.participation_request
     DROP CONSTRAINT IF EXISTS fk_to_event_from_participation_request;
 ALTER TABLE ewm_core.participation_request
-    ADD CONSTRAINT fk_to_event_from_participation_request FOREIGN KEY (event_id) REFERENCES ewm_core.events (id);
+    ADD CONSTRAINT fk_to_event_from_participation_request FOREIGN KEY (event_id)
+        REFERENCES ewm_core.events (id) ON DELETE CASCADE;
 ALTER TABLE ewm_core.participation_request
     DROP CONSTRAINT IF EXISTS fk_to_user_from_participation_request;
 ALTER TABLE ewm_core.participation_request
-    ADD CONSTRAINT fk_to_user_from_participation_request FOREIGN KEY (requester_id) REFERENCES ewm_core.users (id);
+    ADD CONSTRAINT fk_to_user_from_participation_request FOREIGN KEY (requester_id)
+        REFERENCES ewm_core.users (id) ON DELETE CASCADE;
 
 
 

@@ -68,4 +68,9 @@ public class AdminServiceImpl implements AdminPublicService {
     public Optional<UserFullDto> createUser(UserFullDto userFullDto) {
         return userService.createUserInternal(userFullDto);
     }
+
+    @Override
+    public String deleteUser(Long userId) {
+        return userService.deleteUserInternal(userId);
+    }
 }

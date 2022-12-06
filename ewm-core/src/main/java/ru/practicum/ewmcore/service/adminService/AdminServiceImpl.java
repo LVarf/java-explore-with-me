@@ -53,6 +53,6 @@ public class AdminServiceImpl implements AdminPublicService {
 
     @Override
     public String deleteCategory(Long catId) {
-        return null;
+        return categoryService.deleteCategoryInternal(catId);
     }
 }

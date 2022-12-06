@@ -119,7 +119,7 @@ public class AdminController {
 
     @PostMapping("/users")
     public Optional<UserFullDto> createUser(@RequestBody UserFullDto user) {
-        return Optional.of(user);
+        return adminService.createUser(user);
     }
 
     @DeleteMapping("/users/{userId}")

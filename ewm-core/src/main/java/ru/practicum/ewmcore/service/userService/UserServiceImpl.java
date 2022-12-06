@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewmcore.converter.EventFullDtoConverter;
 import ru.practicum.ewmcore.converter.EventShortDtoConverter;
 import ru.practicum.ewmcore.converter.UserDtoConverter;
 import ru.practicum.ewmcore.model.event.EventFullDto;
@@ -33,7 +32,7 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
     private final EventInternalService eventInternalService;
     private final ParticipationRequestInternalService requestInternalService;
     private final EventShortDtoConverter eventShortDtoConverter;
-    private final UserDtoConverter converter;
+    private final UserDtoConverter userFullDtoConverter;
     private final UserSpecification specification;
 
     @Override
@@ -111,7 +110,13 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
     @Override
     public Page<UserFullDto> findAllUsersInternal(ClientFilter filter, Pageable pageable) {
         final var usersFromDb = repository.findAll(specification.findAllSpecification(filter), pageable);
-        return usersFromDb.map(converter::convertFromEntity);
+        return usersFromDb.map(userFullDtoConverter::convertFromEntity);
+    }
+
+    @Override
+    public Optional<UserFullDto> createUserInternal(UserFullDto userFullDto) {
+        final var userFromSave = repository.save(userFullDtoConverter.convertToEntity(userFullDto));
+        return Optional.of(userFromSave).map(userFullDtoConverter::convertFromEntity);
     }
 
     /*private Page<UserFullDto> enrichPage(Pageable pageable, Page<UserFullDto> repositoryPage) {

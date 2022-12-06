@@ -25,4 +25,6 @@ public interface AdminPublicService {
     String deleteCategory(Long catId);
 
     Page<UserFullDto> findAllUsers(ClientFilter filter, Pageable pageable);
+
+    Optional<UserFullDto> createUser(UserFullDto userFullDto);
 }

@@ -10,6 +10,7 @@ import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.user.UserFullDto;
 import ru.practicum.ewmcore.service.categoryService.CategoryInternalService;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
+import ru.practicum.ewmcore.service.userService.UserInternalService;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 
 import java.util.Optional;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class AdminServiceImpl implements AdminPublicService {
     private final EventInternalService eventService;
     private final CategoryInternalService categoryService;
+    private final UserInternalService userService;
 
     @Override
     public Page<EventFullDto> readAllByFilters(ClientFilter filters, Pageable pageable) {
@@ -57,7 +59,13 @@ public class AdminServiceImpl implements AdminPublicService {
         return categoryService.deleteCategoryInternal(catId);
     }
 
+    @Override
     public Page<UserFullDto> findAllUsers(ClientFilter filter, Pageable pageable) {
-        return Page.empty();
+        return userService.findAllUsersInternal(filter, pageable);
+    }
+
+    @Override
+    public Optional<UserFullDto> createUser(UserFullDto userFullDto) {
+        return userService.createUserInternal(userFullDto);
     }
 }

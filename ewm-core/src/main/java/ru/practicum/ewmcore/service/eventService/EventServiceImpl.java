@@ -3,6 +3,7 @@ package ru.practicum.ewmcore.service.eventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.converter.EventFullDtoConverter;
@@ -27,12 +28,32 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class EventServiceImpl implements EventInternalService {
+public class EventServiceImpl implements EventInternalService, EventPublicService {
+    private static final String SORT_VIEWS = "VIEWS";
     private final EventRepository repository;
     private final EventShortDtoConverter eventShortDtoConverter;
     private final EventFullDtoConverter eventFullDtoConverter;
     private final EventDtoValidator validator;
     private final EventSpecification specification;
+
+    @Override
+    public Page<EventShortDto> readAllEventsPublic(ClientFilter filter, String sort, Pageable pageable) {
+        final var eventsFromDb = repository
+                .findAll(specification.findAllSpecificationForPublic(filter, sort), pageable);
+        if (sort != null && sort.equals(SORT_VIEWS)) {
+            final var events = eventsFromDb.stream()
+                    .map(eventShortDtoConverter::convertFromEntity)
+                    .map(this::enrichViews)
+                    .sorted((e1, e2) -> e1.getViews() - e2.getViews())
+                    .collect(Collectors.toList());
+            return new PageImpl<EventShortDto>(events, pageable, eventsFromDb.getTotalElements());
+        }
+        return eventsFromDb.map(eventShortDtoConverter::convertFromEntity).map(this::enrichViews);
+    }
+
+    private EventShortDto enrichViews(EventShortDto event) {
+        return event;
+    }
 
     @Override
     public Page<EventShortDto> readAllByInitiatorId(Long id, Pageable pageable) {

@@ -65,6 +65,4 @@ public class Event {
     private EventStateEnum state;
     @Column
     private String title;
-    @Transient
-    private Integer views; //вычисляемое поле
 }

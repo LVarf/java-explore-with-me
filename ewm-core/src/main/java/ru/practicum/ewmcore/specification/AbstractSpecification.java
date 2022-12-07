@@ -21,6 +21,10 @@ public abstract class AbstractSpecification<T> {
     private static final String CATEGORY = "category";
     private static final String RANGE_START = "rangeStart";
     private static final String RANGE_END = "rangeEnd";
+    private static final String ANNOTATION = "annotation";
+    private static final String DESCRIPTION = "description";
+    private static final String PAID = "paid";
+    private static final String CONFIRMED_REQUESTS = "confirmedRequests";
 
     private TimeUtils timeUtils;
 
@@ -53,6 +57,10 @@ public abstract class AbstractSpecification<T> {
             case USER_ID:
             case STATE:
             case CATEGORY:
+            case ANNOTATION:
+            case DESCRIPTION:
+            case CONFIRMED_REQUESTS:
+            case PAID:
                 return buildPredicate(clientFilterParam, root, criteriaBuilder);
             case RANGE_START:
             case RANGE_END:
@@ -104,6 +112,11 @@ public abstract class AbstractSpecification<T> {
             case GE:
                 return criteriaBuilder.greaterThanOrEqualTo(root.get(clientFilterParam.getProperty()),
                         mainValue.toString());
+            case LT:
+                final var pred1 = criteriaBuilder.lessThan(root.get(clientFilterParam.getProperty()),
+                        root.get(mainValue.toString()));
+                final var pred2 = criteriaBuilder.greaterThan(root.get(mainValue.toString()), 0);
+                return criteriaBuilder.and(pred1, pred2);
             case LE:
                 return criteriaBuilder.lessThanOrEqualTo(root.get(clientFilterParam.getProperty()),
                         mainValue.toString());

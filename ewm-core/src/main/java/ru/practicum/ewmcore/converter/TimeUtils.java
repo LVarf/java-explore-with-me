@@ -3,6 +3,7 @@ package ru.practicum.ewmcore.converter;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -21,5 +22,9 @@ public class TimeUtils {
         final LocalDateTime dateTime = entity.toLocalDateTime();
         final String model = dateTime.format(FORMATTER);
         return model;
+    }
+
+    public Timestamp now() {
+        return Timestamp.from(Instant.now());
     }
 }

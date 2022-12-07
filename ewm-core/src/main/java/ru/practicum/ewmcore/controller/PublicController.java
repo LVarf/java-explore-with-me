@@ -4,18 +4,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewmcore.converter.TimeUtils;
-import ru.practicum.ewmcore.error.ErrorHandler;
 import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
+import ru.practicum.ewmcore.service.categoryService.CategoryPublicService;
 import ru.practicum.ewmcore.service.compilationService.CompilationPublicService;
 import ru.practicum.ewmcore.service.eventService.EventPublicService;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
@@ -35,6 +34,7 @@ public class PublicController {
 
     private final EventPublicService eventService;
     private final CompilationPublicService compilationService;
+    private final CategoryPublicService categoryService;
     private final TimeUtils timeUtils;
 
     /*@GetMapping("/some/path/{id}") //про ip клиента
@@ -62,14 +62,14 @@ public void logIPAndPath(@PathVariable long id, HttpServletRequest request) {
         final List<ClientFilterParam> filterParams = new ArrayList<>();
         if (text != null) {
             filterParams.add(new ClientFilterParam().setOperator(Comparison.LIKE_IGNORE_CASE)
-                            .setProperty("annotation").setMainValue(text));
+                    .setProperty("annotation").setMainValue(text));
             filterParams.add(new ClientFilterParam().setOperator(Comparison.LIKE_IGNORE_CASE)
-                            .setProperty("description").setMainValue(text));
+                    .setProperty("description").setMainValue(text));
         }
         if (categories.length > 0) {
             for (Long id : categories) {
                 filterParams.add(new ClientFilterParam().setOperator(Comparison.EQ)
-                                .setProperty("category").setMainValue(id));
+                        .setProperty("category").setMainValue(id));
             }
         }
         if (paid != null) {
@@ -115,11 +115,11 @@ public void logIPAndPath(@PathVariable long id, HttpServletRequest request) {
 
     @GetMapping("/categories")
     public Page<CategoryDto> readAllCategories(Pageable pageable) {
-        return Page.empty();
+        return categoryService.readAllCategoriesPublic(pageable);
     }
 
     @GetMapping("/compilations/{catId}")
     public Optional<CategoryDto> readCategory(@PathVariable Long catId) {
-        return Optional.empty();
+        return categoryService.readCategoryPublic(catId);
     }
 }

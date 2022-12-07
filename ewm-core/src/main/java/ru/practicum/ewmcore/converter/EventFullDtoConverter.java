@@ -7,14 +7,19 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import ru.practicum.ewmcore.model.event.Event;
 import ru.practicum.ewmcore.model.event.EventFullDto;
+import ru.practicum.ewmcore.model.stat.ViewStats;
 import ru.practicum.ewmcore.service.utils.RootModelConverter;
 import ru.practicum.ewmcore.service.utils.SortConverterMixin;
+import ru.practicum.ewmcore.statClient.StatClient;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class EventFullDtoConverter implements RootModelConverter<EventFullDto, Event>,
         SortConverterMixin {
     private final TimeUtils timeUtils;
+    private final StatClient statClient;
 
     @Override
     public EventFullDto convertFromEntity(final Event entity) {
@@ -27,7 +32,18 @@ public class EventFullDtoConverter implements RootModelConverter<EventFullDto, E
         model.setCreatedOn(timeUtils.timestampToString(createdOn));
         model.setPublishedOn(timeUtils.timestampToString(publishedOn));
         model.setCategory(entity.getCategory().getId());
+        enrichViews(model);
         return model;
+    }
+
+    private EventFullDto enrichViews(EventFullDto eventFullDto) {
+        final var views = (List<ViewStats>) statClient.getViews(eventFullDto.getPublishedOn(),
+                timeUtils.timestampToString(timeUtils.now()),
+                new String[]{"/events" + eventFullDto.getId()}, false);
+        for (ViewStats viewStats : views) {
+            eventFullDto.setViews(eventFullDto.getViews() + viewStats.getHits());
+        }
+        return eventFullDto;
     }
 
     @Override

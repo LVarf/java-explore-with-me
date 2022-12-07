@@ -20,6 +20,7 @@ import ru.practicum.ewmcore.service.eventService.EventPublicService;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 import ru.practicum.ewmcore.specification.filter.ClientFilterParam;
 import ru.practicum.ewmcore.specification.filter.Comparison;
+import ru.practicum.ewmcore.statClient.StatClient;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -32,16 +33,13 @@ import java.util.Optional;
 @RequestMapping
 public class PublicController {
 
+
+
     private final EventPublicService eventService;
     private final CompilationPublicService compilationService;
     private final CategoryPublicService categoryService;
     private final TimeUtils timeUtils;
-
-    /*@GetMapping("/some/path/{id}") //про ip клиента
-public void logIPAndPath(@PathVariable long id, HttpServletRequest request) {
-    log.info("client ip: {}", request.getRemoteAddr());
-    log.info("endpoint path: {}", request.getRequestURI());
-} */
+    private final StatClient statClient;
 
     @GetMapping("/events")
     public Page<EventShortDto> readAllEvents(@RequestParam(value = "text", required = false) String text,
@@ -54,11 +52,7 @@ public void logIPAndPath(@PathVariable long id, HttpServletRequest request) {
                                              @RequestParam(value = "sort", required = false) String sort,
                                              Pageable pageable,
                                              HttpServletRequest request) {
-        //сортировка либо по датам событий, либо по количеству просмотров
-        //созранить статистику
-        log.info("client ip: {}", request.getRemoteAddr());
-        log.info("endpoint path: {}", request.getRequestURI());
-        //TODO: отправить запрос в статитстику
+        statClient.saveHit(request);
         final List<ClientFilterParam> filterParams = new ArrayList<>();
         if (text != null) {
             filterParams.add(new ClientFilterParam().setOperator(Comparison.LIKE_IGNORE_CASE)
@@ -97,8 +91,8 @@ public void logIPAndPath(@PathVariable long id, HttpServletRequest request) {
     }
 
     @GetMapping("/events/{id}")
-    public Optional<EventFullDto> readEvent(@PathVariable Long id) {
-        //созранить статистику
+    public Optional<EventFullDto> readEvent(@PathVariable Long id, HttpServletRequest request) {
+        statClient.saveHit(request);
         return eventService.readEventPublic(id);
     }
 

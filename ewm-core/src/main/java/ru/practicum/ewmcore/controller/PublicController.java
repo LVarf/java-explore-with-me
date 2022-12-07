@@ -97,7 +97,7 @@ public void logIPAndPath(@PathVariable long id, HttpServletRequest request) {
     @GetMapping("/events/{id}")
     public Optional<EventFullDto> readEvent(@PathVariable Long id) {
         //созранить статистику
-        return Optional.empty();
+        return eventService.readEventPublic(id);
     }
 
     @GetMapping("/compilations")

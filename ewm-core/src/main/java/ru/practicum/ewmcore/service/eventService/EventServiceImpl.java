@@ -43,16 +43,31 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
         if (sort != null && sort.equals(SORT_VIEWS)) {
             final var events = eventsFromDb.stream()
                     .map(eventShortDtoConverter::convertFromEntity)
-                    .map(this::enrichViews)
+                    .map(this::enrichViewsEventShortDto)
                     .sorted((e1, e2) -> e1.getViews() - e2.getViews())
                     .collect(Collectors.toList());
             return new PageImpl<EventShortDto>(events, pageable, eventsFromDb.getTotalElements());
         }
-        return eventsFromDb.map(eventShortDtoConverter::convertFromEntity).map(this::enrichViews);
+        return eventsFromDb.map(eventShortDtoConverter::convertFromEntity).map(this::enrichViewsEventShortDto);
     }
 
-    private EventShortDto enrichViews(EventShortDto event) {
+    @Override
+    public Optional<EventFullDto> readEventPublic(Long eventId) {
+        final var eventFromDb = repository.findById(eventId);
+        return eventFromDb.map(eventFullDtoConverter::convertFromEntity).map(this::enrichViewsEventFullDto);
+    }
+
+    private EventShortDto enrichViewsEventShortDto(EventShortDto event) {
+        event.setViews(enrichViews(event.getId()));
         return event;
+    }
+    private EventFullDto enrichViewsEventFullDto(EventFullDto event) {
+        event.setViews(enrichViews(event.getId()));
+        return event;
+    }
+
+    private Integer enrichViews(Long eventId) {
+        return 10; //TODO: реализовать запрос в сервис статистики
     }
 
     @Override

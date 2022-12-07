@@ -16,6 +16,7 @@ import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
+import ru.practicum.ewmcore.service.compilationService.CompilationPublicService;
 import ru.practicum.ewmcore.service.eventService.EventPublicService;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 import ru.practicum.ewmcore.specification.filter.ClientFilterParam;
@@ -33,6 +34,7 @@ import java.util.Optional;
 public class PublicController {
 
     private final EventPublicService eventService;
+    private final CompilationPublicService compilationService;
     private final TimeUtils timeUtils;
 
     /*@GetMapping("/some/path/{id}") //про ip клиента
@@ -103,7 +105,7 @@ public void logIPAndPath(@PathVariable long id, HttpServletRequest request) {
     @GetMapping("/compilations")
     public Page<CompilationDto> readAllCompilations(@RequestParam("pinned") Boolean pinned,
                                                     Pageable pageable) {
-        return Page.empty();
+        return compilationService.readAllCompilationsPublic(pinned, pageable);
     }
 
     @GetMapping("/compilations/{compId}")

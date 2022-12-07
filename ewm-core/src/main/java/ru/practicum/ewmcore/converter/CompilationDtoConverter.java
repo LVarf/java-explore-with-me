@@ -16,12 +16,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CompilationDtoConverter implements RootModelConverter<CompilationDto, Compilation>,
         SortConverterMixin {
+    private final EventShortDtoConverter eventShortDtoConverter;
     @Override
     public CompilationDto convertFromEntity(Compilation entity) {
         final CompilationDto model = new CompilationDto();
         BeanUtils.copyProperties(entity, model);
         model.setEvents(entity.getEventToCompilations().stream()
-                .map(eventToCompilation -> eventToCompilation.getEvent().getId()).collect(Collectors.toSet()));
+                .map(eventToCompilation -> eventToCompilation.getEvent())
+                .map(eventShortDtoConverter::convertFromEntity)
+                .collect(Collectors.toSet()));
         return model;
     }
 

@@ -2,12 +2,16 @@ package ru.practicum.ewmcore.service.compilationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.converter.CompilationDtoConverter;
 import ru.practicum.ewmcore.converter.EventFullDtoConverter;
+import ru.practicum.ewmcore.converter.EventShortDtoConverter;
 import ru.practicum.ewmcore.model.compilation.Compilation;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.Event;
+import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.records.EventToCompilation;
 import ru.practicum.ewmcore.repository.CompilationRepository;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
@@ -16,11 +20,12 @@ import ru.practicum.ewmcore.service.eventToCompilationService.EventToCompilation
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CompilationServiceImpl implements CompilationInternalService {
+public class CompilationServiceImpl implements CompilationInternalService, CompilationPublicService {
     private static final String COMPILATION_IS_DELETED = "Подборка удалена";
     private static final String COMPILATION_IS_NOT_DELETED = "Подборка не удалена";
     private static final String EVENT_IS_ADDED_TO_COMPILATION = "Событие добавлено";
@@ -34,6 +39,10 @@ public class CompilationServiceImpl implements CompilationInternalService {
     private final CompilationDtoConverter converter;
     private final EventToCompilationInternalService eventToCompilationService;
     private final EventFullDtoConverter eventFullDtoConverter;
+
+    public Page<CompilationDto> readAllCompilationsPublic(Boolean pinned, Pageable pageable) {
+        return repository.findCompilationByPinnedIs(pinned, pageable).map(converter::convertFromEntity);
+    }
 
     @Override
     public Optional<CompilationDto> createCompilationInternal(CompilationDto compilationDto) {
@@ -91,7 +100,8 @@ public class CompilationServiceImpl implements CompilationInternalService {
         return COMPILATION_PINNED_IS_TRUE_FAIL;
     }
 
-    private Compilation enrichEventToCompilations(Set<Long> eventsIds, Compilation compilation) {
+    private Compilation enrichEventToCompilations(Set<EventShortDto> eventsSet, Compilation compilation) {
+        final var eventsIds = eventsSet.stream().map(EventShortDto::getId).collect(Collectors.toSet());
         final Set<EventToCompilation> eventToCompilations = new HashSet<>();
         final var events = eventService.readAllByFilter(eventsIds);
         for (Event event : events) {

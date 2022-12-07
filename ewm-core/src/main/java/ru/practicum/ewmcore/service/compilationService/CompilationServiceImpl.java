@@ -40,8 +40,14 @@ public class CompilationServiceImpl implements CompilationInternalService, Compi
     private final EventToCompilationInternalService eventToCompilationService;
     private final EventFullDtoConverter eventFullDtoConverter;
 
+    @Override
     public Page<CompilationDto> readAllCompilationsPublic(Boolean pinned, Pageable pageable) {
         return repository.findCompilationByPinnedIs(pinned, pageable).map(converter::convertFromEntity);
+    }
+
+    @Override
+    public Optional<CompilationDto> readCompilationPublic(Long compId) {
+        return repository.findById(compId).map(converter::convertFromEntity);
     }
 
     @Override

@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface CompilationPublicService {
     Page<CompilationDto> readAllCompilationsPublic(Boolean pinned, Pageable pageable);
+
+    Optional<CompilationDto> readCompilationPublic(Long compId);
 }

@@ -110,7 +110,7 @@ public void logIPAndPath(@PathVariable long id, HttpServletRequest request) {
 
     @GetMapping("/compilations/{compId}")
     public Optional<CompilationDto> readCompilation(@PathVariable Long compId) {
-        return Optional.empty();
+        return compilationService.readCompilationPublic(compId);
     }
 
     @GetMapping("/categories")

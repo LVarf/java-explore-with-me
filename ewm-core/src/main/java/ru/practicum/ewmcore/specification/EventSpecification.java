@@ -9,10 +9,6 @@ import ru.practicum.ewmcore.specification.filter.ClientFilter;
 import ru.practicum.ewmcore.specification.filter.ClientFilterParam;
 import ru.practicum.ewmcore.specification.filter.Comparison;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 @Component
 @RequiredArgsConstructor
 public class EventSpecification extends AbstractSpecification<Event> {

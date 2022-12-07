@@ -54,7 +54,8 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
     @Override
     public Optional<EventFullDto> readEventPublic(Long eventId) {
         final var eventFromDb = repository.findById(eventId);
-        return eventFromDb.map(eventFullDtoConverter::convertFromEntity).map(this::enrichViewsEventFullDto);
+        return eventFromDb.filter(event -> event.getState() == EventStateEnum.PUBLISHED)
+                .map(eventFullDtoConverter::convertFromEntity).map(this::enrichViewsEventFullDto);
     }
 
     private EventShortDto enrichViewsEventShortDto(EventShortDto event) {

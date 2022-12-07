@@ -19,8 +19,6 @@ public class EventSpecification extends AbstractSpecification<Event> {
 
     private static final String SORT_EVENT_DATE = "EVENT_DATE";
     private static final String EVENT_DATE_CONST = "eventDate";
-
-    private static final String CONFIRMED_REQUESTS = "confirmedRequests";
     private static final String PUBLISHED_VALUE_CONST = EventStateEnum.PUBLISHED.toString();
 
     public Specification<Event> findAllSpecification(final ClientFilter filters) {

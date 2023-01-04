@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class CompilationDtoConverter implements RootModelConverter<CompilationDto, Compilation>,
         SortConverterMixin {
     private final EventShortDtoConverter eventShortDtoConverter;
+
     @Override
     public CompilationDto convertFromEntity(Compilation entity) {
         final CompilationDto model = new CompilationDto();

@@ -22,6 +22,7 @@ public class EventShortDtoConverter implements RootModelConverter<EventShortDto,
         SortConverterMixin {
     private final TimeUtils timeUtils;
     private final StatClient statClient;
+
     @Override
     public EventShortDto convertFromEntity(final Event entity) {
         final EventShortDto model = new EventShortDto();

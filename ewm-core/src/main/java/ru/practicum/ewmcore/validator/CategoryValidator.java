@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 public class CategoryValidator extends AbstractValidation {
 
     private final TimeUtils timeUtils;
+
     public void validationNameCategory(CategoryDto categoryDto) {
         validationSpacesInStringField(categoryDto.getName());
     }

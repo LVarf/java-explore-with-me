@@ -66,6 +66,7 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
         event.setViews(enrichViews(event.getId()));
         return event;
     }
+
     private EventFullDto enrichViewsEventFullDto(EventFullDto event) {
         event.setViews(enrichViews(event.getId()));
         return event;

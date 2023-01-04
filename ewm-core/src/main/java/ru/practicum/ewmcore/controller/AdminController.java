@@ -41,13 +41,13 @@ public class AdminController {
                                             @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
                                             Pageable pageable) {
         final List<ClientFilterParam> params = new ArrayList<>();
-        if (users!= null && users.length > 0) {
+        if (users != null && users.length > 0) {
             for (int i = 0; i < users.length; i++) {
                 params.add(new ClientFilterParam().setProperty("initiator")
                         .setOperator(Comparison.EQ).setMainValue(users[i]));
             }
         }
-        if (states!= null && states.length > 0) {
+        if (states != null && states.length > 0) {
             for (int i = 0; i < states.length; i++) {
                 params.add(new ClientFilterParam().setProperty("state")
                         .setOperator(Comparison.EQ).setMainValue(states[i]));

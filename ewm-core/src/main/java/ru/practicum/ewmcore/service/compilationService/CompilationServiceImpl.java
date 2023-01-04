@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.converter.CompilationDtoConverter;
 import ru.practicum.ewmcore.converter.EventFullDtoConverter;
-import ru.practicum.ewmcore.converter.EventShortDtoConverter;
 import ru.practicum.ewmcore.model.compilation.Compilation;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.Event;

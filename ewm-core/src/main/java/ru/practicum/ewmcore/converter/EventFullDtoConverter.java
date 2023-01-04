@@ -10,7 +10,6 @@ import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventStateEnum;
 import ru.practicum.ewmcore.model.location.Location;
 import ru.practicum.ewmcore.model.stat.ViewStats;
-import ru.practicum.ewmcore.service.categoryService.CategoryInternalService;
 import ru.practicum.ewmcore.service.utils.RootModelConverter;
 import ru.practicum.ewmcore.service.utils.SortConverterMixin;
 import ru.practicum.ewmcore.statClient.StatClient;

@@ -1,6 +1,5 @@
 package ru.practicum.ewmcore.model.records;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;

@@ -15,7 +15,6 @@ import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.event.EventStateEnum;
 import ru.practicum.ewmcore.repository.CategoryRepository;
 import ru.practicum.ewmcore.repository.EventRepository;
-import ru.practicum.ewmcore.service.categoryService.CategoryInternalService;
 import ru.practicum.ewmcore.specification.EventSpecification;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 import ru.practicum.ewmcore.specification.filter.ClientFilterParam;

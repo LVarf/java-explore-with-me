@@ -1,6 +1,5 @@
 package ru.practicum.ewmcore.converter;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

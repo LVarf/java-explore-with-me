@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.converter.EventShortDtoConverter;
 import ru.practicum.ewmcore.converter.UserDtoConverter;
+import ru.practicum.ewmcore.converter.UserShortDtoConverter;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
@@ -34,6 +35,7 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
     private final ParticipationRequestInternalService requestInternalService;
     private final EventShortDtoConverter eventShortDtoConverter;
     private final UserDtoConverter userFullDtoConverter;
+    private final UserShortDtoConverter userShortDtoConverter;
     private final UserSpecification specification;
 
     @Override
@@ -51,7 +53,14 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
 
     public Optional<EventFullDto> createEventPublic(Long userId, EventFullDto event) {
         validator.validateOnRead(userId, ValidationMode.DEFAULT);
+        enrichInitiator(userId, event);
         return eventInternalService.createEvent(event);
+    }
+
+    private EventFullDto enrichInitiator(Long userId, EventFullDto eventFullDto) {
+        final var initiator = userShortDtoConverter.convertFromEntity(repository.findById(userId).orElseThrow());
+        eventFullDto.setInitiator(initiator);
+        return eventFullDto;
     }
 
     private List<UserShortDto> readShortImpl(Long userId) {
@@ -115,7 +124,16 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
     }
 
     @Override
+    public Optional<UserFullDto> findUserByIdInternal(Long ids) {
+        final var usersFromDb = repository.findUserById(ids);
+        return usersFromDb.map(userFullDtoConverter::convertFromEntity);
+    }
+
+    @Override
     public Optional<UserFullDto> createUserInternal(UserFullDto userFullDto) {
+        validator.validationOnSave(userFullDto);
+        final var isUniqueName = repository.findUserByName(userFullDto.getName()).orElse(null) != null;
+        validator.validationUniqueName(isUniqueName);
         final var userFromSave = repository.save(userFullDtoConverter.convertToEntity(userFullDto));
         return Optional.of(userFromSave).map(userFullDtoConverter::convertFromEntity);
     }

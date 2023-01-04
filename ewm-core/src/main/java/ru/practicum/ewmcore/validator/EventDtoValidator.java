@@ -145,6 +145,24 @@ public class EventDtoValidator extends AbstractValidation {
 
     public void validationOnCreate(EventFullDto event) {
         final var apiError = new ApiError();
+        final var isBadRequest =
+                event.getAnnotation() == null || event.getAnnotation().isEmpty() || event.getAnnotation().isBlank() ||
+                        event.getDescription() == null || event.getDescription().isEmpty() ||
+                        event.getDescription().isBlank() ||
+                        event.getTitle() == null || event.getTitle().isEmpty() ||
+                        event.getTitle().isBlank() ||
+                        event.getCategory() == null ||
+                        event.getEventDate() == null ||
+                        event.getLocation() == null || event.getLocation().getLat() == null ||
+                        event.getLocation().getLon() == null;
+        if (isBadRequest) {
+            log.info("Event object has bad body");
+            apiError.setMessage("Event object has bad body")
+                    .setStatus(HttpStatus.BAD_REQUEST)
+                    .setReason("For the requested operation the conditions are not met")
+                    .setTimestamp(timeUtils.timestampToString(Timestamp.valueOf(LocalDateTime.now())));
+            throw apiError;
+        }
         checkTime(event, apiError);
         validationSpaces(event, null);
     }

@@ -9,7 +9,9 @@ import java.util.Optional;
 
 public interface UserInternalService {
 
-    public Page<UserFullDto> findAllUsersInternal(ClientFilter filter, Pageable pageable);
+    Page<UserFullDto> findAllUsersInternal(ClientFilter filter, Pageable pageable);
+
+    Optional<UserFullDto> findUserByIdInternal(Long ids);
 
     Optional<UserFullDto> createUserInternal(UserFullDto userFullDto);
 

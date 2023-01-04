@@ -41,19 +41,19 @@ public class AdminController {
                                             @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
                                             Pageable pageable) {
         final List<ClientFilterParam> params = new ArrayList<>();
-        if (users.length > 0) {
+        if (users!= null && users.length > 0) {
             for (int i = 0; i < users.length; i++) {
-                params.add(new ClientFilterParam().setProperty("userId")
+                params.add(new ClientFilterParam().setProperty("initiator")
                         .setOperator(Comparison.EQ).setMainValue(users[i]));
             }
         }
-        if (states.length > 0) {
+        if (states!= null && states.length > 0) {
             for (int i = 0; i < states.length; i++) {
                 params.add(new ClientFilterParam().setProperty("state")
                         .setOperator(Comparison.EQ).setMainValue(states[i]));
             }
         }
-        if (categories.length > 0) {
+        if (categories != null && categories.length > 0) {
             for (int i = 0; i < categories.length; i++) {
                 params.add(new ClientFilterParam().setProperty("category")
                         .setOperator(Comparison.EQ).setMainValue(categories[i]));
@@ -108,7 +108,7 @@ public class AdminController {
             for (int i = 0; i < ids.length; i++) {
                 final var filterParam = new ClientFilterParam();
                 filterParam.setOperator(Comparison.EQ);
-                filterParam.setProperty("userId");
+                filterParam.setProperty("id");
                 filterParam.setMainValue(ids[i]);
                 filterParams.add(filterParam);
             }
@@ -116,6 +116,12 @@ public class AdminController {
         final var filter = new ClientFilter(filterParams);
         return adminService.findAllUsers(filter, pageable);
     }
+
+    /*@Deprecated
+    @GetMapping("/users")
+    public Optional<UserFullDto> readUser(@RequestParam(value = "ids", required = false) Long ids) {
+        return adminService.findUserById(ids);
+    }*/
 
     @PostMapping("/users")
     public Optional<UserFullDto> createUser(@RequestBody UserFullDto user) {

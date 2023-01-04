@@ -35,7 +35,8 @@ public class EventShortDtoConverter implements RootModelConverter<EventShortDto,
         final var views = (List<ViewStats>) statClient.getViews(timeUtils
                         .timestampToString(Timestamp.valueOf(LocalDateTime.now().minusYears(2))),
                 timeUtils.timestampToString(timeUtils.now()),
-                new String[]{"/events" + eventShortDto.getId()}, false);
+                new String[]{"/events" + eventShortDto.getId()}, false).getBody();
+
         for (ViewStats viewStats : views) {
             eventShortDto.setViews(eventShortDto.getViews() + viewStats.getHits());
         }

@@ -34,7 +34,6 @@ import java.util.Optional;
 public class PublicController {
 
 
-
     private final EventPublicService eventService;
     private final CompilationPublicService compilationService;
     private final CategoryPublicService categoryService;
@@ -55,12 +54,12 @@ public class PublicController {
         statClient.saveHit(request);
         final List<ClientFilterParam> filterParams = new ArrayList<>();
         if (text != null) {
-            filterParams.add(new ClientFilterParam().setOperator(Comparison.LIKE_IGNORE_CASE)
+            filterParams.add(new ClientFilterParam().setOperator(Comparison.LIKE)
                     .setProperty("annotation").setMainValue(text));
-            filterParams.add(new ClientFilterParam().setOperator(Comparison.LIKE_IGNORE_CASE)
+            filterParams.add(new ClientFilterParam().setOperator(Comparison.LIKE)
                     .setProperty("description").setMainValue(text));
         }
-        if (categories.length > 0) {
+        if (categories != null && categories.length > 0) {
             for (Long id : categories) {
                 filterParams.add(new ClientFilterParam().setOperator(Comparison.EQ)
                         .setProperty("category").setMainValue(id));
@@ -72,7 +71,7 @@ public class PublicController {
         }
         if (rangeStart == null && rangeEnd == null) {
             filterParams.add(new ClientFilterParam().setOperator(Comparison.GE)
-                    .setProperty("rangeStart").setMainValue(timeUtils.now()));
+                    .setProperty("rangeStart").setMainValue(timeUtils.timestampToString(timeUtils.now())));
         }
         if (rangeStart != null) {
             filterParams.add(new ClientFilterParam().setOperator(Comparison.GE)
@@ -87,7 +86,8 @@ public class PublicController {
                     .setProperty("confirmedRequests").setMainValue("participantLimit"));
         }
         final ClientFilter clientFilter = new ClientFilter(filterParams);
-        return eventService.readAllEventsPublic(clientFilter, sort, pageable);
+        final var result = eventService.readAllEventsPublic(clientFilter, sort, pageable);
+        return result;
     }
 
     @GetMapping("/events/{id}")
@@ -97,8 +97,9 @@ public class PublicController {
     }
 
     @GetMapping("/compilations")
-    public Page<CompilationDto> readAllCompilations(@RequestParam("pinned") Boolean pinned,
-                                                    Pageable pageable) {
+    public Page<CompilationDto> readAllCompilations(
+            @RequestParam(value = "pinned", defaultValue = "true") Boolean pinned,
+            Pageable pageable) {
         return compilationService.readAllCompilationsPublic(pinned, pageable);
     }
 
@@ -112,7 +113,7 @@ public class PublicController {
         return categoryService.readAllCategoriesPublic(pageable);
     }
 
-    @GetMapping("/compilations/{catId}")
+    @GetMapping("/categories/{catId}")
     public Optional<CategoryDto> readCategory(@PathVariable Long catId) {
         return categoryService.readCategoryPublic(catId);
     }

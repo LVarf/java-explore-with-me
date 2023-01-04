@@ -1,31 +1,34 @@
 package ru.practicum.ewmcore.specification;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.practicum.ewmcore.converter.TimeUtils;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 import ru.practicum.ewmcore.specification.filter.ClientFilterParam;
 import ru.practicum.ewmcore.specification.filter.Comparison;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.persistence.criteria.Predicate;
 
+@Slf4j
 public abstract class AbstractSpecification<T> {
     private static final String ID = "id";
-    private static final String USER_ID = "userId";
+    private static final String INITIATOR = "initiator";
     private static final String STATE = "state";
     private static final String CATEGORY = "category";
     private static final String RANGE_START = "rangeStart";
     private static final String RANGE_END = "rangeEnd";
-    private static final String ANNOTATION = "annotation";
-    private static final String DESCRIPTION = "description";
     private static final String PAID = "paid";
     private static final String CONFIRMED_REQUESTS = "confirmedRequests";
+    private static final String EVENT_DATE = "eventDate";
 
+    @Autowired
     private TimeUtils timeUtils;
 
     protected Predicate buildFinalPredicate(final Root<T> root,
@@ -54,11 +57,9 @@ public abstract class AbstractSpecification<T> {
                                                     final CriteriaBuilder criteriaBuilder) {
         switch (clientFilterParam.getProperty()) {
             case ID:
-            case USER_ID:
             case STATE:
             case CATEGORY:
-            case ANNOTATION:
-            case DESCRIPTION:
+            case INITIATOR:
             case CONFIRMED_REQUESTS:
             case PAID:
                 return buildPredicate(clientFilterParam, root, criteriaBuilder);
@@ -72,13 +73,14 @@ public abstract class AbstractSpecification<T> {
 
     private Predicate createTimestampPredicate(final ClientFilterParam clientFilterParam, final Root<T> root,
                                                final CriteriaBuilder criteriaBuilder) {
-        final Timestamp rangeStart = timeUtils.stringToTimestamp((String) clientFilterParam.getMainValue());
+        final var mainValue = (String) clientFilterParam.getMainValue();
+        final Timestamp rangeStart = timeUtils.stringToTimestamp(mainValue);
         final Timestamp rangeEnd = timeUtils.stringToTimestamp((String) clientFilterParam.getMainValue());
         switch (clientFilterParam.getOperator()) {
             case GE:
-                return criteriaBuilder.greaterThanOrEqualTo(root.get(clientFilterParam.getProperty()), rangeStart);
+                return criteriaBuilder.greaterThanOrEqualTo(root.get(EVENT_DATE), rangeStart);
             case LE:
-                return criteriaBuilder.lessThanOrEqualTo(root.get(clientFilterParam.getProperty()), rangeEnd);
+                return criteriaBuilder.lessThanOrEqualTo(root.get(EVENT_DATE), rangeEnd);
             default:
                 return null;
         }
@@ -89,6 +91,8 @@ public abstract class AbstractSpecification<T> {
         final Comparison comparison = clientFilterParam.getOperator();
         final Object mainValue = clientFilterParam.getMainValue();
         final Object alterValue = clientFilterParam.getAlterValue();
+        log.info("Property: {}; Operator: {}; MainValue: {};", clientFilterParam.getProperty(),
+                clientFilterParam.getOperator(), clientFilterParam.getMainValue());
         switch (comparison) {
             case LIKE_IGNORE_CASE:
                 return criteriaBuilder
@@ -121,8 +125,9 @@ public abstract class AbstractSpecification<T> {
                 return criteriaBuilder.lessThanOrEqualTo(root.get(clientFilterParam.getProperty()),
                         mainValue.toString());
             case EQ:
-                return criteriaBuilder.equal(root.get(clientFilterParam.getProperty()),
-                        mainValue.toString());
+                final var getRoot = root.get(clientFilterParam.getProperty());
+                return criteriaBuilder.equal(getRoot,
+                        mainValue);
             default:
                 return null;
         }

@@ -7,11 +7,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import ru.practicum.ewmcore.model.event.Event;
 import ru.practicum.ewmcore.model.event.EventFullDto;
+import ru.practicum.ewmcore.model.event.EventStateEnum;
+import ru.practicum.ewmcore.model.location.Location;
 import ru.practicum.ewmcore.model.stat.ViewStats;
+import ru.practicum.ewmcore.service.categoryService.CategoryInternalService;
 import ru.practicum.ewmcore.service.utils.RootModelConverter;
 import ru.practicum.ewmcore.service.utils.SortConverterMixin;
 import ru.practicum.ewmcore.statClient.StatClient;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -20,6 +25,8 @@ public class EventFullDtoConverter implements RootModelConverter<EventFullDto, E
         SortConverterMixin {
     private final TimeUtils timeUtils;
     private final StatClient statClient;
+    private final UserDtoConverter userDtoConverter;
+    private final UserShortDtoConverter userShortDtoConverter;
 
     @Override
     public EventFullDto convertFromEntity(final Event entity) {
@@ -27,19 +34,28 @@ public class EventFullDtoConverter implements RootModelConverter<EventFullDto, E
         BeanUtils.copyProperties(entity, model);
         final var eventDate = entity.getEventDate();
         final var createdOn = entity.getCreatedOn();
-        final var publishedOn = entity.getPublishedOn();
         model.setEventDate(timeUtils.timestampToString(eventDate));
         model.setCreatedOn(timeUtils.timestampToString(createdOn));
-        model.setPublishedOn(timeUtils.timestampToString(publishedOn));
-        model.setCategory(entity.getCategory().getId());
+        if (entity.getState() == EventStateEnum.PUBLISHED) {
+            final var publishedOn = entity.getPublishedOn();
+            model.setPublishedOn(timeUtils.timestampToString(publishedOn));
+        }
+        if (entity.getCategory() != null && entity.getCategory().getId() != null) {
+            model.setCategory(entity.getCategory().getId());
+        }
+        model.setLocation(new Location(entity.getLocationLat(), entity.getLocationLon()));
+        model.setInitiator(userShortDtoConverter.convertFromEntity(entity.getInitiator()));
         enrichViews(model);
         return model;
     }
 
     private EventFullDto enrichViews(EventFullDto eventFullDto) {
-        final var views = (List<ViewStats>) statClient.getViews(eventFullDto.getPublishedOn(),
-                timeUtils.timestampToString(timeUtils.now()),
-                new String[]{"/events" + eventFullDto.getId()}, false);
+        String start = eventFullDto.getPublishedOn();
+        if (start == null) {
+            start = timeUtils.timestampToString(Timestamp.valueOf(LocalDateTime.now().minusYears(2)));
+        }
+        final var views = (List<ViewStats>) statClient.getViews(start, timeUtils.timestampToString(timeUtils.now()),
+                new String[]{"/events/" + eventFullDto.getId()}, false).getBody();
         for (ViewStats viewStats : views) {
             eventFullDto.setViews(eventFullDto.getViews() + viewStats.getHits());
         }
@@ -52,10 +68,17 @@ public class EventFullDtoConverter implements RootModelConverter<EventFullDto, E
         BeanUtils.copyProperties(entity, model);
         final var eventDate = entity.getEventDate();
         final var createdOn = entity.getCreatedOn();
-        final var publishedOn = entity.getPublishedOn();
         model.setEventDate(timeUtils.stringToTimestamp(eventDate));
         model.setCreatedOn(timeUtils.stringToTimestamp(createdOn));
-        model.setPublishedOn(timeUtils.stringToTimestamp(publishedOn));
+        model.setInitiator(userShortDtoConverter.convertToEntity(entity.getInitiator()));
+        if (entity.getLocation() != null) {
+            model.setLocationLat(entity.getLocation().getLat());
+            model.setLocationLon(entity.getLocation().getLon());
+        }
+        if (entity.getState() == EventStateEnum.PUBLISHED) {
+            final var publishedOn = entity.getPublishedOn();
+            model.setPublishedOn(timeUtils.stringToTimestamp(publishedOn));
+        }
         return model;
     }
 

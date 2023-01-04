@@ -15,8 +15,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.sql.Timestamp;
@@ -34,6 +37,10 @@ public class Event {
     @Column
     private String annotation;
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name = "category_id", referencedColumnName = "id")
+    })
+    @ToString.Exclude
     private Category category;
     @Transient
     private Integer confirmedRequests; //вычисляемое поле
@@ -44,6 +51,10 @@ public class Event {
     @Column
     private Timestamp eventDate; //дата события для дто (в формате "yyyy-MM-dd HH:mm:ss")
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name = "initiator_id", referencedColumnName = "id")
+    })
+    @ToString.Exclude
     private User initiator;
     @OneToMany(mappedBy = "event")
     @ToString.Exclude

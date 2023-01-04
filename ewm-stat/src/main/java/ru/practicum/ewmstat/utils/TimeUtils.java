@@ -10,10 +10,18 @@ import java.time.format.DateTimeFormatter;
 @Component
 public class TimeUtils {
     private static final String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final String TIME_FORMAT_FROM_URL = "yyyy-MM-dd%20HH:mm:ss";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT);
+    private static final DateTimeFormatter FORMATTER_FROM_URI = DateTimeFormatter.ofPattern(TIME_FORMAT_FROM_URL);
 
     public Timestamp stringToTimestamp(String entity) {
         final LocalDateTime dateTime = LocalDateTime.parse(entity, FORMATTER);
+        final Timestamp model = Timestamp.valueOf(dateTime);
+        return model;
+    }
+
+    public Timestamp stringToTimestampFromURI(String entity) {
+        final LocalDateTime dateTime = LocalDateTime.parse(entity, FORMATTER_FROM_URI);
         final Timestamp model = Timestamp.valueOf(dateTime);
         return model;
     }

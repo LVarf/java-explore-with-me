@@ -8,7 +8,13 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.ewmcore.model.event.Event;
 import ru.practicum.ewmcore.model.user.User;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findAll(Specification<User> specification, Pageable pageable);
+
+    Optional<User> findUserById(Long ids);
+
+    Optional<User> findUserByName(String name);
 }

@@ -29,8 +29,7 @@ public class AdminServiceImpl implements AdminPublicService {
 
     @Override
     public Page<EventFullDto> readAllByFilters(ClientFilter filters, Pageable pageable) {
-        eventService.readAllEventsByFilters(filters, pageable);
-        return Page.empty();
+        return eventService.readAllEventsByFilters(filters, pageable);
     }
 
     @Override
@@ -66,6 +65,11 @@ public class AdminServiceImpl implements AdminPublicService {
     @Override
     public Page<UserFullDto> findAllUsers(ClientFilter filter, Pageable pageable) {
         return userService.findAllUsersInternal(filter, pageable);
+    }
+
+    @Override
+    public Optional<UserFullDto> findUserById(Long ids) {
+        return userService.findUserByIdInternal(ids);
     }
 
     @Override

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.model.compilation.Compilation;
 import ru.practicum.ewmcore.model.event.Event;
 import ru.practicum.ewmcore.model.records.EventToCompilation;
+import ru.practicum.ewmcore.model.records.EventToCompilationKey;
 import ru.practicum.ewmcore.repository.EventToCompilationRepository;
 
 @Service
@@ -20,6 +21,7 @@ public class EventToCompilationServiceImpl implements EventToCompilationInternal
     @Override
     public EventToCompilation createEventToCompilation(Event event, Compilation compilation) {
         final var eventToCompilation = new EventToCompilation();
+        eventToCompilation.setKey(new EventToCompilationKey(event.getId(), compilation.getId()));
         eventToCompilation.setEvent(event);
         eventToCompilation.setCompilation(compilation);
         return repository.save(eventToCompilation);

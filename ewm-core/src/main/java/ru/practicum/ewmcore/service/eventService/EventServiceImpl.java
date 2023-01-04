@@ -8,11 +8,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.converter.EventFullDtoConverter;
 import ru.practicum.ewmcore.converter.EventShortDtoConverter;
+import ru.practicum.ewmcore.converter.TimeUtils;
 import ru.practicum.ewmcore.model.event.Event;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.event.EventStateEnum;
+import ru.practicum.ewmcore.repository.CategoryRepository;
 import ru.practicum.ewmcore.repository.EventRepository;
+import ru.practicum.ewmcore.service.categoryService.CategoryInternalService;
 import ru.practicum.ewmcore.specification.EventSpecification;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 import ru.practicum.ewmcore.specification.filter.ClientFilterParam;
@@ -35,6 +38,8 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
     private final EventFullDtoConverter eventFullDtoConverter;
     private final EventDtoValidator validator;
     private final EventSpecification specification;
+    private final TimeUtils timeUtils;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public Page<EventShortDto> readAllEventsPublic(ClientFilter filter, String sort, Pageable pageable) {
@@ -96,9 +101,11 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
 
     public Optional<EventFullDto> createEvent(EventFullDto event) {
         validator.validationOnCreate(event);
-        //enrichCategory
-        final var eventFromSave = repository
-                .save(eventFullDtoConverter.convertToEntity(event));
+        event.setCreatedOn(timeUtils.timestampToString(timeUtils.now()));
+        final var eventForSave = eventFullDtoConverter.convertToEntity(event);
+        final var category = categoryRepository.findById(event.getCategory()).orElseThrow();
+        eventForSave.setCategory(category);
+        final var eventFromSave = repository.save(eventForSave);
         return Optional.of(eventFullDtoConverter.convertFromEntity(eventFromSave));
     }
 
@@ -150,6 +157,7 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
         validator.validationOnExist(eventFromDb);
         validator.validationOnPublished(eventFullDtoConverter.convertFromEntity(eventFromDb));
         eventFromDb.setState(EventStateEnum.PUBLISHED);
+        eventFromDb.setPublishedOn(timeUtils.now());
         final var eventFromSave = repository.save(eventFromDb);
         return Optional.of(eventFromSave).map(eventFullDtoConverter::convertFromEntity);
     }

@@ -31,10 +31,12 @@ public class StatService {
     public List<ViewStats> readStats(String start, String end, String[] uris, Boolean unique) {
         if (unique) {
             return repository
-                    .findViewsUniqueTrue(timeUtils.stringToTimestamp(start), timeUtils.stringToTimestamp(end), uris);
+                    .findViewsUniqueTrue(timeUtils.stringToTimestamp(start),
+                            timeUtils.stringToTimestamp(end), uris);
         } else {
             return repository
-                    .findViewsUniqueFalse(timeUtils.stringToTimestamp(start), timeUtils.stringToTimestamp(end), uris);
+                    .findViewsUniqueFalse(timeUtils.stringToTimestamp(start),
+                            timeUtils.stringToTimestamp(end), uris);
         }
     }
 }

@@ -36,13 +36,19 @@ public class CategoryServiceImpl implements CategoryInternalService, CategoryPub
 
     @Override
     public Optional<CategoryDto> readCategoryPublic(Long catId) {
-        return repository.findById(catId).map(converter::convertFromEntity);
+        final var categoryFromDb = repository.findById(catId).map(converter::convertFromEntity);
+        validator.validationOnResponse(categoryFromDb.orElse(null));
+        return categoryFromDb;
     }
 
     @Override
     public Optional<CategoryDto> updateCategoryInternal(CategoryDto categoryDto) {
+        validator.validationCategoryOnUpdate(categoryDto);
         final var categoryFromDb = repository.findById(categoryDto.getId()).orElse(null);
         validator.validationOnExist(converter.convertFromEntity(categoryFromDb));
+        final var isUnique = !categoryDto.getName().equals(categoryFromDb.getName()) &&
+                repository.findCategoryByName(categoryDto.getName()).orElse(null) != null;
+        validator.validationUniqueName(isUnique);
         validator.validationNameCategory(categoryDto);
         final var categoryFromSave = repository.save(converter.mergeToEntity(categoryDto, categoryFromDb));
         return Optional.of(categoryFromSave).map(converter::convertFromEntity);
@@ -50,6 +56,9 @@ public class CategoryServiceImpl implements CategoryInternalService, CategoryPub
 
     @Override
     public Optional<CategoryDto> createCategory(CategoryDto categoryDto) {
+        validator.validationCategoryOnSave(categoryDto);
+        final var isUnique = repository.findCategoryByName(categoryDto.getName()).orElse(null) != null;
+        validator.validationUniqueName(isUnique);
         validator.validationNameCategory(categoryDto);
         final var categoryFromSave = repository.save(converter.convertToEntity(categoryDto));
         return Optional.of(categoryFromSave).map(converter::convertFromEntity);

@@ -1,6 +1,7 @@
 package ru.practicum.ewmstat.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping
 public class StatController {
 
@@ -30,6 +32,7 @@ public class StatController {
                                      @RequestParam("end") String end,
                                      @RequestParam("uris") String[] uris,
                                      @RequestParam(value = "unique", defaultValue = "false") Boolean unique) {
+        log.info("Inter dates: stats={}; end={}; uris={}; unique={}", start, end, uris, unique);
         return service.readStats(start, end, uris, unique);
     }
 }

@@ -72,7 +72,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
 
     @Override
     public Optional<List<ParticipationRequestDto>> readRequestsByRequesterId(Long requesterId) {
-        final var requests = requestRepository.findByRequester(requesterId);
+        final var requests = requestRepository.findAllByRequesterId(requesterId);
         return Optional.of(requests.stream().map(requestConverter::convertFromEntity).collect(Collectors.toList()));
     }
 

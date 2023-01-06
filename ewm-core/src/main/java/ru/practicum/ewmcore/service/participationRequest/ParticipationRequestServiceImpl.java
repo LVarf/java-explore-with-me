@@ -5,13 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.converter.EventFullDtoConverter;
 import ru.practicum.ewmcore.converter.ParticipationRequestDtoConverter;
+import ru.practicum.ewmcore.converter.UserDtoConverter;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequest;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestStateEnum;
-import ru.practicum.ewmcore.model.user.User;
 import ru.practicum.ewmcore.repository.ParticipationRequestRepository;
+import ru.practicum.ewmcore.repository.UserRepository;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
+import ru.practicum.ewmcore.service.userService.UserInternalService;
 import ru.practicum.ewmcore.validator.ParticipationRequestDtoValidator;
 
 import java.sql.Timestamp;
@@ -28,6 +30,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
     private final ParticipationRequestDtoValidator requestValidator;
     private final EventInternalService eventService;
     private final EventFullDtoConverter eventFullDtoConverter;
+    private final UserRepository userRepository;
 
     @Override
     public Optional<ParticipationRequestDto> findRequestUserOnEvent(Long userId, Long eventId) {
@@ -79,12 +82,11 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
         requestValidator.validationOnCreate(userId, eventFromDb.orElseThrow());
         requestValidator.validationOnRepeatedRequests(findRequestUserOnEvent(userId, eventId).orElse(null));
         final ParticipationRequest request = new ParticipationRequest()
-                //TODO: after implements userService fix return user
-                .setRequester(new User().setId(userId).setName("name").setEmail("email@email.ya"))
+                .setRequester(userRepository.findUserById(userId).orElseThrow())
                 .setCreated(Timestamp.from(Instant.now()))
                 .setEvent(eventFromDb.map(eventFullDtoConverter::convertToEntity).orElseThrow())
                 .setStatus(ParticipationRequestStateEnum.PENDING);
-        if (eventFromDb.get().isRequestModeration()) {
+        if (!eventFromDb.get().isRequestModeration()) {
             request.setStatus(ParticipationRequestStateEnum.CONFIRMED);
         }
         final var requestFromDb = requestRepository.save(request);

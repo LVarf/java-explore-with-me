@@ -42,38 +42,24 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
 
     @Override
     public Page<EventShortDto> readAllEventsPublic(ClientFilter filter, String sort, Pageable pageable) {
+        final var specific = specification.findAllSpecificationForPublic(filter, sort);
         final var eventsFromDb = repository
-                .findAll(specification.findAllSpecificationForPublic(filter, sort), pageable);
+                .findAll(specific, pageable);
         if (sort != null && sort.equals(SORT_VIEWS)) {
             final var events = eventsFromDb.stream()
                     .map(eventShortDtoConverter::convertFromEntity)
-                    .map(this::enrichViewsEventShortDto)
-                    .sorted((e1, e2) -> e1.getViews() - e2.getViews())
+                    .sorted((e1, e2) -> (int) (e1.getViews() - e2.getViews()))
                     .collect(Collectors.toList());
             return new PageImpl<EventShortDto>(events, pageable, eventsFromDb.getTotalElements());
         }
-        return eventsFromDb.map(eventShortDtoConverter::convertFromEntity).map(this::enrichViewsEventShortDto);
+        return eventsFromDb.map(eventShortDtoConverter::convertFromEntity);
     }
 
     @Override
     public Optional<EventFullDto> readEventPublic(Long eventId) {
         final var eventFromDb = repository.findById(eventId);
         return eventFromDb.filter(event -> event.getState() == EventStateEnum.PUBLISHED)
-                .map(eventFullDtoConverter::convertFromEntity).map(this::enrichViewsEventFullDto);
-    }
-
-    private EventShortDto enrichViewsEventShortDto(EventShortDto event) {
-        event.setViews(enrichViews(event.getId()));
-        return event;
-    }
-
-    private EventFullDto enrichViewsEventFullDto(EventFullDto event) {
-        event.setViews(enrichViews(event.getId()));
-        return event;
-    }
-
-    private Integer enrichViews(Long eventId) {
-        return 10; //TODO: реализовать запрос в сервис статистики
+                .map(eventFullDtoConverter::convertFromEntity);
     }
 
     @Override
@@ -103,6 +89,7 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
         validator.validationOnCreate(event);
         event.setCreatedOn(timeUtils.timestampToString(timeUtils.now()));
         final var eventForSave = eventFullDtoConverter.convertToEntity(event);
+        eventForSave.setConfirmedRequests(0);
         final var category = categoryRepository.findById(event.getCategory()).orElseThrow();
         eventForSave.setCategory(category);
         final var eventFromSave = repository.save(eventForSave);

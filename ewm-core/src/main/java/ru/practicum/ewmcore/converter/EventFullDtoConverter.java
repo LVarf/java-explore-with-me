@@ -1,6 +1,7 @@
 package ru.practicum.ewmcore.converter;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,15 +17,15 @@ import ru.practicum.ewmcore.statClient.StatClient;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class EventFullDtoConverter implements RootModelConverter<EventFullDto, Event>,
         SortConverterMixin {
     private final TimeUtils timeUtils;
     private final StatClient statClient;
-    private final UserDtoConverter userDtoConverter;
     private final UserShortDtoConverter userShortDtoConverter;
 
     @Override
@@ -53,11 +54,15 @@ public class EventFullDtoConverter implements RootModelConverter<EventFullDto, E
         if (start == null) {
             start = timeUtils.timestampToString(Timestamp.valueOf(LocalDateTime.now().minusYears(2)));
         }
-        final var views = (List<ViewStats>) statClient.getViews(start, timeUtils.timestampToString(timeUtils.now()),
-                new String[]{"/events/" + eventFullDto.getId()}, false).getBody();
+        eventFullDto.setViews(0L);
+        final var views = statClient.getViews(start, timeUtils.timestampToString(timeUtils.now()),
+                "/events/" + eventFullDto.getId(), false);
+        log.info("views[] = {}", Objects.requireNonNull(views));
         for (ViewStats viewStats : views) {
-            eventFullDto.setViews(eventFullDto.getViews() + viewStats.getHits());
+            final var hits = viewStats.getHits() != null ? viewStats.getHits() : 0;
+            eventFullDto.setViews(eventFullDto.getViews() + hits);
         }
+
         return eventFullDto;
     }
 

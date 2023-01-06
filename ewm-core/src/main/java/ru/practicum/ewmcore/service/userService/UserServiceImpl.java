@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewmcore.converter.EventShortDtoConverter;
 import ru.practicum.ewmcore.converter.UserDtoConverter;
 import ru.practicum.ewmcore.converter.UserShortDtoConverter;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
+import ru.practicum.ewmcore.model.user.User;
 import ru.practicum.ewmcore.model.user.UserFullDto;
 import ru.practicum.ewmcore.model.user.UserShortDto;
 import ru.practicum.ewmcore.repository.UserRepository;
@@ -33,7 +33,6 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
     private final UserValidator validator;
     private final EventInternalService eventInternalService;
     private final ParticipationRequestInternalService requestInternalService;
-    private final EventShortDtoConverter eventShortDtoConverter;
     private final UserDtoConverter userFullDtoConverter;
     private final UserShortDtoConverter userShortDtoConverter;
     private final UserSpecification specification;
@@ -125,8 +124,14 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
 
     @Override
     public Optional<UserFullDto> findUserByIdInternal(Long ids) {
-        final var usersFromDb = repository.findUserById(ids);
+        final var usersFromDb = findUserByIdInternalImpl(ids);
         return usersFromDb.map(userFullDtoConverter::convertFromEntity);
+    }
+
+    @Override
+    public Optional<User> findUserByIdInternalImpl(Long ids) {
+        final var usersFromDb = repository.findUserById(ids);
+        return usersFromDb;
     }
 
     @Override

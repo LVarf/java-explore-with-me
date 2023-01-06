@@ -31,7 +31,6 @@ public class EventSpecification extends AbstractSpecification<Event> {
     }
 
     public Specification<Event> findAllSpecificationForPublic(final ClientFilter filter, String sort) {
-        //фильтрайия по onlyAvailable
         return ((root, query, criteriaBuilder) -> {
             if (sort != null && sort.equals(SORT_EVENT_DATE)) {
                 query.orderBy(criteriaBuilder.desc(root.get(EVENT_DATE_CONST)));
@@ -41,7 +40,8 @@ public class EventSpecification extends AbstractSpecification<Event> {
             filter.getFilters().add(buildPublishedFilterParam());
             final var predicates = buildFinalPredicate(root, criteriaBuilder, filter);
             if (findTextPredicate != null) {
-                return criteriaBuilder.and(predicates, findTextPredicate);
+                final var result = criteriaBuilder.and(predicates, findTextPredicate);
+                return result;
             }
             return predicates;
         });

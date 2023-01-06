@@ -33,13 +33,14 @@ public class EventShortDtoConverter implements RootModelConverter<EventShortDto,
     }
 
     private EventShortDto enrichViews(EventShortDto eventShortDto) {
-        final var views = (List<ViewStats>) statClient.getViews(timeUtils
-                        .timestampToString(Timestamp.valueOf(LocalDateTime.now().minusYears(2))),
+        final var views = statClient.getViews(
+                timeUtils.timestampToString(Timestamp.valueOf(LocalDateTime.now().minusYears(2))),
                 timeUtils.timestampToString(timeUtils.now()),
-                new String[]{"/events" + eventShortDto.getId()}, false).getBody();
+                "/events" + eventShortDto.getId(), false);
 
         for (ViewStats viewStats : views) {
-            eventShortDto.setViews(eventShortDto.getViews() + viewStats.getHits());
+            //eventShortDto.setViews(eventShortDto.getViews() + viewStats.getHits());
+            //TODO: think about it
         }
         return eventShortDto;
     }

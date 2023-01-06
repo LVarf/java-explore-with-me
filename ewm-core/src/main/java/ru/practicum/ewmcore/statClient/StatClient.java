@@ -1,10 +1,15 @@
 package ru.practicum.ewmcore.statClient;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializable;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +19,21 @@ import org.springframework.web.util.UriComponentsBuilder;
 import ru.practicum.ewmcore.converter.TimeUtils;
 import ru.practicum.ewmcore.error.ApiError;
 import ru.practicum.ewmcore.model.stat.EndpointHit;
+import ru.practicum.ewmcore.model.stat.ViewStats;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -49,29 +61,21 @@ public class StatClient {
         }
     }
 
-    public ResponseEntity<Object> getViews(String start, String end, String[] uris, Boolean unique) {
-        final Map<String, Object> uriVar = new HashMap<>();
-
+    public List<ViewStats> getViews(String start, String end, String uris, Boolean unique) {
         final var request = buildRequestHeaders();
-        uriVar.put("start", start);
-        uriVar.put("end", end);
-        uriVar.put("uris", Arrays.toString(uris));
-        uriVar.put("unique", unique);
-        final var newUrl = UriComponentsBuilder.fromHttpUrl(url + STATS_ENDPOINT)
-                .queryParam("start", start)
-                .queryParam("end", end)
-                .queryParam("uris", Arrays.toString(uris))
-                .queryParam("unique", unique)
-                .build().toUri();
-        log.info("newUri = {}", newUrl);
-        final String path = url + STATS_ENDPOINT + "?start=" + start + "&end=" + end + "&uris="
-                + Arrays.toString(uris) + "$unique=" + unique;
-        log.info(Arrays.toString(uris));
-        log.info(path);
+        final String path;
         try {
-            final ResponseEntity<Object> response = restTemplate.getForEntity(path, Object.class, request);
-            log.info(response.getBody().toString());
-            return response;
+            path = url + STATS_ENDPOINT + "?unique=" + unique + "&uris=" + uris +
+                    "&start=" + URLEncoder.encode(start, "UTF-8") +
+                    "&end=" + URLEncoder.encode(end, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            final ResponseEntity<Object[]> response = restTemplate.getForEntity(path, Object[].class, request);
+            final var mapper = new ObjectMapper();
+            return Arrays.stream(Objects.requireNonNull(response.getBody()))
+                    .map(el -> mapper.convertValue(el, ViewStats.class)).collect(Collectors.toList());
         } catch (RuntimeException e) {
             throw new ApiError().setStatus(HttpStatus.BAD_REQUEST).setReason("Ошибка запроса в сервис статистики")
                     .setTimestamp(timeUtils.timestampToString(timeUtils.now()))

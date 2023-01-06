@@ -41,7 +41,7 @@ public class Event {
     })
     @ToString.Exclude
     private Category category;
-    @Transient
+    @Column
     private Integer confirmedRequests; //вычисляемое поле
     @Column
     private Timestamp createdOn; //дата создания для дто (в формате "yyyy-MM-dd HH:mm:ss")

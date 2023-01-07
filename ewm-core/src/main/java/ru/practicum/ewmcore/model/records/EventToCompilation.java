@@ -18,7 +18,7 @@ import java.io.Serializable;
 @RequiredArgsConstructor
 @Entity
 @Table(name = "event_to_compilation", schema = "ewm_core")
-public class EventToCompilation implements Serializable {
+public class EventToCompilation {
 
     @EmbeddedId
     private EventToCompilationKey key;

@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import ru.practicum.ewmcore.model.category.Category;
-import ru.practicum.ewmcore.model.records.EventToCompilation;
 import ru.practicum.ewmcore.model.user.User;
 
 import javax.persistence.Column;
@@ -17,13 +16,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.sql.Timestamp;
-import java.util.Set;
 
 @Entity
 @Data

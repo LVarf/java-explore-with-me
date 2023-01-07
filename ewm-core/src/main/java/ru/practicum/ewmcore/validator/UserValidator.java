@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class UserValidator extends AbstractValidation{
+public class UserValidator extends AbstractValidation {
 
     private final TimeUtils timeUtils;
     private final UserRepository userRepository;

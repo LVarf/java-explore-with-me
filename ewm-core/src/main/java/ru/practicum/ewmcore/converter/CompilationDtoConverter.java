@@ -7,11 +7,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import ru.practicum.ewmcore.model.compilation.Compilation;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
-import ru.practicum.ewmcore.model.records.EventToCompilation;
 import ru.practicum.ewmcore.service.utils.RootModelConverter;
 import ru.practicum.ewmcore.service.utils.SortConverterMixin;
-
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor

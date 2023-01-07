@@ -14,7 +14,6 @@ import ru.practicum.ewmcore.statClient.StatClient;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor

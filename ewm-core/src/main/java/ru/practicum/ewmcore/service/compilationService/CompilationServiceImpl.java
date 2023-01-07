@@ -17,8 +17,6 @@ import ru.practicum.ewmcore.repository.CompilationRepository;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
 import ru.practicum.ewmcore.service.eventToCompilationService.EventToCompilationInternalService;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;

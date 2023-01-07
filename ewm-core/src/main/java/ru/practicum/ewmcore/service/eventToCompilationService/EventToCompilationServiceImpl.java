@@ -9,7 +9,6 @@ import ru.practicum.ewmcore.model.records.EventToCompilation;
 import ru.practicum.ewmcore.model.records.EventToCompilationKey;
 import ru.practicum.ewmcore.repository.EventToCompilationRepository;
 
-import java.util.List;
 import java.util.Set;
 
 @Service

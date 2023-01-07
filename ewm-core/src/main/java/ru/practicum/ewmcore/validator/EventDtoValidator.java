@@ -24,7 +24,6 @@ import java.util.List;
 @Slf4j
 public class EventDtoValidator extends AbstractValidation {
     private final TimeUtils timeUtils;
-    private CategoryInternalService categoryInternalService;
 
     public void validationOnRead(Long userId, EventFullDto event) {
         final var apiError = new ApiError();
@@ -65,24 +64,6 @@ public class EventDtoValidator extends AbstractValidation {
             apiError.setMessage("The event state is PUBLISHED")
                     .setStatus(HttpStatus.FORBIDDEN)
                     .setReason("For the requested operation the conditions are not met")
-                    .setTimestamp(timeUtils.timestampToString(Timestamp.valueOf(LocalDateTime.now())));
-            throw apiError;
-        }
-    }
-
-    private void validateCategoriesExist(long[] categories, ApiError apiError) {
-        final List<CategoryDto> categoryDtoList = new ArrayList<>();
-        for (long id : categories) {
-            final var category = categoryInternalService.readInternal(id).orElse(null);
-            if (category != null) {
-                categoryDtoList.add(category);
-            }
-        }
-        if (categoryDtoList.isEmpty()) {
-            log.info("Categories id: {} not found", Arrays.toString(categories));
-            apiError.setMessage("Categories are not found")
-                    .setStatus(HttpStatus.NOT_FOUND)
-                    .setReason("The required object was not found.")
                     .setTimestamp(timeUtils.timestampToString(Timestamp.valueOf(LocalDateTime.now())));
             throw apiError;
         }

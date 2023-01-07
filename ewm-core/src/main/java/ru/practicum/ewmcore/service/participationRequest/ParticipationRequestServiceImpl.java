@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.converter.EventFullDtoConverter;
 import ru.practicum.ewmcore.converter.ParticipationRequestDtoConverter;
-import ru.practicum.ewmcore.converter.UserDtoConverter;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequest;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
@@ -13,7 +12,6 @@ import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestState
 import ru.practicum.ewmcore.repository.ParticipationRequestRepository;
 import ru.practicum.ewmcore.repository.UserRepository;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
-import ru.practicum.ewmcore.service.userService.UserInternalService;
 import ru.practicum.ewmcore.validator.ParticipationRequestDtoValidator;
 
 import java.sql.Timestamp;
@@ -33,9 +31,15 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
     private final UserRepository userRepository;
 
     @Override
-    public Optional<ParticipationRequestDto> findRequestUserOnEvent(Long userId, Long eventId) {
+    public Optional<ParticipationRequestDto> findRequestRequesterOnEvent(Long userId, Long eventId) {
         final var requests = requestRepository.findByRequesterIdAndEventId(userId, eventId);
         return requests.map(requestConverter::convertFromEntity);
+    }
+
+    @Override
+    public List<ParticipationRequestDto> findRequestsByUserAndEvent(Long eventId) {
+        final var requests = requestRepository.findByEventId(eventId);
+        return requests.stream().map(requestConverter::convertFromEntity).collect(Collectors.toList());
     }
 
     @Override
@@ -80,7 +84,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
     public Optional<ParticipationRequestDto> createRequest(Long userId, Long eventId) {
         final var eventFromDb = eventService.readEvent(eventId);
         requestValidator.validationOnCreate(userId, eventFromDb.orElseThrow());
-        requestValidator.validationOnRepeatedRequests(findRequestUserOnEvent(userId, eventId).orElse(null));
+        requestValidator.validationOnRepeatedRequests(findRequestRequesterOnEvent(userId, eventId).orElse(null));
         final ParticipationRequest request = new ParticipationRequest()
                 .setRequester(userRepository.findUserById(userId).orElseThrow())
                 .setCreated(Timestamp.from(Instant.now()))

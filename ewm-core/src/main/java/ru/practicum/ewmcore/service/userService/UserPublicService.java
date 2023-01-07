@@ -27,7 +27,7 @@ public interface UserPublicService {
     Optional<EventFullDto> updateEventOnCancel(Long userId, Long eventId);
 
     @Transactional(readOnly = true)
-    Optional<ParticipationRequestDto> readRequestPublic(Long userId, Long eventId);
+    List<ParticipationRequestDto> readRequestPublic(Long userId, Long eventId);
 
     @Transactional
     Optional<ParticipationRequestDto> confirmRequestPublic(Long userId, Long eventId, Long reqId);

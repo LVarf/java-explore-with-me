@@ -4,14 +4,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import ru.practicum.ewmcore.model.event.Event;
 
 import java.util.List;
-import java.util.Set;
 
 @Repository
-public interface EventRepository extends JpaRepository<Event, Long> {
+public interface EventRepository extends JpaRepository<Event, Long>,
+        JpaSpecificationExecutor<Event> {
 
     Page<Event> findAllByInitiatorId(Long userId, Pageable pageable);
 
@@ -19,5 +20,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findByCategoryId(Long catId);
 
-    Set<Event> findAll(Specification<Event> specification);
+    List<Event> findAll(Specification<Event> specification);
 }

@@ -17,6 +17,9 @@ public interface EventInternalService {
     Page<EventShortDto> readAllByInitiatorId(Long id, Pageable pageable);
 
     @Transactional(readOnly = true)
+    Optional<Event> readById(Long eventId);
+
+    @Transactional(readOnly = true)
     Page<EventFullDto> readAllEventsByFilters(ClientFilter filters, Pageable pageable);
 
     @Transactional
@@ -50,5 +53,5 @@ public interface EventInternalService {
     List<EventFullDto> readAllByCategoryId(Long catId);
 
     @Transactional(readOnly = true)
-    Set<Event> readAllByFilter(Set<Long> eventIds);
+    List<Event> readAllByFilter(Set<Long> eventIds);
 }

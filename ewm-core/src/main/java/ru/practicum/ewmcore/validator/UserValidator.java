@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class UserValidator {
+public class UserValidator extends AbstractValidation{
 
     private final TimeUtils timeUtils;
     private final UserRepository userRepository;
@@ -62,5 +62,9 @@ public class UserValidator {
                     .setTimestamp(timeUtils.timestampToString(Timestamp.valueOf(LocalDateTime.now())));
             throw apiError;
         }
+    }
+
+    public void assertValidator(Boolean bool, String classType) {
+        assertValidator(bool, classType, timeUtils);
     }
 }

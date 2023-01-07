@@ -88,7 +88,12 @@ public class EventFullDtoConverter implements RootModelConverter<EventFullDto, E
 
     @Override
     public Event mergeToEntity(final EventFullDto model, final Event entity) {
-        BeanUtils.copyProperties(model, entity);
+        entity.setAnnotation(model.getAnnotation());
+        entity.setDescription(model.getDescription());
+        entity.setEventDate(timeUtils.stringToTimestamp(model.getEventDate()));
+        entity.setPaid(model.isPaid());
+        entity.setParticipantLimit(model.getParticipantLimit());
+        entity.setTitle(model.getTitle());
         return entity;
     }
 

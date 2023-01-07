@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @GetMapping("/events/{eventId}/requests")
-    public Optional<ParticipationRequestDto> readRequests(@PathVariable Long userId,
+    public List<ParticipationRequestDto> readRequests(@PathVariable Long userId,
                                                           @PathVariable Long eventId) {
         return userService.readRequestPublic(userId, eventId);
     }
@@ -89,7 +89,7 @@ public class UserController {
         return userService.createRequestPublic(userId, eventId);
     }
 
-    @PatchMapping("/requests/{requestsId}/cansel")
+    @PatchMapping("/requests/{requestsId}/cancel")
     public Optional<ParticipationRequestDto> updateRequestCansel(@PathVariable Long userId,
                                                            @PathVariable Long requestsId) {
         return userService.updateRequestCanselPublic(userId, requestsId);

@@ -81,9 +81,11 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
     }
 
     @Override
-    public Optional<ParticipationRequestDto> readRequestPublic(Long userId, Long eventId) {
+    public List<ParticipationRequestDto> readRequestPublic(Long userId, Long eventId) {
         validator.validateOnRead(userId, ValidationMode.DEFAULT);
-        return requestInternalService.findRequestUserOnEvent(userId, eventId);
+        final var event = eventInternalService.readById(eventId).orElseThrow();
+        validator.assertValidator(event.getInitiator().getId() != userId, this.getClass().getName());
+        return requestInternalService.findRequestsByUserAndEvent(eventId);
     }
 
     @Override

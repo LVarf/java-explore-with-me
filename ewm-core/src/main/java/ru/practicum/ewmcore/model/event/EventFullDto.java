@@ -7,6 +7,7 @@ import ru.practicum.ewmcore.model.user.UserShortDto;
 @Data
 public class EventFullDto {
     private Long id;
+    private Long eventId;
     private String annotation;
     private Long category;
     private Integer confirmedRequests;

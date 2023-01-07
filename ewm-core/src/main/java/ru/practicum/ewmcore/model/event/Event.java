@@ -17,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -55,9 +56,6 @@ public class Event {
     })
     @ToString.Exclude
     private User initiator;
-    @OneToMany(mappedBy = "event")
-    @ToString.Exclude
-    private Set<EventToCompilation> eventToCompilations;
     @Column
     private Float locationLat;
     @Column

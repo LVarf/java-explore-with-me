@@ -9,6 +9,9 @@ import ru.practicum.ewmcore.model.records.EventToCompilation;
 import ru.practicum.ewmcore.model.records.EventToCompilationKey;
 import ru.practicum.ewmcore.repository.EventToCompilationRepository;
 
+import java.util.List;
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -36,5 +39,10 @@ public class EventToCompilationServiceImpl implements EventToCompilationInternal
             return EVENT_FROM_COMPILATION_IS_DELETED;
         }
         return EVENT_FROM_COMPILATION_IS_NOT_DELETED;
+    }
+
+    public Set<EventToCompilation> readEventToCompilation(Long comId) {
+        log.info("Запрос в репозиторий за подборкой с id {}", comId);
+        return repository.findByCompilationId(comId);
     }
 }

@@ -12,12 +12,13 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Data
 @RequiredArgsConstructor
 @Entity
 @Table(name = "event_to_compilation", schema = "ewm_core")
-public class EventToCompilation {
+public class EventToCompilation implements Serializable {
 
     @EmbeddedId
     private EventToCompilationKey key;

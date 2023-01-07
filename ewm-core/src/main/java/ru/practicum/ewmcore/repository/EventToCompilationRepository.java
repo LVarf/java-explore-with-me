@@ -5,9 +5,12 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.ewmcore.model.records.EventToCompilation;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface EventToCompilationRepository extends JpaRepository<EventToCompilation, Long> {
 
-    Optional<EventToCompilation> findByEventIdAndCompilationId(Long eventId, Long compId);
+    Optional<EventToCompilation> findByEventIdAndCompilationId(Long eventId, Long comId);
+
+    Set<EventToCompilation> findByCompilationId(Long comId);
 }

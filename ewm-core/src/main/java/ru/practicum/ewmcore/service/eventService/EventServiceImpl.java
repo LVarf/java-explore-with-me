@@ -175,16 +175,7 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
     }
 
     @Override
-    public List<Event> readAllByFilter(Set<Long> eventIds) {
-        final var filterParams = new ArrayList<ClientFilterParam>();
-        for (Long eventId : eventIds) {
-            final var filterParam = new ClientFilterParam();
-            filterParam.setProperty("id");
-            filterParam.setOperator(Comparison.EQ);
-            filterParam.setMainValue(eventId);
-            filterParams.add(filterParam);
-        }
-        final var filter = new ClientFilter(filterParams);
-        return repository.findAll(specification.findAllSpecification(filter));
+    public List<Event> readAllByIds(Set<Long> eventIds) {
+        return repository.findAllById(eventIds);
     }
 }

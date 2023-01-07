@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.converter.CompilationDtoConverter;
 import ru.practicum.ewmcore.converter.EventFullDtoConverter;
+import ru.practicum.ewmcore.converter.EventShortDtoConverter;
 import ru.practicum.ewmcore.model.compilation.Compilation;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.Event;
@@ -17,6 +18,7 @@ import ru.practicum.ewmcore.service.eventService.EventInternalService;
 import ru.practicum.ewmcore.service.eventToCompilationService.EventToCompilationInternalService;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,20 +41,32 @@ public class CompilationServiceImpl implements CompilationInternalService, Compi
     private final EventToCompilationInternalService eventToCompilationService;
     private final EventFullDtoConverter eventFullDtoConverter;
 
+    private final EventShortDtoConverter eventShortDtoConverter;
+
     @Override
     public Page<CompilationDto> readAllCompilationsPublic(Boolean pinned, Pageable pageable) {
-        return repository.findCompilationByPinnedIs(pinned, pageable).map(converter::convertFromEntity);
+        final var compilations = repository.findCompilationByPinnedIs(pinned, pageable).getContent();
+        return repository.findCompilationByPinnedIs(pinned, pageable).map(converter::convertFromEntity)
+                .map(this::enrichEventToCompilationImpl);
     }
 
     @Override
     public Optional<CompilationDto> readCompilationPublic(Long compId) {
-        return repository.findById(compId).map(converter::convertFromEntity);
+        return repository.findById(compId).map(converter::convertFromEntity).map(this::enrichEventToCompilationImpl);
+    }
+
+    private CompilationDto enrichEventToCompilationImpl(CompilationDto compilation) {
+        final var eventToComp = eventToCompilationService.readEventToCompilation(compilation.getId())
+                .stream().map(EventToCompilation::getEvent)
+                .map(eventShortDtoConverter::convertFromEntity).collect(Collectors.toSet());
+        compilation.setEvents(eventToComp);
+        return compilation;
     }
 
     @Override
     public Optional<CompilationDto> createCompilationInternal(CompilationDto compilationDto) {
         final var compilationFromSave = repository.save(converter.convertToEntity(compilationDto));
-        return Optional.of(enrichEventToCompilations(compilationDto.getEvents(), compilationFromSave))
+        return Optional.of(saveEventToCompilations(compilationDto.getEvents(), compilationFromSave))
                 .map(converter::convertFromEntity);
     }
 
@@ -105,16 +119,14 @@ public class CompilationServiceImpl implements CompilationInternalService, Compi
         return COMPILATION_PINNED_IS_TRUE_FAIL;
     }
 
-    private Compilation enrichEventToCompilations(Set<EventShortDto> eventsSet, Compilation compilation) {
+    private Compilation saveEventToCompilations(Set<EventShortDto> eventsSet, Compilation compilation) {
         final var eventsIds = eventsSet.stream().map(EventShortDto::getId).collect(Collectors.toSet());
-        final Set<EventToCompilation> eventToCompilations = new HashSet<>();
-        final var events = eventService.readAllByFilter(eventsIds);
-        for (Event event : events) {
-            final var eventToCompilation = eventToCompilationService
-                    .createEventToCompilation(event, compilation);
-            eventToCompilations.add(eventToCompilation);
+        final var events = eventService.readAllByIds(eventsIds);
+        if (events.size() > 0) {
+            for (Event event : events) {
+                eventToCompilationService.createEventToCompilation(event, compilation);
+            }
         }
-        compilation.setEventToCompilations(eventToCompilations);
         return compilation;
     }
 }

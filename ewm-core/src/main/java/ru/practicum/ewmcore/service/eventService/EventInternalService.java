@@ -53,5 +53,5 @@ public interface EventInternalService {
     List<EventFullDto> readAllByCategoryId(Long catId);
 
     @Transactional(readOnly = true)
-    List<Event> readAllByFilter(Set<Long> eventIds);
+    List<Event> readAllByIds(Set<Long> eventIds);
 }

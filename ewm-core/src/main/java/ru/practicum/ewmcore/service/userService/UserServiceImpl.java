@@ -12,7 +12,6 @@ import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
 import ru.practicum.ewmcore.model.user.User;
 import ru.practicum.ewmcore.model.user.UserFullDto;
-import ru.practicum.ewmcore.model.user.UserShortDto;
 import ru.practicum.ewmcore.repository.UserRepository;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
 import ru.practicum.ewmcore.service.participationRequest.ParticipationRequestInternalService;

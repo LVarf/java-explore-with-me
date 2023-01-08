@@ -14,6 +14,7 @@ import ru.practicum.ewmcore.statClient.StatClient;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -28,18 +29,18 @@ public class EventShortDtoConverter implements RootModelConverter<EventShortDto,
         BeanUtils.copyProperties(entity, model);
         final var eventDate = entity.getEventDate();
         model.setEventDate(timeUtils.timestampToString(eventDate));
+        enrichViews(model);
         return model;
     }
 
     private EventShortDto enrichViews(EventShortDto eventShortDto) {
-        final var views = statClient.getViews(
-                timeUtils.timestampToString(Timestamp.valueOf(LocalDateTime.now().minusYears(2))),
-                timeUtils.timestampToString(timeUtils.now()),
-                "/events" + eventShortDto.getId(), false);
-
+        String start = timeUtils.timestampToString(Timestamp.valueOf(LocalDateTime.now().minusYears(2)));
+        eventShortDto.setViews(0L);
+        final var views = statClient.getViews(start, timeUtils.timestampToString(timeUtils.now()),
+                "/events/" + eventShortDto.getId(), false);
         for (ViewStats viewStats : views) {
-            //eventShortDto.setViews(eventShortDto.getViews() + viewStats.getHits());
-            //TODO: think about it
+            final var hits = viewStats.getHits() != null ? viewStats.getHits() : 0;
+            eventShortDto.setViews(eventShortDto.getViews() + hits);
         }
         return eventShortDto;
     }

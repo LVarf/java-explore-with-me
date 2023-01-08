@@ -18,22 +18,4 @@ public class ClientFilterParam {
     private String property;
     private Object mainValue;
     private Object alterValue;
-
-    public static ClientFilterParam of(Comparison operator, String property, String... values) {
-        return of(operator, property, values, 0);
-    }
-
-    public static ClientFilterParam of(Comparison operator, String property, String[] values, int offset) {
-        final String value = values[offset];
-        switch (operator) {
-            case LT:
-            case LE:
-                return new ClientFilterParam(operator, property, value, value);
-            case BETWEEN:
-                final List<String> objects = Arrays.stream(values).skip(offset).collect(Collectors.toList());
-                return new ClientFilterParam(operator, property, objects, null);
-            default:
-                return new ClientFilterParam(operator, property, value, null);
-        }
-    }
 }

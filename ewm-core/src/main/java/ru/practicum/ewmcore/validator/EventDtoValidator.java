@@ -23,7 +23,6 @@ public class EventDtoValidator extends AbstractValidation {
     public void validationOnRead(Long userId, EventFullDto event) {
         final var apiError = new ApiError();
         checkInitiatorIdEqualsUserId(userId, event, apiError);
-        // validateCategoriesExist(eventShortDto.getCategory(), apiError);
     }
 
     public void validationOnCancel(EventFullDto event) {

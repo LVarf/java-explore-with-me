@@ -40,10 +40,6 @@ public class ErrorHandler {
         return new ResponseEntity<>(ex, HttpStatus.BAD_REQUEST);
     }
 
-    private ResponseEntity<Object> handleExceptionInternal(HttpStatus status, ApiError apiError) {
-        return new ResponseEntity<>(apiError, status);
-    }
-
     private String getRequestPath(final ServletWebRequest request) {
         return request != null ? request.getRequest().getRequestURI() : "#{unknown}";
     }

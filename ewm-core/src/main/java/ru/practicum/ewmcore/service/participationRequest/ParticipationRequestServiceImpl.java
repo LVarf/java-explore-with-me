@@ -32,14 +32,13 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
 
     @Override
     public Optional<ParticipationRequestDto> findRequestRequesterOnEvent(Long userId, Long eventId) {
-        final var requests = requestRepository.findByRequesterIdAndEventId(userId, eventId);
-        return requests.map(requestConverter::convertFromEntity);
+        return requestRepository.findByRequesterIdAndEventId(userId, eventId).map(requestConverter::convertFromEntity);
     }
 
     @Override
     public List<ParticipationRequestDto> findRequestsByUserAndEvent(Long eventId) {
-        final var requests = requestRepository.findByEventId(eventId);
-        return requests.stream().map(requestConverter::convertFromEntity).collect(Collectors.toList());
+        return requestRepository.findByEventId(eventId)
+                .stream().map(requestConverter::convertFromEntity).collect(Collectors.toList());
     }
 
     @Override

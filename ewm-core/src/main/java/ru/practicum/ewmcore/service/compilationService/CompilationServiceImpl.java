@@ -43,7 +43,6 @@ public class CompilationServiceImpl implements CompilationInternalService, Compi
 
     @Override
     public Page<CompilationDto> readAllCompilationsPublic(Boolean pinned, Pageable pageable) {
-        final var compilations = repository.findCompilationByPinnedIs(pinned, pageable).getContent();
         return repository.findCompilationByPinnedIs(pinned, pageable).map(converter::convertFromEntity)
                 .map(this::enrichEventToCompilationImpl);
     }

@@ -62,11 +62,6 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
         return eventFullDto;
     }
 
-    private List<UserShortDto> readShortImpl(Long userId) {
-        return null;
-    }
-
-
     @Override
     public Optional<EventFullDto> readEventPublic(Long userId, Long eventId) {
         validator.validateOnRead(userId, ValidationMode.DEFAULT);
@@ -126,14 +121,12 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
 
     @Override
     public Optional<UserFullDto> findUserByIdInternal(Long ids) {
-        final var usersFromDb = findUserByIdInternalImpl(ids);
-        return usersFromDb.map(userFullDtoConverter::convertFromEntity);
+        return findUserByIdInternalImpl(ids).map(userFullDtoConverter::convertFromEntity);
     }
 
     @Override
     public Optional<User> findUserByIdInternalImpl(Long ids) {
-        final var usersFromDb = repository.findUserById(ids);
-        return usersFromDb;
+        return repository.findUserById(ids);
     }
 
     @Override

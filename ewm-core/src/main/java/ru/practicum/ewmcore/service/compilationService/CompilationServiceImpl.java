@@ -56,7 +56,7 @@ public class CompilationServiceImpl implements CompilationInternalService, Compi
     private CompilationDto enrichEventToCompilationImpl(CompilationDto compilation) {
         final var eventToComp = eventToCompilationService.readEventToCompilation(compilation.getId())
                 .stream().map(EventToCompilation::getEvent)
-                .map(eventShortDtoConverter::convertFromEntity).collect(Collectors.toSet());
+                .map(eventShortDtoConverter::convertFromEntity).map(EventShortDto::getId).collect(Collectors.toSet());
         compilation.setEvents(eventToComp);
         return compilation;
     }
@@ -64,8 +64,12 @@ public class CompilationServiceImpl implements CompilationInternalService, Compi
     @Override
     public Optional<CompilationDto> createCompilationInternal(CompilationDto compilationDto) {
         final var compilationFromSave = repository.save(converter.convertToEntity(compilationDto));
-        return Optional.of(saveEventToCompilations(compilationDto.getEvents(), compilationFromSave))
-                .map(converter::convertFromEntity);
+        saveEventToCompilations(compilationDto.getEvents(), compilationFromSave);
+        final var eventsList = eventToCompilationService.readEventToCompilation(compilationFromSave.getId())
+                .stream().map(el -> el.getEvent().getId()).collect(Collectors.toSet());
+        final var compilationForReturn = converter.convertFromEntity(compilationFromSave);
+        compilationForReturn.setEvents(eventsList);
+        return Optional.of(compilationForReturn);
     }
 
     @Override
@@ -117,9 +121,8 @@ public class CompilationServiceImpl implements CompilationInternalService, Compi
         return COMPILATION_PINNED_IS_TRUE_FAIL;
     }
 
-    private Compilation saveEventToCompilations(Set<EventShortDto> eventsSet, Compilation compilation) {
-        final var eventsIds = eventsSet.stream().map(EventShortDto::getId).collect(Collectors.toSet());
-        final var events = eventService.readAllByIds(eventsIds);
+    private Compilation saveEventToCompilations(Set<Long> eventsSet, Compilation compilation) {
+        final var events = eventService.readAllByIds(eventsSet);
         if (events.size() > 0) {
             for (Event event : events) {
                 eventToCompilationService.createEventToCompilation(event, compilation);

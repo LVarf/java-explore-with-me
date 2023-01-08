@@ -43,6 +43,7 @@ public class EventFullDtoConverter implements RootModelConverter<EventFullDto, E
         if (entity.getCategory() != null && entity.getCategory().getId() != null) {
             model.setCategory(entity.getCategory().getId());
         }
+        model.setEventId(entity.getId());
         model.setLocation(new Location(entity.getLocationLat(), entity.getLocationLon()));
         model.setInitiator(userShortDtoConverter.convertFromEntity(entity.getInitiator()));
         enrichViews(model);

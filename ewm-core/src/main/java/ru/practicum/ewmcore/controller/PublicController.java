@@ -3,7 +3,9 @@ package ru.practicum.ewmcore.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +34,8 @@ import java.util.Optional;
 @Slf4j
 @RequestMapping
 public class PublicController {
-
-
+    private static final String SORT_EVENT_DATE = "EVENT_DATE";
+    private static final String EVENT_DATE_CONST = "eventDate";
     private final EventPublicService eventService;
     private final CompilationPublicService compilationService;
     private final CategoryPublicService categoryService;
@@ -51,6 +53,7 @@ public class PublicController {
                                              @RequestParam(value = "sort", required = false) String sort,
                                              Pageable pageable,
                                              HttpServletRequest request) {
+
         statClient.saveHit(request);
         final List<ClientFilterParam> filterParams = new ArrayList<>();
         if (text != null) {
@@ -85,9 +88,13 @@ public class PublicController {
             filterParams.add(new ClientFilterParam().setOperator(Comparison.LT)
                     .setProperty("confirmedRequests").setMainValue("participantLimit"));
         }
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+        if (sort != null && sort.equals(SORT_EVENT_DATE)) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by(EVENT_DATE_CONST).descending());
+        }
         final ClientFilter clientFilter = new ClientFilter(filterParams);
-        final var result = eventService.readAllEventsPublic(clientFilter, sort, pageable);
-        return result;
+        return eventService.readAllEventsPublic(clientFilter, sort, pageable);
     }
 
     @GetMapping("/events/{id}")

@@ -3,6 +3,7 @@ package ru.practicum.ewmcore.service.eventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.converter.EventFullDtoConverter;
@@ -38,15 +39,14 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
 
     @Override
     public Page<EventShortDto> readAllEventsPublic(ClientFilter filter, String sort, Pageable pageable) {
-        final var specific = specification.findAllSpecificationForPublic(filter, sort);
-        final var eventsFromDb = repository.findAll(specific, pageable);
-        /*if (sort != null && sort.equals(SORT_VIEWS)) {
+        final var eventsFromDb = repository.findAll(specification.findAllSpecificationForPublic(filter), pageable);
+        if (sort != null && sort.equals(SORT_VIEWS)) {
             final var events = eventsFromDb.stream()
                     .map(eventShortDtoConverter::convertFromEntity)
                     .sorted((e1, e2) -> (int) (e1.getViews() - e2.getViews()))
                     .collect(Collectors.toList());
             return new PageImpl<EventShortDto>(events, pageable, eventsFromDb.getTotalElements());
-        }*/
+        }
         return eventsFromDb.map(eventShortDtoConverter::convertFromEntity);
     }
 
@@ -70,6 +70,9 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
 
     @Override
     public Optional<EventFullDto> updateEventByUser(Long userId, EventFullDto event) {
+        if (event.getId() != null) {
+            event.setEventId(event.getId());
+        }
         final var eventFromDb = repository.findById(event.getEventId());
         validator.validationOnExist(eventFromDb.orElse(null));
         validator.validationOnUpdate(userId, eventFullDtoConverter.convertFromEntity(eventFromDb.orElseThrow()));
@@ -135,8 +138,10 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
     public Optional<EventFullDto> updateEventById(Long eventId, EventFullDto eventFullDto) {
         final var eventFromDb = repository.findById(eventId).orElse(null);
         validator.validationOnExist(eventFromDb);
-        final var categoryForUpdate = categoryRepository.findById(eventFullDto.getCategory()).orElseThrow();
-        eventFromDb.setCategory(categoryForUpdate);
+        final var categoryForUpdate = categoryRepository.findById(eventFullDto.getCategory()).orElse(null);
+        if (categoryForUpdate != null) {
+            eventFromDb.setCategory(categoryForUpdate);
+        }
         final var eventFromSave = repository
                 .save(eventFullDtoConverter.mergeToEntity(eventFullDto, eventFromDb));
         return updateEvent(eventFullDtoConverter.convertFromEntity(eventFromSave));

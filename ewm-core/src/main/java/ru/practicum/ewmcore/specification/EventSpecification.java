@@ -20,9 +20,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EventSpecification extends AbstractSpecification<Event> {
 
-    private static final String SORT_EVENT_DATE = "EVENT_DATE";
-    private static final String EVENT_DATE_CONST = "eventDate";
-
     private static final String ANNOTATION = "annotation";
     private static final String DESCRIPTION = "description";
 
@@ -30,18 +27,14 @@ public class EventSpecification extends AbstractSpecification<Event> {
         return ((root, query, criteriaBuilder) -> buildFinalPredicate(root, criteriaBuilder, filters));
     }
 
-    public Specification<Event> findAllSpecificationForPublic(final ClientFilter filter, String sort) {
+    public Specification<Event> findAllSpecificationForPublic(final ClientFilter filter) {
         return ((root, query, criteriaBuilder) -> {
-            if (sort != null && sort.equals(SORT_EVENT_DATE)) {
-                query.orderBy(criteriaBuilder.desc(root.get(EVENT_DATE_CONST)));
-            }
             final List<ClientFilterParam> filterText = findTextFilter(filter);
             final var findTextPredicate = buildFindTextPredicate(filterText, root, criteriaBuilder);
             filter.getFilters().add(buildPublishedFilterParam());
             final var predicates = buildFinalPredicate(root, criteriaBuilder, filter);
             if (findTextPredicate != null) {
-                final var result = criteriaBuilder.and(predicates, findTextPredicate);
-                return result;
+                return criteriaBuilder.and(predicates, findTextPredicate);
             }
             return predicates;
         });
@@ -53,14 +46,19 @@ public class EventSpecification extends AbstractSpecification<Event> {
     }
 
     private List<ClientFilterParam> findTextFilter(ClientFilter filter) {
-        return filter.getFilters().stream()
+        final var textFilters = filter.getFilters().stream()
                 .filter(filterParam -> filterParam.getProperty() == ANNOTATION ||
                         filterParam.getProperty() == DESCRIPTION)
                 .collect(Collectors.toList());
+        filter.getFilters().removeAll(textFilters);
+        return textFilters;
     }
 
     private Predicate buildFindTextPredicate(List<ClientFilterParam> filterText, final Root<Event> root,
                                              final CriteriaBuilder criteriaBuilder) {
+        if (filterText.size() == 0) {
+            return null;
+        }
         final List<Predicate> predicates = filterText.stream()
                 .map(filter -> buildPredicate(filter, root, criteriaBuilder))
                 .filter(Objects::nonNull)

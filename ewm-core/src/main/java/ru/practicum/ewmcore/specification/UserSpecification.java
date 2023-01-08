@@ -10,8 +10,8 @@ import ru.practicum.ewmcore.specification.filter.ClientFilter;
 @RequiredArgsConstructor
 public class UserSpecification extends AbstractSpecification<User> {
     public Specification<User> findAllSpecification(final ClientFilter filters) {
-        return ((root, query, criteriaBuilder) -> {
-            return buildFinalPredicate(root, criteriaBuilder, filters);
-        });
+        return ((root, query, criteriaBuilder) ->
+                buildFinalPredicate(root, criteriaBuilder, filters)
+        );
     }
 }

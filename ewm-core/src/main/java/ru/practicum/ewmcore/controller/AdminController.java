@@ -117,12 +117,6 @@ public class AdminController {
         return adminService.findAllUsers(filter, pageable);
     }
 
-    /*@Deprecated
-    @GetMapping("/users")
-    public Optional<UserFullDto> readUser(@RequestParam(value = "ids", required = false) Long ids) {
-        return adminService.findUserById(ids);
-    }*/
-
     @PostMapping("/users")
     public Optional<UserFullDto> createUser(@RequestBody UserFullDto user) {
         return adminService.createUser(user);

@@ -23,6 +23,7 @@ public class ParticipationRequestDtoConverter implements RootModelConverter<Part
         final var created = entity.getCreated();
         model.setCreated(timeUtils.timestampToString(created));
         model.setEvent(entity.getEvent().getId());
+        model.setRequester(entity.getRequester().getId());
         return model;
     }
 

@@ -2,18 +2,14 @@ package ru.practicum.ewmcore.converter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import ru.practicum.ewmcore.model.compilation.Compilation;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.service.utils.RootModelConverter;
-import ru.practicum.ewmcore.service.utils.SortConverterMixin;
 
 @Component
 @RequiredArgsConstructor
-public class CompilationDtoConverter implements RootModelConverter<CompilationDto, Compilation>,
-        SortConverterMixin {
+public class CompilationDtoConverter implements RootModelConverter<CompilationDto, Compilation> {
 
     @Override
     public CompilationDto convertFromEntity(Compilation entity) {
@@ -33,15 +29,5 @@ public class CompilationDtoConverter implements RootModelConverter<CompilationDt
     public Compilation mergeToEntity(CompilationDto model, Compilation originalEntity) {
         BeanUtils.copyProperties(model, originalEntity);
         return originalEntity;
-    }
-
-    @Override
-    public Sort.Order convertSortPropertyToEntityStyle(Sort.Order order) {
-        return null;
-    }
-
-    @Override
-    public Pageable secondarySort(Pageable pageable, String fieldName) {
-        return null;
     }
 }

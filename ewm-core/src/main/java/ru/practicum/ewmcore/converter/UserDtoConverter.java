@@ -1,17 +1,13 @@
 package ru.practicum.ewmcore.converter;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import ru.practicum.ewmcore.model.user.User;
 import ru.practicum.ewmcore.model.user.UserFullDto;
 import ru.practicum.ewmcore.service.utils.RootModelConverter;
-import ru.practicum.ewmcore.service.utils.SortConverterMixin;
 
 @Component
-public class UserDtoConverter implements RootModelConverter<UserFullDto, User>,
-        SortConverterMixin {
+public class UserDtoConverter implements RootModelConverter<UserFullDto, User> {
     @Override
     public UserFullDto convertFromEntity(final User entity) {
         final UserFullDto model = new UserFullDto();
@@ -30,19 +26,5 @@ public class UserDtoConverter implements RootModelConverter<UserFullDto, User>,
     public User mergeToEntity(final UserFullDto model, final User entity) {
         BeanUtils.copyProperties(model, entity);
         return entity;
-    }
-
-    @Override
-    public Sort.Order convertSortPropertyToEntityStyle(Sort.Order order) {
-        final String property = order.getProperty();
-        return order;
-    }
-
-    @Override
-    public Pageable secondarySort(Pageable pageable, String fieldName) {
-        return null /*PageRequest.of(pageable.getPageNumber(),
-                pageable.getPageSize(),
-                sortUtils.addSecondarySorting(pageable.getSort(),
-                        fieldName))*/;
     }
 }

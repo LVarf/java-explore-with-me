@@ -2,18 +2,15 @@ package ru.practicum.ewmcore.converter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequest;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
 import ru.practicum.ewmcore.service.utils.RootModelConverter;
-import ru.practicum.ewmcore.service.utils.SortConverterMixin;
 
 @Component
 @RequiredArgsConstructor
-public class ParticipationRequestDtoConverter implements RootModelConverter<ParticipationRequestDto, ParticipationRequest>,
-        SortConverterMixin {
+public class ParticipationRequestDtoConverter
+        implements RootModelConverter<ParticipationRequestDto, ParticipationRequest> {
     private final TimeUtils timeUtils;
 
     @Override
@@ -40,19 +37,5 @@ public class ParticipationRequestDtoConverter implements RootModelConverter<Part
     public ParticipationRequest mergeToEntity(final ParticipationRequestDto model, final ParticipationRequest entity) {
         BeanUtils.copyProperties(model, entity);
         return entity;
-    }
-
-    @Override
-    public Sort.Order convertSortPropertyToEntityStyle(Sort.Order order) {
-        final String property = order.getProperty();
-        return order;
-    }
-
-    @Override
-    public Pageable secondarySort(Pageable pageable, String fieldName) {
-        return null /*PageRequest.of(pageable.getPageNumber(),
-                pageable.getPageSize(),
-                sortUtils.addSecondarySorting(pageable.getSort(),
-                        fieldName))*/;
     }
 }

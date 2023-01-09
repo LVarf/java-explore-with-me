@@ -1,7 +1,6 @@
 package ru.practicum.ewmcore.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +33,7 @@ public class AdminController {
     private final AdminPublicService adminService;
 
     @GetMapping("/events")
-    public Page<EventFullDto> readAllEvents(@RequestParam(value = "users", required = false) Long[] users,
+    public List<EventFullDto> readAllEvents(@RequestParam(value = "users", required = false) Long[] users,
                                             @RequestParam(value = "states", required = false) EventStateEnum[] states,
                                             @RequestParam(value = "categories", required = false) Long[] categories,
                                             @RequestParam(value = "rangeStart", required = false) String rangeStart,
@@ -66,7 +65,7 @@ public class AdminController {
             params.add(new ClientFilterParam().setProperty("rangeEnd").setOperator(Comparison.LE).setMainValue(rangeEnd));
         }
         final ClientFilter filters = new ClientFilter(params);
-        return adminService.readAllByFilters(filters, pageable);
+        return adminService.readAllByFilters(filters, pageable).toList();
     }
 
     @PutMapping("/events/{eventId}")
@@ -101,7 +100,7 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public Page<UserFullDto> readUser(@RequestParam(value = "ids", required = false) Long[] ids,
+    public List<UserFullDto> readUser(@RequestParam(value = "ids", required = false) Long[] ids,
                                       Pageable pageable) {
         final var filterParams = new ArrayList<ClientFilterParam>();
         if (ids.length > 0) {
@@ -114,7 +113,7 @@ public class AdminController {
             }
         }
         final var filter = new ClientFilter(filterParams);
-        return adminService.findAllUsers(filter, pageable);
+        return adminService.findAllUsers(filter, pageable).toList();
     }
 
     @PostMapping("/users")

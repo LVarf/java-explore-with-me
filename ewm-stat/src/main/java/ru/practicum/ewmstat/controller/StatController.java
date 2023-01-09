@@ -15,7 +15,6 @@ import ru.practicum.ewmstat.service.StatService;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,10 +31,10 @@ public class StatController {
 
     @GetMapping("/stats")
     public ViewStats[] readStats(@RequestParam("start") String start,
-                                     @RequestParam("end") String end,
-                                     @RequestParam(value = "unique", defaultValue = "false") Boolean unique,
-                                     @RequestParam("uris") String uris,
-                                     HttpServletRequest request) {
+                                 @RequestParam("end") String end,
+                                 @RequestParam(value = "unique", defaultValue = "false") Boolean unique,
+                                 @RequestParam("uris") String uris,
+                                 HttpServletRequest request) {
         log.info("RequestURI = {}", request.getContextPath());
         log.info("Inter dates: stats={}; end={}; uris={}; unique={}", start, end, uris, unique);
         try {

@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.ewmcore.converter.EventFullDtoResponseConverter;
 import ru.practicum.ewmcore.model.event.EventFullDto;
+import ru.practicum.ewmcore.model.event.EventFullDtoResponse;
 import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
 import ru.practicum.ewmcore.service.userService.UserPublicService;
@@ -25,6 +27,7 @@ import java.util.Optional;
 @RequestMapping(path = "/users/{userId}")
 public class UserController {
     private final UserPublicService userService;
+    private final EventFullDtoResponseConverter eventResponseConverter;
 
     @GetMapping("/events")
     public List<EventShortDto> readAllEvents(@PathVariable Long userId,
@@ -35,14 +38,14 @@ public class UserController {
 
     @PatchMapping("/events")
     public Optional<EventFullDto> updateEvent(@PathVariable Long userId,
-                                              @RequestBody EventFullDto event) {
-        return userService.updateEventPublic(userId, event);
+                                              @RequestBody EventFullDtoResponse eventResponse) {
+        return userService.updateEventPublic(userId, eventResponseConverter.convertToEntity(eventResponse));
     }
 
     @PostMapping("/events")
     public Optional<EventFullDto> createEvent(@PathVariable Long userId,
-                                              @RequestBody EventFullDto event) {
-        return userService.createEventPublic(userId, event);
+                                              @RequestBody EventFullDtoResponse eventResponse) {
+        return userService.createEventPublic(userId, eventResponseConverter.convertToEntity(eventResponse));
     }
 
     @GetMapping("/events/{eventId}")

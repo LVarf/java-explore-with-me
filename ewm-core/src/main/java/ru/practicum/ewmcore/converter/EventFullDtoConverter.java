@@ -23,6 +23,7 @@ public class EventFullDtoConverter implements RootModelConverter<EventFullDto, E
     private final TimeUtils timeUtils;
     private final StatClient statClient;
     private final UserShortDtoConverter userShortDtoConverter;
+    private final CategoryDtoConverter categoryConverter;
 
     @Override
     public EventFullDto convertFromEntity(final Event entity) {
@@ -37,7 +38,7 @@ public class EventFullDtoConverter implements RootModelConverter<EventFullDto, E
             model.setPublishedOn(timeUtils.timestampToString(publishedOn));
         }
         if (entity.getCategory() != null && entity.getCategory().getId() != null) {
-            model.setCategory(entity.getCategory().getId());
+            model.setCategory(categoryConverter.convertFromEntity(entity.getCategory()));
         }
         model.setEventId(entity.getId());
         model.setLocation(new Location(entity.getLocationLat(), entity.getLocationLon()));

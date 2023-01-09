@@ -108,7 +108,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
         requestFromDb.setStatus(ParticipationRequestStateEnum.CONFIRMED);
         requestRepository.save(requestFromDb);
         eventFromDb.setConfirmedRequests(eventFromDb.getConfirmedRequests() + 1);
-        eventService.updateEvent(eventFromDb);
+        eventService.updateEvent(eventFullDtoConverter.convertToEntity(eventFromDb));
     }
 
 

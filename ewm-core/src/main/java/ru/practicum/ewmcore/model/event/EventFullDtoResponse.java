@@ -1,16 +1,15 @@
 package ru.practicum.ewmcore.model.event;
 
 import lombok.Data;
-import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.location.Location;
 import ru.practicum.ewmcore.model.user.UserShortDto;
 
 @Data
-public class EventFullDto {
+public class EventFullDtoResponse {
     private Long id;
     private Long eventId;
     private String annotation;
-    private CategoryDto category;
+    private Long category;
     private Integer confirmedRequests;
     private String createdOn; //дата создания для дто (в формате "yyyy-MM-dd HH:mm:ss")
     private String description;

@@ -38,7 +38,7 @@ public interface EventInternalService {
     Optional<EventFullDto> updateEventOnCancel(Long userId, Long eventId);
 
     @Transactional
-    Optional<EventFullDto> updateEvent(EventFullDto eventFullDto);
+    Optional<Event> updateEvent(Event event);
 
     @Transactional
     Optional<EventFullDto> updateEventById(Long eventId, EventFullDto eventFullDto);

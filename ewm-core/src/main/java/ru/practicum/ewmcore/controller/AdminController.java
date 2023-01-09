@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.ewmcore.converter.EventFullDtoResponseConverter;
 import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
+import ru.practicum.ewmcore.model.event.EventFullDtoResponse;
 import ru.practicum.ewmcore.model.event.EventStateEnum;
 import ru.practicum.ewmcore.model.user.UserFullDto;
 import ru.practicum.ewmcore.service.adminService.AdminPublicService;
@@ -31,6 +33,7 @@ import java.util.Optional;
 @RequestMapping(path = "/admin")
 public class AdminController {
     private final AdminPublicService adminService;
+    private final EventFullDtoResponseConverter eventResponseConverter;
 
     @GetMapping("/events")
     public List<EventFullDto> readAllEvents(@RequestParam(value = "users", required = false) Long[] users,
@@ -70,8 +73,8 @@ public class AdminController {
 
     @PutMapping("/events/{eventId}")
     public Optional<EventFullDto> updateEvent(@PathVariable Long eventId,
-                                              @RequestBody EventFullDto event) {
-        return adminService.updateEventById(eventId, event);
+                                              @RequestBody EventFullDtoResponse eventResponse) {
+        return adminService.updateEventById(eventId, eventResponseConverter.convertToEntity(eventResponse));
     }
 
     @PatchMapping("/events/{eventId}/publish")

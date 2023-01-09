@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 public class EventShortDtoConverter implements RootModelConverter<EventShortDto, Event> {
     private final TimeUtils timeUtils;
     private final StatClient statClient;
+    private final CategoryDtoConverter categoryConverter;
 
     @Override
     public EventShortDto convertFromEntity(final Event entity) {
@@ -24,6 +25,9 @@ public class EventShortDtoConverter implements RootModelConverter<EventShortDto,
         BeanUtils.copyProperties(entity, model);
         final var eventDate = entity.getEventDate();
         model.setEventDate(timeUtils.timestampToString(eventDate));
+        if (entity.getCategory() != null) {
+            model.setCategory(categoryConverter.convertFromEntity(entity.getCategory()));
+        }
         enrichViews(model);
         return model;
     }

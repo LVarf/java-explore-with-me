@@ -8,4 +8,7 @@ public class CommentDto {
     private Long id;
     private String text;
     private UserShortDto commentOwner;
+    private String createDate;
+    private String updateDate;
+    private String deleteDate;
 }

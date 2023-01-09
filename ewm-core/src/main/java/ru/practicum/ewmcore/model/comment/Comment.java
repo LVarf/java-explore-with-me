@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.sql.Timestamp;
 
 @Entity
 @Data
@@ -30,4 +31,10 @@ public class Comment {
     private User eventOwner;
     @ManyToOne(fetch = FetchType.LAZY)
     private User commentOwner;
+    @Column
+    private Timestamp createDate;
+    @Column
+    private Timestamp updateDate;
+    @Column
+    private Timestamp deleteDate;
 }

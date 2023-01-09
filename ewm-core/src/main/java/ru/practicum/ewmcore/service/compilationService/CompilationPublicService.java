@@ -1,6 +1,5 @@
 package ru.practicum.ewmcore.service.compilationService;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 

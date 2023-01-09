@@ -1,7 +1,6 @@
 package ru.practicum.ewmcore.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -28,10 +27,10 @@ public class UserController {
     private final UserPublicService userService;
 
     @GetMapping("/events")
-    public Page<EventShortDto> readAllEvents(@PathVariable Long userId,
+    public List<EventShortDto> readAllEvents(@PathVariable Long userId,
                                              @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC,
                                                      page = 0, size = 10) Pageable pageable) {
-        return userService.readAllEventsPublic(userId, pageable);
+        return userService.readAllEventsPublic(userId, pageable).toList();
     }
 
     @PatchMapping("/events")
@@ -60,21 +59,21 @@ public class UserController {
 
     @GetMapping("/events/{eventId}/requests")
     public List<ParticipationRequestDto> readRequests(@PathVariable Long userId,
-                                                          @PathVariable Long eventId) {
+                                                      @PathVariable Long eventId) {
         return userService.readRequestPublic(userId, eventId);
     }
 
     @PatchMapping("/events/{eventId}/requests/{reqId}/confirm")
     public Optional<ParticipationRequestDto> updateRequestConfirm(@PathVariable Long userId,
-                                                                   @PathVariable Long eventId,
-                                                                   @PathVariable Long reqId) {
+                                                                  @PathVariable Long eventId,
+                                                                  @PathVariable Long reqId) {
         return userService.confirmRequestPublic(userId, eventId, reqId);
     }
 
     @PatchMapping("/events/{eventId}/requests/{reqId}/reject")
     public Optional<ParticipationRequestDto> updateRequestReject(@PathVariable Long userId,
-                                                            @PathVariable Long eventId,
-                                                            @PathVariable Long reqId) {
+                                                                 @PathVariable Long eventId,
+                                                                 @PathVariable Long reqId) {
         return userService.rejectRequestPublic(userId, eventId, reqId);
     }
 
@@ -91,7 +90,7 @@ public class UserController {
 
     @PatchMapping("/requests/{requestsId}/cancel")
     public Optional<ParticipationRequestDto> updateRequestCansel(@PathVariable Long userId,
-                                                           @PathVariable Long requestsId) {
+                                                                 @PathVariable Long requestsId) {
         return userService.updateRequestCanselPublic(userId, requestsId);
     }
 }

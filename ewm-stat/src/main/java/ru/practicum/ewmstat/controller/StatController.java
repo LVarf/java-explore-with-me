@@ -15,6 +15,7 @@ import ru.practicum.ewmstat.service.StatService;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,22 +29,6 @@ public class StatController {
     public String createHit(@RequestBody EndpointHitDto hit) {
         return service.createHit(hit);
     }
-
-    /*@GetMapping("/stats")
-    public List<ViewStats> readStats(@RequestParam("start") String start,
-                                     @RequestParam("end") String end,
-                                     @RequestParam(value = "unique", defaultValue = "false") Boolean unique,
-                                     @RequestParam("uris") String uris) {
-        log.info("Inter dates: stats={}; end={}; uris={}; unique={}", start, end, uris, unique);
-        try {
-            start = URLDecoder.decode(start, "UTF-8");
-            end = URLDecoder.decode(end, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-        log.info("Inter dates: stats={}; end={}; uris={}; unique={}", start, end, uris, unique);
-        return service.readStats(start, end, uris, unique);
-    }*/
 
     @GetMapping("/stats")
     public ViewStats[] readStats(@RequestParam("start") String start,

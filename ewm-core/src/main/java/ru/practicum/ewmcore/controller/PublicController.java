@@ -2,7 +2,6 @@ package ru.practicum.ewmcore.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -43,7 +42,7 @@ public class PublicController {
     private final StatClient statClient;
 
     @GetMapping("/events")
-    public Page<EventShortDto> readAllEvents(@RequestParam(value = "text", required = false) String text,
+    public List<EventShortDto> readAllEvents(@RequestParam(value = "text", required = false) String text,
                                              @RequestParam(value = "categories", required = false) Long[] categories,
                                              @RequestParam(value = "paid", required = false) Boolean paid,
                                              @RequestParam(value = "rangeStart", required = false) String rangeStart,
@@ -104,7 +103,7 @@ public class PublicController {
     }
 
     @GetMapping("/compilations")
-    public Page<CompilationDto> readAllCompilations(
+    public List<CompilationDto> readAllCompilations(
             @RequestParam(value = "pinned", defaultValue = "true") Boolean pinned,
             Pageable pageable) {
         return compilationService.readAllCompilationsPublic(pinned, pageable);
@@ -116,7 +115,7 @@ public class PublicController {
     }
 
     @GetMapping("/categories")
-    public Page<CategoryDto> readAllCategories(Pageable pageable) {
+    public List<CategoryDto> readAllCategories(Pageable pageable) {
         return categoryService.readAllCategoriesPublic(pageable);
     }
 

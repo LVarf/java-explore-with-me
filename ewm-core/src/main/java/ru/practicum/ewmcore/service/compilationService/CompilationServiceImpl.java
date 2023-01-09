@@ -2,6 +2,7 @@ package ru.practicum.ewmcore.service.compilationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.LifecycleState;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import ru.practicum.ewmcore.repository.CompilationRepository;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
 import ru.practicum.ewmcore.service.eventToCompilationService.EventToCompilationInternalService;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,9 +44,9 @@ public class CompilationServiceImpl implements CompilationInternalService, Compi
     private final EventShortDtoConverter eventShortDtoConverter;
 
     @Override
-    public Page<CompilationDto> readAllCompilationsPublic(Boolean pinned, Pageable pageable) {
+    public List<CompilationDto> readAllCompilationsPublic(Boolean pinned, Pageable pageable) {
         return repository.findCompilationByPinnedIs(pinned, pageable).map(converter::convertFromEntity)
-                .map(this::enrichEventToCompilationImpl);
+                .map(this::enrichEventToCompilationImpl).toList();
     }
 
     @Override

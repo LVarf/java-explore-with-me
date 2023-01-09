@@ -2,7 +2,6 @@ package ru.practicum.ewmcore.service.categoryService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.converter.CategoryDtoConverter;
@@ -11,6 +10,7 @@ import ru.practicum.ewmcore.repository.CategoryRepository;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
 import ru.practicum.ewmcore.validator.CategoryValidator;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,8 +30,8 @@ public class CategoryServiceImpl implements CategoryInternalService, CategoryPub
     }
 
     @Override
-    public Page<CategoryDto> readAllCategoriesPublic(Pageable pageable) {
-        return repository.findAll(pageable).map(converter::convertFromEntity);
+    public List<CategoryDto> readAllCategoriesPublic(Pageable pageable) {
+        return repository.findAll(pageable).map(converter::convertFromEntity).toList();
     }
 
     @Override

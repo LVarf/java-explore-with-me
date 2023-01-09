@@ -38,16 +38,16 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Page<EventShortDto> readAllEventsPublic(ClientFilter filter, String sort, Pageable pageable) {
+    public List<EventShortDto> readAllEventsPublic(ClientFilter filter, String sort, Pageable pageable) {
         final var eventsFromDb = repository.findAll(specification.findAllSpecificationForPublic(filter), pageable);
         if (sort != null && sort.equals(SORT_VIEWS)) {
             final var events = eventsFromDb.stream()
                     .map(eventShortDtoConverter::convertFromEntity)
                     .sorted((e1, e2) -> (int) (e1.getViews() - e2.getViews()))
                     .collect(Collectors.toList());
-            return new PageImpl<EventShortDto>(events, pageable, eventsFromDb.getTotalElements());
+            return new PageImpl<EventShortDto>(events, pageable, eventsFromDb.getTotalElements()).toList();
         }
-        return eventsFromDb.map(eventShortDtoConverter::convertFromEntity);
+        return eventsFromDb.map(eventShortDtoConverter::convertFromEntity).toList();
     }
 
     @Override

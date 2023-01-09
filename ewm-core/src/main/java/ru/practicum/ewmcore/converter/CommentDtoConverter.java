@@ -5,8 +5,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import ru.practicum.ewmcore.model.comment.Comment;
 import ru.practicum.ewmcore.model.comment.CommentDto;
-import ru.practicum.ewmcore.model.participationRequest.ParticipationRequest;
-import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
 import ru.practicum.ewmcore.service.utils.RootModelConverter;
 
 @Component

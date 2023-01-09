@@ -64,7 +64,7 @@ public class UserValidator extends AbstractValidation {
         }
     }
 
-    public void assertValidator(Boolean bool, String classType) {
-        assertValidator(bool, classType, timeUtils);
+    public void assertValidator(Boolean bool, String classType, String message) {
+        assertValidator(bool, classType, message, timeUtils);
     }
 }

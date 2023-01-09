@@ -16,11 +16,11 @@ public abstract class AbstractValidation {
         field = field != null ? field.trim() : null;
     }
 
-    public void assertValidator(Boolean bool, String classType, TimeUtils timeUtils) {
+    public void assertValidator(Boolean bool, String classType, String message, TimeUtils timeUtils) {
         if (bool) {
             final var apiError = new ApiError();
             log.info("Error in {}", classType);
-            apiError.setMessage("Error in " + classType)
+            apiError.setMessage("Error in " + classType + ". Massage: " + message != null ? message : "no message.")
                     .setStatus(HttpStatus.BAD_REQUEST)
                     .setReason("The required format is not allowed.")
                     .setTimestamp(timeUtils.timestampToString(Timestamp.valueOf(LocalDateTime.now())));

@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.ewmcore.converter.CompilationDtoResponseConverter;
 import ru.practicum.ewmcore.converter.EventFullDtoResponseConverter;
 import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
+import ru.practicum.ewmcore.model.compilation.CompilationDtoResponse;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventFullDtoResponse;
 import ru.practicum.ewmcore.model.event.EventStateEnum;
@@ -34,6 +36,7 @@ import java.util.Optional;
 public class AdminController {
     private final AdminPublicService adminService;
     private final EventFullDtoResponseConverter eventResponseConverter;
+    private final CompilationDtoResponseConverter compilationResponseConverter;
 
     @GetMapping("/events")
     public List<EventFullDto> readAllEvents(@RequestParam(value = "users", required = false) Long[] users,
@@ -130,8 +133,8 @@ public class AdminController {
     }
 
     @PostMapping("/compilations")
-    public Optional<CompilationDto> createCompilation(@RequestBody CompilationDto compilation) {
-        return adminService.createCompilation(compilation);
+    public Optional<CompilationDto> createCompilation(@RequestBody CompilationDtoResponse compilationResponse) {
+        return adminService.createCompilation(compilationResponseConverter.convertToEntity(compilationResponse));
     }
 
     @DeleteMapping("/compilations/{compId}")

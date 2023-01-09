@@ -1,10 +1,12 @@
 package ru.practicum.ewmcore.model.event;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.user.UserShortDto;
 
 @Data
+@Accessors(chain = true)
 public class EventShortDto {
     private Long id;
     private String annotation;

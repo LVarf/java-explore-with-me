@@ -78,7 +78,8 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
     public List<ParticipationRequestDto> readRequestPublic(Long userId, Long eventId) {
         validator.validateOnRead(userId, ValidationMode.DEFAULT);
         final var event = eventInternalService.readById(eventId).orElseThrow();
-        validator.assertValidator(!event.getInitiator().getId().equals(userId), this.getClass().getName());
+        validator.assertValidator(!event.getInitiator().getId().equals(userId), this.getClass().getName(),
+                "Вы не являетесь инициатором события.");
         return requestInternalService.findRequestsByUserAndEvent(eventId);
     }
 

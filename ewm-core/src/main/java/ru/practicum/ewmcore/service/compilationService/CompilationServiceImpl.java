@@ -17,6 +17,7 @@ import ru.practicum.ewmcore.model.records.EventToCompilation;
 import ru.practicum.ewmcore.repository.CompilationRepository;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
 import ru.practicum.ewmcore.service.eventToCompilationService.EventToCompilationInternalService;
+import ru.practicum.ewmcore.validator.CompilationValidator;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,8 +41,8 @@ public class CompilationServiceImpl implements CompilationInternalService, Compi
     private final CompilationDtoConverter converter;
     private final EventToCompilationInternalService eventToCompilationService;
     private final EventFullDtoConverter eventFullDtoConverter;
-
     private final EventShortDtoConverter eventShortDtoConverter;
+    private final CompilationValidator validator;
 
     @Override
     public List<CompilationDto> readAllCompilationsPublic(Boolean pinned, Pageable pageable) {
@@ -57,17 +58,22 @@ public class CompilationServiceImpl implements CompilationInternalService, Compi
     private CompilationDto enrichEventToCompilationImpl(CompilationDto compilation) {
         final var eventToComp = eventToCompilationService.readEventToCompilation(compilation.getId())
                 .stream().map(EventToCompilation::getEvent)
-                .map(eventShortDtoConverter::convertFromEntity).map(EventShortDto::getId).collect(Collectors.toSet());
+                .map(eventShortDtoConverter::convertFromEntity).collect(Collectors.toSet());
         compilation.setEvents(eventToComp);
         return compilation;
     }
 
     @Override
     public Optional<CompilationDto> createCompilationInternal(CompilationDto compilationDto) {
+        final var isError = compilationDto.getTitle() == null || compilationDto.getTitle().isEmpty() ||
+                compilationDto.getTitle().isBlank();
+        validator.assertValidator(isError, this.getClass().getName(), "Неверно заполнено поле title.");
         final var compilationFromSave = repository.save(converter.convertToEntity(compilationDto));
-        saveEventToCompilations(compilationDto.getEvents(), compilationFromSave);
+        saveEventToCompilations(compilationDto.getEvents()
+                .stream().map(EventShortDto::getId).collect(Collectors.toSet()), compilationFromSave);
         final var eventsList = eventToCompilationService.readEventToCompilation(compilationFromSave.getId())
-                .stream().map(el -> el.getEvent().getId()).collect(Collectors.toSet());
+                .stream().map(EventToCompilation::getEvent).map(eventShortDtoConverter::convertFromEntity)
+                .collect(Collectors.toSet());
         final var compilationForReturn = converter.convertFromEntity(compilationFromSave);
         compilationForReturn.setEvents(eventsList);
         return Optional.of(compilationForReturn);

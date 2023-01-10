@@ -1,7 +1,6 @@
 package ru.practicum.ewmcore.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -14,25 +13,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewmcore.model.comment.CommentDto;
-import ru.practicum.ewmcore.service.comment.CommentInternalService;
+import ru.practicum.ewmcore.service.commentService.CommentInternalService;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/comments")
 public class CommentController {
+    private static final String CREATE_DATE_CONST = "createDate";
     private final CommentInternalService commentService;
 
     @GetMapping("/{eventId}")
-    public Page<CommentDto> readAllComments(@PathVariable Long eventId,
-                                            @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC,
-                                                    page = 0, size = 10) Pageable pageable) {
-        //сортировка по дате создания
-        return commentService.readAllComments(eventId);
+    public List<CommentDto> readAllComments(@PathVariable Long eventId,
+                                            @PageableDefault(sort = {CREATE_DATE_CONST},
+                                                    direction = Sort.Direction.ASC) Pageable pageable) {
+        return commentService.readAllComments(eventId, pageable);
     }
 
-    @GetMapping("/{comId}")
+    @GetMapping("/comment/{comId}")
     public Optional<CommentDto> readComment(@PathVariable Long comId) {
         return commentService.readComment(comId);
     }

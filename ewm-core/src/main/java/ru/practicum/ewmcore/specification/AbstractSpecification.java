@@ -27,6 +27,8 @@ public abstract class AbstractSpecification<T> {
     private static final String PAID = "paid";
     private static final String CONFIRMED_REQUESTS = "confirmedRequests";
     private static final String EVENT_DATE = "eventDate";
+    private static final String EVENT_CONST = "event";
+    private static final String DELETE_DATE_CONST = "deleteDate";
 
     @Autowired
     private TimeUtils timeUtils;
@@ -57,10 +59,12 @@ public abstract class AbstractSpecification<T> {
                                                     final CriteriaBuilder criteriaBuilder) {
         switch (clientFilterParam.getProperty()) {
             case ID:
+            case EVENT_CONST:
             case STATE:
             case CATEGORY:
             case INITIATOR:
             case CONFIRMED_REQUESTS:
+            case DELETE_DATE_CONST:
             case PAID:
                 return buildPredicate(clientFilterParam, root, criteriaBuilder);
             case RANGE_START:
@@ -124,6 +128,8 @@ public abstract class AbstractSpecification<T> {
             case LE:
                 return criteriaBuilder.lessThanOrEqualTo(root.get(clientFilterParam.getProperty()),
                         mainValue.toString());
+            case IS_NULL:
+                return criteriaBuilder.isNull(root.get(clientFilterParam.getProperty()));
             case EQ:
                 final var getRoot = root.get(clientFilterParam.getProperty());
                 return criteriaBuilder.equal(getRoot,

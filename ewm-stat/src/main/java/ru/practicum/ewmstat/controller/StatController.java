@@ -26,7 +26,10 @@ public class StatController {
 
     @PostMapping("/hit")
     public String createHit(@RequestBody EndpointHitDto hit) {
-        return service.createHit(hit);
+        log.info("Input dates StatController.createHit: EndpointHitDto: {}", hit);
+        final var result = service.createHit(hit);
+        log.info("Output dates StatController.createHit: result: {}", result);
+        return result;
     }
 
     @GetMapping("/stats")
@@ -35,13 +38,12 @@ public class StatController {
                                  @RequestParam(value = "unique", defaultValue = "false") Boolean unique,
                                  @RequestParam("uris") String uris,
                                  HttpServletRequest request) {
-        log.info("RequestURI = {}", request.getContextPath());
-        log.info("Inter dates: stats={}; end={}; uris={}; unique={}", start, end, uris, unique);
+        log.info("Input dates StatController.readStats: stats: {}, end: {}, uris: {}, unique: {}",
+                start, end, uris, unique);
         start = URLDecoder.decode(start, StandardCharsets.UTF_8);
         end = URLDecoder.decode(end, StandardCharsets.UTF_8);
-        log.info("Inter dates: stats={}; end={}; uris={}; unique={}", start, end, uris, unique);
         final var result = service.readStats(start, end, uris, unique).toArray(new ViewStats[0]);
-        log.info("result: {}", result);
+        log.info("Output dates StatController.readStats: result: {}", (Object) result);
         return result;
     }
 }

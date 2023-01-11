@@ -3,6 +3,8 @@ package ru.practicum.ewmcore.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewmcore.converter.CompilationDtoResponseConverter;
 import ru.practicum.ewmcore.converter.EventFullDtoResponseConverter;
 import ru.practicum.ewmcore.model.category.CategoryDto;
+import ru.practicum.ewmcore.model.comment.CommentDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDtoResponse;
 import ru.practicum.ewmcore.model.event.EventFullDto;
@@ -216,6 +219,24 @@ public class AdminController {
         final var result = adminService.addCompilationToHeadPage(compId);
         log.info("Output dates AdminController.addCompilationToHeadPage: result: {}", result);
         return result;
+    }
+
+    @GetMapping("/comments/{eventId}")
+    public Page<CommentDto> readAllComments(@PathVariable Long eventId,
+                                            @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC,
+                                                    page = 0, size = 10) Pageable pageable) {
+        //сортировка по дате создания
+        return null;
+    }
+
+    @GetMapping("/comments/{comId}")
+    public Optional<CommentDto> readComment(@PathVariable Long comId) {
+        return null;
+    }
+
+    @DeleteMapping("/comments/{comId}")
+    public String updateEventOnCancel(@PathVariable Long comId) {
+        return null;
     }
 
 }

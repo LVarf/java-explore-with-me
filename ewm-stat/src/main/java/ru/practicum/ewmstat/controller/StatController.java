@@ -12,7 +12,6 @@ import ru.practicum.ewmstat.model.EndpointHitDto;
 import ru.practicum.ewmstat.model.ViewStats;
 import ru.practicum.ewmstat.service.StatService;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
@@ -36,8 +35,7 @@ public class StatController {
     public ViewStats[] readStats(@RequestParam("start") String start,
                                  @RequestParam("end") String end,
                                  @RequestParam(value = "unique", defaultValue = "false") Boolean unique,
-                                 @RequestParam("uris") String uris,
-                                 HttpServletRequest request) {
+                                 @RequestParam("uris") String uris) {
         log.info("Input dates StatController.readStats: stats: {}, end: {}, uris: {}, unique: {}",
                 start, end, uris, unique);
         start = URLDecoder.decode(start, StandardCharsets.UTF_8);

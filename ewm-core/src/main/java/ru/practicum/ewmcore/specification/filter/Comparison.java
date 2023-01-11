@@ -17,5 +17,5 @@ public enum Comparison {
     LT, //<
     LTN, //< or null
     LE, //<=
-    IS_NULL;
+    IS_NULL
 }

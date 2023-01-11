@@ -44,8 +44,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
     @Override
     public Optional<ParticipationRequestDto> confirmRequest(Long userId, Long eventId, Long reqId) {
         final var eventFromDb = eventService.readEventByInitiator(userId, eventId).orElseThrow();
-        final var requestFromDb = requestRepository.findById(reqId).orElse(null);
-        requestValidator.validationOnConfirm(eventId, requestFromDb);
+        final var requestFromDb = readParticipationRequestImpl(eventId, reqId).orElseThrow();
         if (!eventFromDb.isRequestModeration() || eventFromDb.getParticipantLimit() == 0) {
             updateRequestToConfirm(eventFromDb, requestFromDb);
             return Optional.of(requestConverter.convertFromEntity(requestFromDb));
@@ -66,8 +65,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
     @Override
     public Optional<ParticipationRequestDto> rejectRequest(Long userId, Long eventId, Long reqId) {
         eventService.readEventByInitiator(userId, eventId).orElseThrow();
-        final var requestFromDb = requestRepository.findById(reqId).orElse(null);
-        requestValidator.validationOnConfirm(eventId, requestFromDb);
+        final var requestFromDb = readParticipationRequestImpl(eventId, reqId).orElseThrow();
         requestFromDb.setStatus(ParticipationRequestStateEnum.REJECTED);
         requestRepository.save(requestFromDb);
         return Optional.of(requestConverter.convertFromEntity(requestFromDb));
@@ -111,5 +109,9 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
         eventService.updateEvent(eventFullDtoConverter.convertToEntity(eventFromDb));
     }
 
-
+    private Optional<ParticipationRequest> readParticipationRequestImpl(Long eventId, Long reqId) {
+        final var requestFromDb = requestRepository.findById(reqId);
+        requestValidator.validationOnConfirm(eventId, requestFromDb.orElse(null));
+        return requestFromDb;
+    }
 }

@@ -111,11 +111,11 @@ public class AdminController {
                                       Pageable pageable) {
         final var filterParams = new ArrayList<ClientFilterParam>();
         if (ids != null && ids.length > 0) {
-            for (int i = 0; i < ids.length; i++) {
+            for (Long id : ids) {
                 final var filterParam = new ClientFilterParam();
                 filterParam.setOperator(Comparison.EQ);
                 filterParam.setProperty("id");
-                filterParam.setMainValue(ids[i]);
+                filterParam.setMainValue(id);
                 filterParams.add(filterParam);
             }
         }

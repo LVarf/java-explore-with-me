@@ -17,10 +17,10 @@ import ru.practicum.ewmcore.model.stat.EndpointHit;
 import ru.practicum.ewmcore.model.stat.ViewStats;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -56,13 +56,9 @@ public class StatClient {
     public List<ViewStats> getViews(String start, String end, String uris, Boolean unique) {
         final var request = buildRequestHeaders();
         final String path;
-        try {
-            path = url + STATS_ENDPOINT + "?unique=" + unique + "&uris=" + uris +
-                    "&start=" + URLEncoder.encode(start, "UTF-8") +
-                    "&end=" + URLEncoder.encode(end, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        path = url + STATS_ENDPOINT + "?unique=" + unique + "&uris=" + uris +
+                "&start=" + URLEncoder.encode(start, StandardCharsets.UTF_8) +
+                "&end=" + URLEncoder.encode(end, StandardCharsets.UTF_8);
         try {
             final ResponseEntity<Object[]> response = restTemplate.getForEntity(path, Object[].class, request);
             final var mapper = new ObjectMapper();

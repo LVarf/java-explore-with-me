@@ -13,8 +13,8 @@ import ru.practicum.ewmstat.model.ViewStats;
 import ru.practicum.ewmstat.service.StatService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,12 +37,8 @@ public class StatController {
                                  HttpServletRequest request) {
         log.info("RequestURI = {}", request.getContextPath());
         log.info("Inter dates: stats={}; end={}; uris={}; unique={}", start, end, uris, unique);
-        try {
-            start = URLDecoder.decode(start, "UTF-8");
-            end = URLDecoder.decode(end, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        start = URLDecoder.decode(start, StandardCharsets.UTF_8);
+        end = URLDecoder.decode(end, StandardCharsets.UTF_8);
         log.info("Inter dates: stats={}; end={}; uris={}; unique={}", start, end, uris, unique);
         final var result = service.readStats(start, end, uris, unique).toArray(new ViewStats[0]);
         log.info("result: {}", result);

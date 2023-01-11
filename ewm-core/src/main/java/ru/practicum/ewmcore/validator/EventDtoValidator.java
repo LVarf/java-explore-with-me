@@ -139,10 +139,10 @@ public class EventDtoValidator extends AbstractValidation {
             throw apiError;
         }
         checkTime(event, apiError);
-        validationSpaces(event, null);
+        validationSpaces(event);
     }
 
-    private void validationSpaces(EventFullDto eventFull, EventShortDto eventShort) {
+    private void validationSpaces(EventFullDto eventFull) {
         if (eventFull != null) {
             validationSpacesInStringField(eventFull.getAnnotation());
             validationSpacesInStringField(eventFull.getTitle());

@@ -1,6 +1,7 @@
 package ru.practicum.ewmcore.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping(path = "/admin")
 public class AdminController {
     private final AdminPublicService adminService;
@@ -46,23 +48,26 @@ public class AdminController {
                                             @RequestParam(value = "rangeStart", required = false) String rangeStart,
                                             @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
                                             Pageable pageable) {
+        log.info("Input dates AdminController.readAllEvents: users: {}, states: {}, categories: {}, rangeStart: {}, " +
+                        "rangeEnd: {}, pageable: {}",
+                users, states, categories, rangeStart, rangeEnd, pageable);
         final List<ClientFilterParam> params = new ArrayList<>();
         if (users != null && users.length > 0) {
-            for (int i = 0; i < users.length; i++) {
+            for (Long user : users) {
                 params.add(new ClientFilterParam().setProperty("initiator")
-                        .setOperator(Comparison.EQ).setMainValue(users[i]));
+                        .setOperator(Comparison.EQ).setMainValue(user));
             }
         }
         if (states != null && states.length > 0) {
-            for (int i = 0; i < states.length; i++) {
+            for (EventStateEnum state : states) {
                 params.add(new ClientFilterParam().setProperty("state")
-                        .setOperator(Comparison.EQ).setMainValue(states[i]));
+                        .setOperator(Comparison.EQ).setMainValue(state));
             }
         }
         if (categories != null && categories.length > 0) {
-            for (int i = 0; i < categories.length; i++) {
+            for (Long category : categories) {
                 params.add(new ClientFilterParam().setProperty("category")
-                        .setOperator(Comparison.EQ).setMainValue(categories[i]));
+                        .setOperator(Comparison.EQ).setMainValue(category));
             }
         }
         if (rangeStart != null) {
@@ -109,6 +114,7 @@ public class AdminController {
     @GetMapping("/users")
     public List<UserFullDto> readUser(@RequestParam(value = "ids", required = false) Long[] ids,
                                       Pageable pageable) {
+
         final var filterParams = new ArrayList<ClientFilterParam>();
         if (ids != null && ids.length > 0) {
             for (Long id : ids) {

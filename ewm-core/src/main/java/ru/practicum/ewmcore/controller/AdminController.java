@@ -77,44 +77,65 @@ public class AdminController {
             params.add(new ClientFilterParam().setProperty("rangeEnd").setOperator(Comparison.LE).setMainValue(rangeEnd));
         }
         final ClientFilter filters = new ClientFilter(params);
-        return adminService.readAllByFilters(filters, pageable).toList();
+        final var result = adminService.readAllByFilters(filters, pageable).toList();
+        log.info("Output dates AdminController.readAllEvents: result: {}", result);
+        return result;
     }
 
     @PutMapping("/events/{eventId}")
     public Optional<EventFullDto> updateEvent(@PathVariable Long eventId,
                                               @RequestBody EventFullDtoResponse eventResponse) {
-        return adminService.updateEventById(eventId, eventResponseConverter.convertToEntity(eventResponse));
+        log.info("Input dates AdminController.updateEvent: eventId: {}, EventFullDtoResponse: {}",
+                eventId, eventResponse);
+        final var result = adminService.updateEventById(eventId, eventResponseConverter.convertToEntity(eventResponse));
+        log.info("Output dates AdminController.updateEvent: result: {}", result);
+        return result;
     }
 
     @PatchMapping("/events/{eventId}/publish")
     public Optional<EventFullDto> publishEvent(@PathVariable Long eventId) {
-        return adminService.publishEvent(eventId);
+        log.info("Input dates AdminController.publishEvent: eventId: {}", eventId);
+        final var result = adminService.publishEvent(eventId);
+        log.info("Output dates AdminController.publishEvent: result: {}", result);
+        return result;
     }
 
     @PatchMapping("/events/{eventId}/reject")
     public Optional<EventFullDto> rejectEvent(@PathVariable Long eventId) {
-        return adminService.rejectEvent(eventId);
+        log.info("Input dates AdminController.rejectEvent: eventId: {}", eventId);
+        final var result = adminService.rejectEvent(eventId);
+        log.info("Output dates AdminController.rejectEvent: result: {}", result);
+        return result;
     }
 
     @PatchMapping("/categories")
     public Optional<CategoryDto> updateCategory(@RequestBody CategoryDto category) {
-        return adminService.updateCategory(category);
+        log.info("Input dates AdminController.updateCategory: CategoryDto: {}", category);
+        final var result = adminService.updateCategory(category);
+        log.info("Output dates AdminController.updateCategory: result: {}", result);
+        return result;
     }
 
     @PostMapping("/categories")
     public Optional<CategoryDto> createCategory(@RequestBody CategoryDto category) {
-        return adminService.createCategory(category);
+        log.info("Input dates AdminController.createCategory: CategoryDto: {}", category);
+        final var result = adminService.createCategory(category);
+        log.info("Output dates AdminController.createCategory: result: {}", result);
+        return result;
     }
 
     @DeleteMapping("/categories/{catId}")
     public String deleteCategory(@PathVariable Long catId) {
-        return adminService.deleteCategory(catId);
+        log.info("Input dates AdminController.deleteCategory: catId: {}", catId);
+        final var result = adminService.deleteCategory(catId);
+        log.info("Output dates AdminController.deleteCategory: result: {}", result);
+        return result;
     }
 
     @GetMapping("/users")
     public List<UserFullDto> readUser(@RequestParam(value = "ids", required = false) Long[] ids,
                                       Pageable pageable) {
-
+        log.info("Input dates AdminController.readUser: ids: {}, pageable: {}", ids, pageable);
         final var filterParams = new ArrayList<ClientFilterParam>();
         if (ids != null && ids.length > 0) {
             for (Long id : ids) {
@@ -126,49 +147,75 @@ public class AdminController {
             }
         }
         final var filter = new ClientFilter(filterParams);
-        return adminService.findAllUsers(filter, pageable).toList();
+        final var result = adminService.findAllUsers(filter, pageable).toList();
+        log.info("Output dates AdminController.readUser: result: {}", result);
+        return result;
     }
 
     @PostMapping("/users")
     public Optional<UserFullDto> createUser(@RequestBody @Valid UserFullDto user) {
-        return adminService.createUser(user);
+        log.info("Input dates AdminController.createUser: UserFullDto: {}", user);
+        final var result = adminService.createUser(user);
+        log.info("Output dates AdminController.createUser: result: {}", result);
+        return result;
     }
 
     @DeleteMapping("/users/{userId}")
     public String deleteUser(@PathVariable Long userId) {
-        return adminService.deleteUser(userId);
+        log.info("Input dates AdminController.deleteUser: eventId: {}", userId);
+        final var result = adminService.deleteUser(userId);
+        log.info("Output dates AdminController.deleteUser: result: {}", result);
+        return result;
     }
 
     @PostMapping("/compilations")
     public Optional<CompilationDto> createCompilation(@RequestBody CompilationDtoResponse compilationResponse) {
-        return adminService.createCompilation(compilationResponseConverter.convertToEntity(compilationResponse));
+        log.info("Input dates AdminController.CompilationDtoResponse: eventId: {}", compilationResponse);
+        final var result = adminService
+                .createCompilation(compilationResponseConverter.convertToEntity(compilationResponse));
+        log.info("Output dates AdminController.createCompilation: result: {}", result);
+        return result;
     }
 
     @DeleteMapping("/compilations/{compId}")
     public String deleteCompilation(@PathVariable Long compId) {
-        return adminService.deleteCompilation(compId);
+        log.info("Input dates AdminController.deleteCompilation: compId: {}", compId);
+        final var result = adminService.deleteCompilation(compId);
+        log.info("Output dates AdminController.deleteCompilation: result: {}", result);
+        return result;
     }
 
     @DeleteMapping("/compilations/{compId}/events/{eventId}")
     public String deleteEventFromCompilation(@PathVariable Long eventId,
                                              @PathVariable Long compId) {
-        return adminService.deleteEventFromCompilation(eventId, compId);
+        log.info("Input dates AdminController.deleteEventFromCompilation: eventId: {}, compId: {}", eventId, compId);
+        final var result = adminService.deleteEventFromCompilation(eventId, compId);
+        log.info("Output dates AdminController.deleteEventFromCompilation: result: {}", result);
+        return result;
     }
 
     @PatchMapping("/compilations/{compId}/events/{eventId}")
-    public String addEventToCompilation(@PathVariable Long compId,
-                                        @PathVariable Long eventId) {
-        return adminService.updateAddEventToCompilation(eventId, compId);
+    public String addEventToCompilation(@PathVariable Long eventId, @PathVariable Long compId) {
+        log.info("Input dates AdminController.addEventToCompilation: eventId: {}, compId: {}", eventId, compId);
+        final var result = adminService.updateAddEventToCompilation(eventId, compId);
+        log.info("Output dates AdminController.addEventToCompilation: result: {}", result);
+        return result;
     }
 
     @DeleteMapping("/compilations/{compId}/pin")
     public String deleteCompilationFromHeadPage(@PathVariable Long compId) {
-        return adminService.deleteCompilationFromHeadPage(compId);
+        log.info("Input dates AdminController.deleteCompilationFromHeadPage: compId: {}", compId);
+        final var result = adminService.deleteCompilationFromHeadPage(compId);
+        log.info("Output dates AdminController.deleteCompilationFromHeadPage: result: {}", result);
+        return result;
     }
 
     @PatchMapping("/compilations/{compId}/pin")
     public String addCompilationToHeadPage(@PathVariable Long compId) {
-        return adminService.addCompilationToHeadPage(compId);
+        log.info("Input dates AdminController.addCompilationToHeadPage: compId: {}", compId);
+        final var result = adminService.addCompilationToHeadPage(compId);
+        log.info("Output dates AdminController.addCompilationToHeadPage: result: {}", result);
+        return result;
     }
 
 }

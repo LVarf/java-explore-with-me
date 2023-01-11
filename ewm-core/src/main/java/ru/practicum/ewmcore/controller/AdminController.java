@@ -222,9 +222,10 @@ public class AdminController {
         return result;
     }
 
-    @GetMapping("/comments/{eventId}")
-    public Page<CommentDto> readAllComments(@PathVariable Long eventId,
-                                            @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC)
+    @GetMapping("/comments")
+    public Page<CommentDto> readAllComments(@RequestParam(value = "eventId", required = false) Long eventId,
+                                            @RequestParam(value = "commentOwner", required = false) Long commentOwner,
+                                            @PageableDefault(sort = {"createDate"}, direction = Sort.Direction.DESC)
                                             Pageable pageable) {
         //сортировка по дате создания
         return null;

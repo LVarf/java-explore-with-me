@@ -110,7 +110,7 @@ public class AdminController {
     public List<UserFullDto> readUser(@RequestParam(value = "ids", required = false) Long[] ids,
                                       Pageable pageable) {
         final var filterParams = new ArrayList<ClientFilterParam>();
-        if (ids.length > 0) {
+        if (ids != null && ids.length > 0) {
             for (int i = 0; i < ids.length; i++) {
                 final var filterParam = new ClientFilterParam();
                 filterParam.setOperator(Comparison.EQ);

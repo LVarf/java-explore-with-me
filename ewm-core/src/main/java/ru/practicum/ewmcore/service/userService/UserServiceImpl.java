@@ -141,7 +141,8 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
     @Override
     public String deleteUserInternal(Long userId) {
         final var userFromDb = repository.findById(userId);
-        repository.delete(userFromDb.get());
+        validator.validateOnRead(userId, null);
+        repository.delete(userFromDb.orElseThrow());
         return USER_IS_DELETED;
     }
 }

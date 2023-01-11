@@ -8,7 +8,6 @@ import ru.practicum.ewmcore.converter.TimeUtils;
 import ru.practicum.ewmcore.error.ApiError;
 import ru.practicum.ewmcore.model.event.Event;
 import ru.practicum.ewmcore.model.event.EventFullDto;
-import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.event.EventStateEnum;
 
 import java.sql.Timestamp;

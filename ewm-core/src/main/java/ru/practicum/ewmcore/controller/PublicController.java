@@ -52,8 +52,10 @@ public class PublicController {
                                              @RequestParam(value = "sort", required = false) String sort,
                                              Pageable pageable,
                                              HttpServletRequest request) {
-
         statClient.saveHit(request);
+        log.info("Input dates PublicController.readAllEvents: text: {}, categories: {}, paid: {}, " +
+                        "rangeStart: {}, rangeEnd: {}, onlyAvailable: {}, sort: {}, pageable: {}, request: {}",
+                text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, pageable, request);
         final List<ClientFilterParam> filterParams = new ArrayList<>();
         if (text != null) {
             filterParams.add(new ClientFilterParam().setOperator(Comparison.LIKE)
@@ -93,34 +95,51 @@ public class PublicController {
                     Sort.by(EVENT_DATE_CONST).descending());
         }
         final ClientFilter clientFilter = new ClientFilter(filterParams);
-        return eventService.readAllEventsPublic(clientFilter, sort, pageable);
+        final var result = eventService.readAllEventsPublic(clientFilter, sort, pageable);
+        log.info("Output dates PublicController.readAllEvents: result: {}", result);
+        return result;
     }
 
     @GetMapping("/events/{id}")
     public Optional<EventFullDto> readEvent(@PathVariable Long id, HttpServletRequest request) {
         statClient.saveHit(request);
-        return eventService.readEventPublic(id);
+        log.info("Input dates PublicController.readEvent: text: {}, categories: {}", id, request);
+        final var result = eventService.readEventPublic(id);
+        log.info("Output dates PublicController.readEvent: result: {}", result);
+        return result;
     }
 
     @GetMapping("/compilations")
     public List<CompilationDto> readAllCompilations(
             @RequestParam(value = "pinned", defaultValue = "true") Boolean pinned,
             Pageable pageable) {
-        return compilationService.readAllCompilationsPublic(pinned, pageable);
+        log.info("Input dates PublicController.readAllCompilations: pinned: {}, pageable: {}", pinned, pageable);
+        final var result = compilationService.readAllCompilationsPublic(pinned, pageable);
+        log.info("Output dates PublicController.readAllCompilations: result: {}", result);
+        return result;
     }
 
     @GetMapping("/compilations/{compId}")
     public Optional<CompilationDto> readCompilation(@PathVariable Long compId) {
-        return compilationService.readCompilationPublic(compId);
+        log.info("Input dates PublicController.readCompilation: compId: {}", compId);
+        final var result = compilationService.readCompilationPublic(compId);
+        log.info("Output dates PublicController.readCompilation: result: {}", result);
+        return result;
     }
 
     @GetMapping("/categories")
     public List<CategoryDto> readAllCategories(Pageable pageable) {
-        return categoryService.readAllCategoriesPublic(pageable);
+        log.info("Input dates PublicController.readAllCategories: pageable: {}", pageable);
+        final var result = categoryService.readAllCategoriesPublic(pageable);
+        log.info("Output dates PublicController.readAllCategories: result: {}", result);
+        return result;
     }
 
     @GetMapping("/categories/{catId}")
     public Optional<CategoryDto> readCategory(@PathVariable Long catId) {
-        return categoryService.readCategoryPublic(catId);
+        log.info("Input dates PublicController.readCategory: catId: {}", catId);
+        final var result = categoryService.readCategoryPublic(catId);
+        log.info("Output dates PublicController.readCategory: result: {}", result);
+        return result;
     }
 }

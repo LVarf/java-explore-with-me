@@ -2,6 +2,7 @@ package ru.practicum.ewmcore.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -223,8 +224,8 @@ public class AdminController {
 
     @GetMapping("/comments/{eventId}")
     public Page<CommentDto> readAllComments(@PathVariable Long eventId,
-                                            @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC,
-                                                    page = 0, size = 10) Pageable pageable) {
+                                            @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC)
+                                            Pageable pageable) {
         //сортировка по дате создания
         return null;
     }

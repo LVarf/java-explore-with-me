@@ -12,14 +12,14 @@ public class CommentValidator extends AbstractValidation {
 
     private final TimeUtils timeUtils;
 
-    public void assertValidator(Boolean bool, String classType) {
-        assertValidator(bool, classType, timeUtils);
+    public void assertValidator(Boolean bool, String classType, String message) {
+        assertValidator(bool, classType, message, timeUtils);
     }
 
     public void validationText(String text) {
         validationSpacesInStringField(text);
         if (text == null || text.isBlank() || text.isEmpty()) {
-            assertValidator(true, "CommentServiceImpl");
+            assertValidator(true, "CommentServiceImpl", "Поле с текстом пустое");
         }
     }
 }

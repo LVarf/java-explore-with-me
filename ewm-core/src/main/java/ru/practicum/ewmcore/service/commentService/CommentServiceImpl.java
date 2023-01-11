@@ -21,7 +21,6 @@ import ru.practicum.ewmcore.validator.UserValidator;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -62,8 +61,9 @@ public class CommentServiceImpl implements CommentInternalService {
 
     private Optional<Comment> readCommentImpl(Long comId) {
         final var commentFromDb = commentRepository.findById(comId);
-        validator.assertValidator(commentFromDb.orElse(null) == null ||
-                commentFromDb.orElseThrow().getDeleteDate() != null, this.getClass().getName());
+        validator.assertValidator(commentFromDb.isEmpty() ||
+                commentFromDb.orElseThrow().getDeleteDate() != null, this.getClass().getName(),
+                "Комментарий не найден");
         return commentFromDb;
     }
 
@@ -72,7 +72,8 @@ public class CommentServiceImpl implements CommentInternalService {
         final var eventFromDb = eventRepository.findById(eventId);
         eventDtoValidator.validationOnExist(eventFromDb.orElse(null));
         final var userFromDb = userRepository.findUserById(userId);
-        userValidator.assertValidator(userFromDb.orElse(null) == null, this.getClass().getName());
+        userValidator.assertValidator(userFromDb.orElse(null) == null, this.getClass().getName(),
+                "df");
         validator.validationText(comment.getText());
         final var commitForSave = converter.convertToEntity(comment);
         commitForSave.setCreateDate(timeUtils.now());
@@ -87,8 +88,11 @@ public class CommentServiceImpl implements CommentInternalService {
     public Optional<CommentDto> updateComment(Long comId, Long userId, CommentDto comment) {
         final var userFromDb = userRepository.findUserById(userId);
         final var commentFromDb = readCommentImpl(comId).orElseThrow();
-        userValidator.assertValidator(userFromDb.orElse(null) == null ||
-                !commentFromDb.getCommentOwner().getId().equals(userId), this.getClass().getName());
+        userValidator.assertValidator(userFromDb.isEmpty() ||
+                !commentFromDb.getCommentOwner().getId().equals(userId), this.getClass().getName(),
+                "Ошибка запроса: пользователь не зарегистрирован.");
+        userValidator.assertValidator(!commentFromDb.getCommentOwner().getId().equals(userId), this.getClass().getName(),
+                "Ошибка запроса: сообщение может редактировать только его создатель.");
         validator.validationText(comment.getText());
         commentFromDb.setText(comment.getText());
         commentFromDb.setUpdateDate(timeUtils.now());
@@ -100,10 +104,12 @@ public class CommentServiceImpl implements CommentInternalService {
     public String deleteComment(Long comId, Long userId) {
         final var userFromDb = userRepository.findUserById(userId);
         final var commentFromDb = readCommentImpl(comId).orElseThrow();
-        userValidator.assertValidator(userFromDb.orElse(null) == null ||
-                !commentFromDb.getCommentOwner().getId().equals(userId), this.getClass().getName());
+        userValidator.assertValidator(userFromDb.isEmpty(), this.getClass().getName(),
+                "Ошибка запроса: пользователь не зарегистрирован.");
+        userValidator.assertValidator(!commentFromDb.getCommentOwner().getId().equals(userId),
+                this.getClass().getName(), "Ошибка запроса: сообщение может удалить только его создатель");
         commentFromDb.setDeleteDate(timeUtils.now());
-        final var commentFromSave = commentRepository.save(commentFromDb);
+        commentRepository.save(commentFromDb);
         return DELETE_MESSAGE;
     }
 }

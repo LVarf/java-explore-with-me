@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewmcore.converter.EventFullDtoResponseConverter;
+import ru.practicum.ewmcore.model.comment.CommentDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventFullDtoResponse;
 import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
+import ru.practicum.ewmcore.service.commentService.CommentInternalService;
 import ru.practicum.ewmcore.service.userService.UserPublicService;
 
 import java.util.List;
@@ -30,6 +33,27 @@ import java.util.Optional;
 public class UserController {
     private final UserPublicService userService;
     private final EventFullDtoResponseConverter eventResponseConverter;
+    private final CommentInternalService commentService;
+
+    @PostMapping("/comments/{eventId}")
+    public Optional<CommentDto> createComment(@PathVariable Long eventId,
+                                              @PathVariable Long userId,
+                                              @RequestBody CommentDto comment) {
+        return commentService.createComment(eventId, userId, comment);
+    }
+
+    @PatchMapping("/comments/{comId}")
+    public Optional<CommentDto> updateComment(@PathVariable Long comId,
+                                              @PathVariable Long userId,
+                                              @RequestBody CommentDto comment) {
+        return commentService.updateComment(comId, userId, comment);
+    }
+
+    @DeleteMapping("/comments/{comId}")
+    public String deleteComment(@PathVariable Long comId,
+                                @PathVariable Long userId) {
+        return commentService.deleteComment(comId, userId);
+    }
 
     @GetMapping("/events")
     public List<EventShortDto> readAllEvents(@PathVariable Long userId,

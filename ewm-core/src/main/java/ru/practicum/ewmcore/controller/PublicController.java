@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewmcore.converter.TimeUtils;
 import ru.practicum.ewmcore.model.category.CategoryDto;
+import ru.practicum.ewmcore.model.comment.CommentDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.service.categoryService.CategoryPublicService;
+import ru.practicum.ewmcore.service.commentService.CommentInternalService;
 import ru.practicum.ewmcore.service.compilationService.CompilationPublicService;
 import ru.practicum.ewmcore.service.eventService.EventPublicService;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
@@ -35,11 +38,25 @@ import java.util.Optional;
 public class PublicController {
     private static final String SORT_EVENT_DATE = "EVENT_DATE";
     private static final String EVENT_DATE_CONST = "eventDate";
+    private static final String CREATE_DATE_CONST = "createDate";
+    private final CommentInternalService commentService;
     private final EventPublicService eventService;
     private final CompilationPublicService compilationService;
     private final CategoryPublicService categoryService;
     private final TimeUtils timeUtils;
     private final StatClient statClient;
+
+    @GetMapping("/comments/{eventId}")
+    public List<CommentDto> readAllComments(@PathVariable Long eventId,
+                                            @PageableDefault(sort = {CREATE_DATE_CONST},
+                                                    direction = Sort.Direction.ASC) Pageable pageable) {
+        return commentService.readAllComments(eventId, pageable);
+    }
+
+    @GetMapping("/comments/comment/{comId}")
+    public Optional<CommentDto> readComment(@PathVariable Long comId) {
+        return commentService.readComment(comId);
+    }
 
     @GetMapping("/events")
     public List<EventShortDto> readAllEvents(@RequestParam(value = "text", required = false) String text,

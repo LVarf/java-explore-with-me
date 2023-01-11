@@ -26,6 +26,7 @@ import ru.practicum.ewmcore.specification.filter.ClientFilter;
 import ru.practicum.ewmcore.specification.filter.ClientFilterParam;
 import ru.practicum.ewmcore.specification.filter.Comparison;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -123,7 +124,7 @@ public class AdminController {
     }
 
     @PostMapping("/users")
-    public Optional<UserFullDto> createUser(@RequestBody UserFullDto user) {
+    public Optional<UserFullDto> createUser(@RequestBody @Valid UserFullDto user) {
         return adminService.createUser(user);
     }
 

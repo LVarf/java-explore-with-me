@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,10 +30,10 @@ public class ErrorHandler {
         return new ResponseEntity<>(ex, ex.getStatus());
     }
 
-    @ExceptionHandler({MissingServletRequestParameterException.class})
+    @ExceptionHandler({MissingServletRequestParameterException.class, MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> missingServletRequestParameterException(
-            final MissingServletRequestParameterException e,
+            final Exception e,
             ServletWebRequest request) {
         final var ex = new ApiErrorDto().setStatus(HttpStatus.BAD_REQUEST);
         BeanUtils.copyProperties(e, ex);

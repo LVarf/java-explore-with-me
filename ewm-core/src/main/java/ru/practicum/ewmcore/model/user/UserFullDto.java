@@ -14,6 +14,6 @@ public class UserFullDto {
     @NotEmpty
     @NotBlank
     private String name;
-    @Email
+    @Email(message = "Адрес электронной почты должен быть в формате mail@mail.ru")
     private String email;
 }

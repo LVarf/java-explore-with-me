@@ -35,15 +35,13 @@ public abstract class AbstractSpecification<T> {
                                             final CriteriaBuilder criteriaBuilder,
                                             final ClientFilter filters) {
         final List<Predicate> predicates = new ArrayList<>(commonFilterPredicate(filters, root, criteriaBuilder));
-        final List<Predicate> finalListPredicate = predicates.stream()
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-        return criteriaBuilder.and(finalListPredicate.toArray(new Predicate[0]));
+        return criteriaBuilder.and(predicates.stream()
+                .filter(Objects::nonNull).toArray(Predicate[]::new));
     }
 
     private List<Predicate> commonFilterPredicate(final ClientFilter clientFilter, final Root<T> root,
                                                   final CriteriaBuilder criteriaBuilder) {
-        if (clientFilter.getFilters().size() == 0) {
+        if (clientFilter.getFilters().isEmpty()) {
             return new ArrayList<>();
         } else {
             return clientFilter.getFilters().stream()

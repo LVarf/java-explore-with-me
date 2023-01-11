@@ -63,7 +63,7 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
 
     @Override
     public Optional<Event> readById(Long eventId) {
-        return repository.findById(eventId);
+        return readEventImpl(eventId);
     }
 
     @Override
@@ -71,10 +71,8 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
         if (event.getId() != null) {
             event.setEventId(event.getId());
         }
-        final var eventFromDb = repository.findById(event.getEventId());
-        validator.validationOnExist(eventFromDb.orElse(null));
-        validator.validationOnUpdate(userId, eventFullDtoConverter.convertFromEntity(eventFromDb.orElseThrow()));
-        final var eventForUpdate = eventFromDb.orElseThrow();
+        final var eventForUpdate = readEventImpl(event.getEventId()).orElseThrow();
+        validator.validationOnUpdate(userId, eventFullDtoConverter.convertFromEntity(eventForUpdate));
         final var categoryForUpdate = categoryRepository.findById(event.getCategory()).orElseThrow();
         eventForUpdate.setCategory(categoryForUpdate);
         final var eventFromSave = repository.save(eventFullDtoConverter.mergeToEntity(event, eventForUpdate));
@@ -83,9 +81,8 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
 
     @Override
     public Page<EventFullDto> readAllEventsByFilters(ClientFilter filters, Pageable pageable) {
-        final var eventsFromDb = repository
-                .findAll(specification.findAllSpecification(filters), pageable);
-        return eventsFromDb.map(eventFullDtoConverter::convertFromEntity);
+        return repository.findAll(specification.findAllSpecification(filters), pageable)
+                .map(eventFullDtoConverter::convertFromEntity);
     }
 
     public Optional<EventFullDto> createEvent(EventFullDto event) {
@@ -96,31 +93,26 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
         final var category = categoryRepository.findById(event.getCategory()).orElseThrow();
         eventForSave.setCategory(category);
         eventForSave.setState(EventStateEnum.PENDING);
-        final var eventFromSave = repository.save(eventForSave);
-        return Optional.of(eventFullDtoConverter.convertFromEntity(eventFromSave));
+        return Optional.of(eventFullDtoConverter.convertFromEntity(repository.save(eventForSave)));
     }
 
     @Override
     public Optional<EventFullDto> readEventByInitiator(Long userId, Long eventId) {
-        final var eventFromDb = repository.findById(eventId);
-        validator.validationOnExist(eventFromDb.orElse(null));
-        validator.validationOnRead(userId, eventFullDtoConverter.convertFromEntity(eventFromDb.get()));
+        validator.validationOnRead(userId,
+                eventFullDtoConverter.convertFromEntity(readEventImpl(eventId).orElseThrow()));
         return repository.findById(eventId).map(eventFullDtoConverter::convertFromEntity);
     }
 
     @Override
     public Optional<EventFullDto> readEvent(Long eventId) {
-        final var eventFromDb = repository.findById(eventId);
-        validator.validationOnExist(eventFromDb.orElse(null));
-        return eventFromDb.map(eventFullDtoConverter::convertFromEntity);
+        return readEventImpl(eventId).map(eventFullDtoConverter::convertFromEntity);
     }
 
     @Override
     public Optional<EventFullDto> updateEventOnCancel(Long userId, Long eventId) {
-        final var eventFromDb = repository.findById(eventId);
-        validator.validationOnExist(eventFromDb.orElse(null));
-        validator.validationOnRead(userId, eventFullDtoConverter.convertFromEntity(eventFromDb.get()));
-        validator.validationOnCancel(eventFromDb.map(eventFullDtoConverter::convertFromEntity).get());
+        final var eventFromDb = readEventImpl(eventId);
+        validator.validationOnRead(userId, eventFullDtoConverter.convertFromEntity(eventFromDb.orElseThrow()));
+        validator.validationOnCancel(eventFromDb.map(eventFullDtoConverter::convertFromEntity).orElseThrow());
         final var eventForSave = eventFromDb.get();
         eventForSave.setState(EventStateEnum.CANCELED);
         return Optional.of(eventFullDtoConverter.convertFromEntity(repository.save(eventForSave)));
@@ -134,12 +126,8 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
 
     @Override
     public Optional<EventFullDto> updateEventById(Long eventId, EventFullDto eventFullDto) {
-        final var eventFromDb = repository.findById(eventId).orElse(null);
-        validator.validationOnExist(eventFromDb);
-        final var categoryForUpdate = categoryRepository.findById(eventFullDto.getCategory()).orElse(null);
-        if (categoryForUpdate != null) {
-            eventFromDb.setCategory(categoryForUpdate);
-        }
+        final var eventFromDb = readEventImpl(eventId).orElseThrow();
+        categoryRepository.findById(eventFullDto.getCategory()).ifPresent(eventFromDb::setCategory);
         final var eventFromSave = repository
                 .save(eventFullDtoConverter.mergeToEntity(eventFullDto, eventFromDb));
         return updateEvent(eventFullDtoConverter.convertFromEntity(eventFromSave));
@@ -147,8 +135,7 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
 
     @Override
     public Optional<EventFullDto> updateEventOnPublish(Long eventId) {
-        final var eventFromDb = repository.findById(eventId).orElse(null);
-        validator.validationOnExist(eventFromDb);
+        final var eventFromDb = readEventImpl(eventId).orElseThrow();
         validator.validationOnPublished(eventFullDtoConverter.convertFromEntity(eventFromDb));
         eventFromDb.setState(EventStateEnum.PUBLISHED);
         eventFromDb.setPublishedOn(timeUtils.now());
@@ -158,8 +145,7 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
 
     @Override
     public Optional<EventFullDto> updateEventToReject(Long eventId) {
-        final var eventFromDb = repository.findById(eventId).orElse(null);
-        validator.validationOnExist(eventFromDb);
+        final var eventFromDb = readEventImpl(eventId).orElseThrow();
         validator.validationOnReject(eventFullDtoConverter.convertFromEntity(eventFromDb));
         eventFromDb.setState(EventStateEnum.CANCELED);
         final var eventFromSave = repository.save(eventFromDb);
@@ -168,9 +154,14 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
 
     @Override
     public List<EventFullDto> readAllByCategoryId(Long catId) {
-        final var eventsFromDb = repository.findByCategoryId(catId);
-        return eventsFromDb.stream()
+        return repository.findByCategoryId(catId).stream()
                 .map(eventFullDtoConverter::convertFromEntity).collect(Collectors.toList());
+    }
+
+    private Optional<Event> readEventImpl(Long eventId) {
+        final var eventFromDb = repository.findById(eventId);
+        validator.validationOnExist(eventFromDb.orElse(null));
+        return eventFromDb;
     }
 
     @Override

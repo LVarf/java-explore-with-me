@@ -223,22 +223,50 @@ public class AdminController {
     }
 
     @GetMapping("/comments")
-    public Page<CommentDto> readAllComments(@RequestParam(value = "eventId", required = false) Long eventId,
+    public List<CommentDto> readAllComments(@RequestParam(value = "eventId", required = false) Long eventId,
                                             @RequestParam(value = "commentOwner", required = false) Long commentOwner,
-                                            @PageableDefault(sort = {"createDate"}, direction = Sort.Direction.DESC)
+                                            @RequestParam(value = "isDeleted", defaultValue = "false")
+                                            Boolean isDeleted,
+                                            @PageableDefault(sort = {"createDate"}, direction = Sort.Direction.ASC)
                                             Pageable pageable) {
-        //сортировка по дате создания
-        return null;
+        log.info("Input dates AdminController.readAllComments: eventId: {}, commentOwner: {}, pageable: {}",
+                eventId, commentOwner, pageable);
+        final var filterParams = new ArrayList<ClientFilterParam>();
+        if (eventId != null) {
+            final var filterParam = new ClientFilterParam().setOperator(Comparison.EQ)
+                    .setProperty("event").setMainValue(eventId);
+            filterParams.add(filterParam);
+        }
+        if (commentOwner != null) {
+            final var filterParam = new ClientFilterParam().setOperator(Comparison.EQ)
+                    .setProperty("commentOwner").setMainValue(commentOwner);
+            filterParams.add(filterParam);
+        }
+        if (!isDeleted){
+            final var filterParam = new ClientFilterParam().setOperator(Comparison.IS_NULL)
+                    .setProperty("deleteDate");
+            filterParams.add(filterParam);
+        }
+        final var filter = new ClientFilter(filterParams);
+        final var result = adminService.readAllCommentsPublic(filter, pageable).toList();
+        log.info("Output dates AdminController.readAllComments: result: {}", result);
+        return result;
     }
 
     @GetMapping("/comments/{comId}")
     public Optional<CommentDto> readComment(@PathVariable Long comId) {
-        return null;
+        log.info("Input dates AdminController.readComment: comId: {}", comId);
+        final var result = adminService.readCommentPublic(comId);
+        log.info("Output dates AdminController.readComment: result: {}", result);
+        return result;
     }
 
     @DeleteMapping("/comments/{comId}")
-    public String updateEventOnCancel(@PathVariable Long comId) {
-        return null;
+    public String deleteComment(@PathVariable Long comId) {
+        log.info("Input dates AdminController.deleteComment: comId: {}", comId);
+        final var result = adminService.deleteCommentPublic(comId);
+        log.info("Output dates AdminController.deleteComment: result: {}", result);
+        return result;
     }
 
 }

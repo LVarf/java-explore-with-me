@@ -20,7 +20,7 @@ import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventFullDtoResponse;
 import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
-import ru.practicum.ewmcore.service.commentService.CommentInternalService;
+import ru.practicum.ewmcore.service.commentService.CommentPublicService;
 import ru.practicum.ewmcore.service.userService.UserPublicService;
 
 import java.util.List;
@@ -33,26 +33,26 @@ import java.util.Optional;
 public class UserController {
     private final UserPublicService userService;
     private final EventFullDtoResponseConverter eventResponseConverter;
-    private final CommentInternalService commentService;
+    private final CommentPublicService commentService;
 
     @PostMapping("/comments/{eventId}")
     public Optional<CommentDto> createComment(@PathVariable Long eventId,
                                               @PathVariable Long userId,
                                               @RequestBody CommentDto comment) {
-        return commentService.createComment(eventId, userId, comment);
+        return commentService.createCommentPublic(eventId, userId, comment);
     }
 
     @PatchMapping("/comments/{comId}")
     public Optional<CommentDto> updateComment(@PathVariable Long comId,
                                               @PathVariable Long userId,
                                               @RequestBody CommentDto comment) {
-        return commentService.updateComment(comId, userId, comment);
+        return commentService.updateCommentPublic(comId, userId, comment);
     }
 
     @DeleteMapping("/comments/{comId}")
     public String deleteComment(@PathVariable Long comId,
                                 @PathVariable Long userId) {
-        return commentService.deleteComment(comId, userId);
+        return commentService.deleteCommentPublic(comId, userId);
     }
 
     @GetMapping("/events")

@@ -6,10 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.model.category.CategoryDto;
+import ru.practicum.ewmcore.model.comment.CommentDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.user.UserFullDto;
 import ru.practicum.ewmcore.service.categoryService.CategoryInternalService;
+import ru.practicum.ewmcore.service.commentService.CommentServiceImpl;
 import ru.practicum.ewmcore.service.compilationService.CompilationInternalService;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
 import ru.practicum.ewmcore.service.userService.UserInternalService;
@@ -25,6 +27,7 @@ public class AdminServiceImpl implements AdminPublicService {
     private final CategoryInternalService categoryService;
     private final UserInternalService userService;
     private final CompilationInternalService compilationService;
+    private final CommentServiceImpl commentService;
 
     @Override
     public Page<EventFullDto> readAllByFilters(ClientFilter filters, Pageable pageable) {
@@ -108,5 +111,20 @@ public class AdminServiceImpl implements AdminPublicService {
     @Override
     public String addCompilationToHeadPage(Long compId) {
         return compilationService.addCompilationToHeadPageInternal(compId);
+    }
+
+    @Override
+    public Page<CommentDto> readAllCommentsPublic(ClientFilter filter, Pageable pageable) {
+        return commentService.readAllByFiltersInternal(filter, pageable);
+    }
+
+    @Override
+    public Optional<CommentDto> readCommentPublic(Long comId) {
+        return commentService.readCommentInternal(comId);
+    }
+
+    @Override
+    public String deleteCommentPublic(Long comId) {
+        return commentService.deleteCommentInternal(comId);
     }
 }

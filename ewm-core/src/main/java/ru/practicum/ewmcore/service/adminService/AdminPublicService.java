@@ -3,6 +3,7 @@ package ru.practicum.ewmcore.service.adminService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.ewmcore.model.category.CategoryDto;
+import ru.practicum.ewmcore.model.comment.CommentDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.user.UserFullDto;
@@ -44,4 +45,10 @@ public interface AdminPublicService {
     String deleteCompilationFromHeadPage(Long compId);
 
     String addCompilationToHeadPage(Long compId);
+
+    Page<CommentDto> readAllCommentsPublic(ClientFilter filter, Pageable pageable);
+
+    Optional<CommentDto> readCommentPublic(Long comId);
+
+    String deleteCommentPublic(Long comId);
 }

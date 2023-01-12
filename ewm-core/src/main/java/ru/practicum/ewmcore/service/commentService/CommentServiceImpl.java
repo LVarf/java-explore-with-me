@@ -2,7 +2,9 @@ package ru.practicum.ewmcore.service.commentService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.converter.CommentDtoConverter;
 import ru.practicum.ewmcore.converter.TimeUtils;
@@ -25,10 +27,11 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CommentServiceImpl implements CommentInternalService {
+public class CommentServiceImpl implements CommentPublicService, CommentInternalService {
     private static final String EVENT_CONST = "event";
     private static final String DELETE_DATE_CONST = "deleteDate";
     private static final String DELETE_MESSAGE = "Комментарий удалён.";
+    private static final String ALREADY_DELETE_MESSAGE = "Комментарий уже удалён.";
     private final EventDtoValidator eventDtoValidator;
     private final EventRepository eventRepository;
     private final CommentRepository commentRepository;
@@ -40,35 +43,52 @@ public class CommentServiceImpl implements CommentInternalService {
     private final TimeUtils timeUtils;
 
     @Override
-    public List<CommentDto> readAllComments(Long eventId, Pageable pageable) {
+    public List<CommentDto> readAllCommentsPublic(Long eventId, Pageable pageable) {
         final var eventFromDb = eventRepository.findById(eventId);
         eventDtoValidator.validationOnExist(eventFromDb.orElse(null));
         final var specifications = commentSpecification.findAllSpecification(
                 new ClientFilter(List.of(new ClientFilterParam().setOperator(Comparison.EQ)
-                        .setProperty(EVENT_CONST).setMainValue(eventId),
+                                .setProperty(EVENT_CONST).setMainValue(eventId),
                         new ClientFilterParam().setOperator(Comparison.IS_NULL)
                                 .setProperty(DELETE_DATE_CONST))
                 )
         );
-        final var commentsFromDb = commentRepository.findAll(specifications, pageable);
-        return commentsFromDb.map(converter::convertFromEntity).toList();
+        return readAllByFiltersImpl(specifications, pageable).toList();
     }
 
     @Override
-    public Optional<CommentDto> readComment(Long comId) {
+    public Page<CommentDto> readAllByFiltersInternal(ClientFilter filter, Pageable pageable) {
+        final var specifications = commentSpecification.findAllSpecification(filter);
+        return readAllByFiltersImpl(specifications, pageable);
+    }
+
+    private Page<CommentDto> readAllByFiltersImpl(Specification<Comment> specifications, Pageable pageable) {
+        final var commentsFromDb = commentRepository.findAll(specifications, pageable);
+        return commentsFromDb.map(converter::convertFromEntity);
+    }
+
+    @Override
+    public Optional<CommentDto> readCommentPublic(Long comId) {
         return readCommentImpl(comId).map(converter::convertFromEntity);
     }
 
     private Optional<Comment> readCommentImpl(Long comId) {
         final var commentFromDb = commentRepository.findById(comId);
         validator.assertValidator(commentFromDb.isEmpty() ||
-                commentFromDb.orElseThrow().getDeleteDate() != null, this.getClass().getName(),
+                        commentFromDb.orElseThrow().getDeleteDate() != null, this.getClass().getName(),
                 "Комментарий не найден");
         return commentFromDb;
     }
 
     @Override
-    public Optional<CommentDto> createComment(Long eventId, Long userId, CommentDto comment) {
+    public Optional<CommentDto> readCommentInternal(Long comId) {
+        final var commentFromDb = commentRepository.findById(comId);
+        validator.assertValidator(commentFromDb.isEmpty(), this.getClass().getName(), "Комментарий не найден");
+        return commentFromDb.map(converter::convertFromEntity);
+    }
+
+    @Override
+    public Optional<CommentDto> createCommentPublic(Long eventId, Long userId, CommentDto comment) {
         final var eventFromDb = eventRepository.findById(eventId);
         eventDtoValidator.validationOnExist(eventFromDb.orElse(null));
         final var userFromDb = userRepository.findUserById(userId);
@@ -85,11 +105,11 @@ public class CommentServiceImpl implements CommentInternalService {
     }
 
     @Override
-    public Optional<CommentDto> updateComment(Long comId, Long userId, CommentDto comment) {
+    public Optional<CommentDto> updateCommentPublic(Long comId, Long userId, CommentDto comment) {
         final var userFromDb = userRepository.findUserById(userId);
         final var commentFromDb = readCommentImpl(comId).orElseThrow();
         userValidator.assertValidator(userFromDb.isEmpty() ||
-                !commentFromDb.getCommentOwner().getId().equals(userId), this.getClass().getName(),
+                        !commentFromDb.getCommentOwner().getId().equals(userId), this.getClass().getName(),
                 "Ошибка запроса: пользователь не зарегистрирован.");
         userValidator.assertValidator(!commentFromDb.getCommentOwner().getId().equals(userId), this.getClass().getName(),
                 "Ошибка запроса: сообщение может редактировать только его создатель.");
@@ -101,13 +121,26 @@ public class CommentServiceImpl implements CommentInternalService {
     }
 
     @Override
-    public String deleteComment(Long comId, Long userId) {
+    public String deleteCommentPublic(Long comId, Long userId) {
         final var userFromDb = userRepository.findUserById(userId);
         final var commentFromDb = readCommentImpl(comId).orElseThrow();
         userValidator.assertValidator(userFromDb.isEmpty(), this.getClass().getName(),
                 "Ошибка запроса: пользователь не зарегистрирован.");
         userValidator.assertValidator(!commentFromDb.getCommentOwner().getId().equals(userId),
                 this.getClass().getName(), "Ошибка запроса: сообщение может удалить только его создатель");
+        return deleteCommentImpl(commentFromDb);
+    }
+
+    @Override
+    public String deleteCommentInternal(Long comId) {
+        final var commentFromDb = commentRepository.findById(comId).orElseThrow();
+        return deleteCommentImpl(commentFromDb);
+    }
+
+    private String deleteCommentImpl(Comment commentFromDb) {
+        if (commentFromDb.getDeleteDate() != null) {
+            return ALREADY_DELETE_MESSAGE;
+        }
         commentFromDb.setDeleteDate(timeUtils.now());
         commentRepository.save(commentFromDb);
         return DELETE_MESSAGE;

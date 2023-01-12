@@ -18,7 +18,7 @@ import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.service.categoryService.CategoryPublicService;
-import ru.practicum.ewmcore.service.commentService.CommentInternalService;
+import ru.practicum.ewmcore.service.commentService.CommentPublicService;
 import ru.practicum.ewmcore.service.compilationService.CompilationPublicService;
 import ru.practicum.ewmcore.service.eventService.EventPublicService;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
@@ -39,7 +39,7 @@ public class PublicController {
     private static final String SORT_EVENT_DATE = "EVENT_DATE";
     private static final String EVENT_DATE_CONST = "eventDate";
     private static final String CREATE_DATE_CONST = "createDate";
-    private final CommentInternalService commentService;
+    private final CommentPublicService commentService;
     private final EventPublicService eventService;
     private final CompilationPublicService compilationService;
     private final CategoryPublicService categoryService;
@@ -50,12 +50,12 @@ public class PublicController {
     public List<CommentDto> readAllComments(@PathVariable Long eventId,
                                             @PageableDefault(sort = {CREATE_DATE_CONST},
                                                     direction = Sort.Direction.ASC) Pageable pageable) {
-        return commentService.readAllComments(eventId, pageable);
+        return commentService.readAllCommentsPublic(eventId, pageable);
     }
 
     @GetMapping("/comments/comment/{comId}")
     public Optional<CommentDto> readComment(@PathVariable Long comId) {
-        return commentService.readComment(comId);
+        return commentService.readCommentPublic(comId);
     }
 
     @GetMapping("/events")

@@ -13,6 +13,8 @@ import ru.practicum.ewmcore.model.comment.CommentDto;
 import ru.practicum.ewmcore.repository.CommentRepository;
 import ru.practicum.ewmcore.repository.EventRepository;
 import ru.practicum.ewmcore.repository.UserRepository;
+import ru.practicum.ewmcore.service.commentService.CommentInternalService;
+import ru.practicum.ewmcore.service.commentService.CommentPublicService;
 import ru.practicum.ewmcore.specification.CommentSpecification;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 import ru.practicum.ewmcore.specification.filter.ClientFilterParam;

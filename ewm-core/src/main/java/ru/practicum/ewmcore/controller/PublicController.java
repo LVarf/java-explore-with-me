@@ -50,12 +50,18 @@ public class PublicController {
     public List<CommentDto> readAllComments(@PathVariable Long eventId,
                                             @PageableDefault(sort = {CREATE_DATE_CONST},
                                                     direction = Sort.Direction.ASC) Pageable pageable) {
-        return commentService.readAllCommentsPublic(eventId, pageable);
+        log.info("Input dates PublicController.readAllComments: eventId: {}, pageable: {}", eventId, pageable);
+        final var result = commentService.readAllCommentsPublic(eventId, pageable);
+        log.info("Output dates PublicController.readAllComments: result: {}", result);
+        return result;
     }
 
     @GetMapping("/comments/comment/{comId}")
     public Optional<CommentDto> readComment(@PathVariable Long comId) {
-        return commentService.readCommentPublic(comId);
+        log.info("Input dates PublicController.readComment: comId: {}", comId);
+        final var result = commentService.readCommentPublic(comId);
+        log.info("Output dates PublicController.readComment: result: {}", result);
+        return result;
     }
 
     @GetMapping("/events")

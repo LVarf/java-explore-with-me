@@ -39,20 +39,31 @@ public class UserController {
     public Optional<CommentDto> createComment(@PathVariable Long eventId,
                                               @PathVariable Long userId,
                                               @RequestBody CommentDto comment) {
-        return commentService.createCommentPublic(eventId, userId, comment);
+        log.info("Input dates UserController.createComment: eventId: {}, userId: {}, CommentDto: {}",
+                eventId, userId, comment);
+        final var result = commentService.createCommentPublic(eventId, userId, comment);
+        log.info("Output dates UserController.createComment: result: {}", result);
+        return result;
     }
 
     @PatchMapping("/comments/{comId}")
     public Optional<CommentDto> updateComment(@PathVariable Long comId,
                                               @PathVariable Long userId,
                                               @RequestBody CommentDto comment) {
-        return commentService.updateCommentPublic(comId, userId, comment);
+        log.info("Input dates UserController.updateComment: comId: {}, userId: {}, CommentDto: {}",
+                comId, userId, comment);
+        final var result = commentService.updateCommentPublic(comId, userId, comment);
+        log.info("Output dates UserController.updateComment: result: {}", result);
+        return result;
     }
 
     @DeleteMapping("/comments/{comId}")
     public String deleteComment(@PathVariable Long comId,
                                 @PathVariable Long userId) {
-        return commentService.deleteCommentPublic(comId, userId);
+        log.info("Input dates UserController.deleteComment: comId: {}, userId: {}", comId, userId);
+        final var result = commentService.deleteCommentPublic(comId, userId);
+        log.info("Output dates UserController.deleteComment: result: {}", result);
+        return result;
     }
 
     @GetMapping("/events")

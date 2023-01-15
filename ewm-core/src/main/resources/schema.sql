@@ -171,9 +171,11 @@ CREATE TABLE IF NOT EXISTS ewm_core.reports
     entity          text CHECK (entity IN ('EVENT', 'COMMENT', 'USER')),
     entity_id       int8      NOT NULL,
     report_owner_id int8      NOT NULL,
+    report_goal_user_id int8      NOT NULL,
     create_date     timestamp NOT NULL,
     update_date     timestamp,
     actual          boolean DEFAULT (true),
+    comment_admin text,
     CONSTRAINT comment_pkey PRIMARY KEY (id)
 );
 COMMENT ON TABLE ewm_core.reports IS 'Жалоба';
@@ -184,10 +186,16 @@ COMMENT ON COLUMN ewm_core.reports.update_date IS 'Дата и время обн
 COMMENT ON COLUMN ewm_core.reports.entity IS 'Сущность, на которую сделана жалоба';
 COMMENT ON COLUMN ewm_core.reports.entity_id IS 'Id сущности, на которую сделана жалоба';
 COMMENT ON COLUMN ewm_core.reports.report_owner_id IS 'Идентификатор инициатора жалобы';
+COMMENT ON COLUMN ewm_core.reports.report_goal_user_id IS 'Идентификатор, пользователя, на которого подана жалобы';
 COMMENT ON COLUMN ewm_core.reports.actual IS 'Метка актуальности жалобы. True - жалоба не обработана администратром';
 
 ALTER TABLE ewm_core.reports
-    DROP CONSTRAINT IF EXISTS fk_to_user_from_report;
+    DROP CONSTRAINT IF EXISTS fk_to_user_owner_from_report;
 ALTER TABLE ewm_core.reports
-    ADD CONSTRAINT fk_to_user_from_report FOREIGN KEY (report_owner_id)
+    ADD CONSTRAINT fk_to_user_owner_from_report FOREIGN KEY (report_owner_id)
+        REFERENCES ewm_core.users (id) ON DELETE CASCADE;
+ALTER TABLE ewm_core.reports
+    DROP CONSTRAINT IF EXISTS fk_to_user_goal_from_report;
+ALTER TABLE ewm_core.reports
+    ADD CONSTRAINT fk_to_user_goal_from_report FOREIGN KEY (report_goal_user_id)
         REFERENCES ewm_core.users (id) ON DELETE CASCADE;

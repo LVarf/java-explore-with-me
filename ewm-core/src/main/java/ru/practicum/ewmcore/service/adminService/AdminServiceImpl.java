@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.comment.CommentDto;
+import ru.practicum.ewmcore.model.commentReports.ReportDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.user.UserFullDto;
@@ -28,6 +29,21 @@ public class AdminServiceImpl implements AdminPublicService {
     private final UserInternalService userService;
     private final CompilationInternalService compilationService;
     private final CommentServiceImpl commentService;
+
+    @Override
+    public Page<ReportDto> readAllReports(ClientFilter filter, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Optional<ReportDto> readReport(Long reportId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<ReportDto> updateReport(Long reportId, ReportDto reportDto) {
+        return Optional.empty();
+    }
 
     @Override
     public Page<EventFullDto> readAllByFilters(ClientFilter filters, Pageable pageable) {

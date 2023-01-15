@@ -33,10 +33,14 @@ public class Report {
     private Long entityId;
     @ManyToOne(fetch = FetchType.LAZY)
     private User reportOwner;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User reportGoalUser;
     @Column
     private Timestamp createDate;
     @Column
     private Timestamp updateDate;
     @Column
     private Boolean actual;
+    @Column
+    private String commentAdmin;
 }

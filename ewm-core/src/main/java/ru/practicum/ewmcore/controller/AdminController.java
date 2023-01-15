@@ -20,6 +20,8 @@ import ru.practicum.ewmcore.converter.CompilationDtoResponseConverter;
 import ru.practicum.ewmcore.converter.EventFullDtoResponseConverter;
 import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.comment.CommentDto;
+import ru.practicum.ewmcore.model.commentReports.ReportDto;
+import ru.practicum.ewmcore.model.commentReports.ReportEntityEnum;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDtoResponse;
 import ru.practicum.ewmcore.model.event.EventFullDto;
@@ -44,6 +46,68 @@ public class AdminController {
     private final AdminPublicService adminService;
     private final EventFullDtoResponseConverter eventResponseConverter;
     private final CompilationDtoResponseConverter compilationResponseConverter;
+
+    @GetMapping("/reports")
+    public List<ReportDto> readAllReports(@RequestParam(value = "entity", required = false) ReportEntityEnum entity,
+                                          @RequestParam(value = "entityId", required = false) Long entityId,
+                                          @RequestParam(value = "reportOwner", required = false) Long reportOwnerId,
+                                          @RequestParam(value = "actual", defaultValue = "true") Boolean actual,
+                                          @RequestParam(value = "goalUser", required = false) Long goalUserId,
+                                          @RequestParam(value = "rangeStart", required = false) String rangeStart,
+                                          @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
+                                          @PageableDefault(sort = {"createDate"}, direction = Sort.Direction.ASC)
+                                          Pageable pageable) {
+        log.info("Input dates AdminController.readAllReports: entity: {}, entityId: {}, reportOwner: {}, " +
+                        "actual: {}, goalUser: {}, rangeStart: {}, " +
+                        "rangeEnd: {}, pageable: {}",
+                entity, entityId, reportOwnerId, actual, goalUserId, rangeStart, rangeEnd, pageable);
+        final List<ClientFilterParam> params = new ArrayList<>();
+        if (entity != null) {
+            params.add(new ClientFilterParam().setProperty("entity")
+                    .setOperator(Comparison.EQ).setMainValue(entity));
+        }
+        if (entityId != null) {
+            params.add(new ClientFilterParam().setProperty("entityId")
+                    .setOperator(Comparison.EQ).setMainValue(entityId));
+        }
+        if (reportOwnerId != null) {
+            params.add(new ClientFilterParam().setProperty("reportOwner")
+                    .setOperator(Comparison.EQ).setMainValue(reportOwnerId));
+        }
+        params.add(new ClientFilterParam().setProperty("actual")
+                .setOperator(Comparison.EQ).setMainValue(actual));
+        if (goalUserId != null) {
+            params.add(new ClientFilterParam().setProperty("reportGoalUser")
+                    .setOperator(Comparison.EQ).setMainValue(goalUserId));
+        }
+        if (rangeStart != null) {
+            params.add(new ClientFilterParam().setProperty("rangeStart").setOperator(Comparison.GE).setMainValue(rangeStart));
+        }
+        if (rangeEnd != null) {
+            params.add(new ClientFilterParam().setProperty("rangeEnd").setOperator(Comparison.LE).setMainValue(rangeEnd));
+        }
+        final ClientFilter filters = new ClientFilter(params);
+        final List<ReportDto> result = null;
+        log.info("Output dates AdminController.readAllReports: result: {}", result);
+        return result;
+    }
+
+    @GetMapping("/reports/{reportId}")
+    public Optional<ReportDto> readReport(@PathVariable Long reportId) {
+        log.info("Input dates AdminController.readReport: reportId: {}", reportId);
+        final var result = Optional.of(new ReportDto());
+        log.info("Output dates AdminController.readReport: result: {}", result);
+        return result;
+    }
+
+    @PatchMapping("reports/{reportId}")
+    public Optional<ReportDto> updateReport(@PathVariable Long reportId,
+                                            @RequestBody ReportDto reportDto) {
+        log.info("Input dates AdminController.updateReport: reportId: {}, ReportDto: {}", reportId, reportDto);
+        final var result = Optional.of(new ReportDto());
+        log.info("Output dates AdminController.updateReport: result: {}", result);
+        return result;
+    }
 
     @GetMapping("/events")
     public List<EventFullDto> readAllEvents(@RequestParam(value = "users", required = false) Long[] users,
@@ -242,7 +306,7 @@ public class AdminController {
                     .setProperty("commentOwner").setMainValue(commentOwner);
             filterParams.add(filterParam);
         }
-        if (!isDeleted){
+        if (!isDeleted) {
             final var filterParam = new ClientFilterParam().setOperator(Comparison.IS_NULL)
                     .setProperty("deleteDate");
             filterParams.add(filterParam);

@@ -27,7 +27,7 @@ public class ReportValidator extends AbstractValidation {
     }
 
     public void validateOnDuplicates(ReportEntityEnum entity, Long entityId) {
-        final var reportFromDb = repository.findByEntityAndEntityId(entity, entityId);
+        final var reportFromDb = repository.findByEntityAndEntityIdAndActual(entity, entityId, true);
         assertValidator(reportFromDb.isEmpty(), this.getClass().getSimpleName(),
                 "You can create only one report");
     }

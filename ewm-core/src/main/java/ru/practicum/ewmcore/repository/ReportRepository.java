@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Long> {
-    Optional<Report> findByEntityAndEntityId(ReportEntityEnum entity, Long entityId);
+    Optional<Report> findByEntityAndEntityIdAndActual(ReportEntityEnum entity, Long entityId, Boolean actual);
 }

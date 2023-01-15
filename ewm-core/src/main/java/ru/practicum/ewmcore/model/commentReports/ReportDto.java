@@ -11,7 +11,9 @@ public class ReportDto {
     private String text;
     private Object entity;
     private UserShortDto reportOwner;
+    private UserShortDto reportGoalUser;
     private String createDate;
     private Timestamp updateDate;
     private Boolean actual;
+    private String commentAdmin;
 }

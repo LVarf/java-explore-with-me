@@ -18,6 +18,7 @@ public class ReportDtoConverter implements RootModelConverter<ReportDto, Report>
     private final CommentInternalService commentInternalService;
     private final EventInternalService eventInternalService;
     private final UserInternalService userInternalService;
+    private final UserShortDtoConverter userShortDtoConverter;
 
     @Override
     public ReportDto convertFromEntity(final Report entity) {
@@ -29,6 +30,8 @@ public class ReportDtoConverter implements RootModelConverter<ReportDto, Report>
                 timeUtils.timestampToString(entity.getUpdateDate()) : null);
         model.setEntity(enrichObjectToReport(entity));
         model.setObjectType(entity.getEntity());
+        model.setReportOwner(userShortDtoConverter.convertFromEntity(entity.getReportOwner()));
+        model.setReportGoalUser(userShortDtoConverter.convertFromEntity(entity.getReportGoalUser()));
         return model;
     }
 

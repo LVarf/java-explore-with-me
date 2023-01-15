@@ -14,7 +14,7 @@ import ru.practicum.ewmcore.model.user.User;
 import ru.practicum.ewmcore.model.user.UserFullDto;
 import ru.practicum.ewmcore.repository.UserRepository;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
-import ru.practicum.ewmcore.service.participationRequest.ParticipationRequestInternalService;
+import ru.practicum.ewmcore.service.participationRequestService.ParticipationRequestInternalService;
 import ru.practicum.ewmcore.specification.UserSpecification;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 import ru.practicum.ewmcore.validator.UserValidator;

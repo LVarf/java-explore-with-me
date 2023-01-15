@@ -1,4 +1,4 @@
-package ru.practicum.ewmcore.service.participationRequest;
+package ru.practicum.ewmcore.service.participationRequestService;
 
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
 

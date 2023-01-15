@@ -9,6 +9,7 @@ import ru.practicum.ewmcore.error.ApiError;
 import ru.practicum.ewmcore.model.event.Event;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventStateEnum;
+import ru.practicum.ewmcore.repository.EventRepository;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class EventDtoValidator extends AbstractValidation {
     private final TimeUtils timeUtils;
+    private final EventRepository eventRepository;
 
     public void validationOnRead(Long userId, EventFullDto event) {
         final var apiError = new ApiError();
@@ -79,6 +81,11 @@ public class EventDtoValidator extends AbstractValidation {
                     .setTimestamp(timeUtils.timestampToString(Timestamp.valueOf(LocalDateTime.now())));
             throw apiError;
         }
+    }
+
+    public void validationOnExistById(Long id) {
+        final var eventFromDb = eventRepository.findById(id);
+        validationOnExist(eventFromDb.orElse(null));
     }
 
     private void checkInitiatorIdEqualsUserId(Long userId, EventFullDto event, ApiError apiError) {

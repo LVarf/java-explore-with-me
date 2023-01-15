@@ -5,8 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.practicum.ewmcore.model.commentReports.Report;
-import ru.practicum.ewmcore.model.commentReports.ReportEntityEnum;
+import ru.practicum.ewmcore.model.reports.Report;
+import ru.practicum.ewmcore.model.reports.ReportEntityEnum;
 
 import java.util.Optional;
 

@@ -1,9 +1,7 @@
-package ru.practicum.ewmcore.model.commentReports;
+package ru.practicum.ewmcore.model.reports;
 
 import lombok.Data;
 import ru.practicum.ewmcore.model.user.UserShortDto;
-
-import java.sql.Timestamp;
 
 @Data
 public class ReportDto {

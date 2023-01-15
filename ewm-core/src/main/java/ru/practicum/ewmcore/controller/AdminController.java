@@ -2,7 +2,6 @@ package ru.practicum.ewmcore.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -20,13 +19,13 @@ import ru.practicum.ewmcore.converter.CompilationDtoResponseConverter;
 import ru.practicum.ewmcore.converter.EventFullDtoResponseConverter;
 import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.comment.CommentDto;
-import ru.practicum.ewmcore.model.commentReports.ReportDto;
-import ru.practicum.ewmcore.model.commentReports.ReportEntityEnum;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDtoResponse;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventFullDtoResponse;
 import ru.practicum.ewmcore.model.event.EventStateEnum;
+import ru.practicum.ewmcore.model.reports.ReportDto;
+import ru.practicum.ewmcore.model.reports.ReportEntityEnum;
 import ru.practicum.ewmcore.model.user.UserFullDto;
 import ru.practicum.ewmcore.service.adminService.AdminPublicService;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
@@ -97,7 +96,7 @@ public class AdminController {
     @GetMapping("/reports/{reportId}")
     public Optional<ReportDto> readReport(@PathVariable Long reportId) {
         log.info("Input dates AdminController.readReport: reportId: {}", reportId);
-        final var result = Optional.of(new ReportDto());
+        final var result = adminService.readReport(reportId);
         log.info("Output dates AdminController.readReport: result: {}", result);
         return result;
     }
@@ -106,7 +105,7 @@ public class AdminController {
     public Optional<ReportDto> updateReport(@PathVariable Long reportId,
                                             @RequestBody ReportDto reportDto) {
         log.info("Input dates AdminController.updateReport: reportId: {}, ReportDto: {}", reportId, reportDto);
-        final var result = Optional.of(new ReportDto());
+        final var result = adminService.updateReport(reportId, reportDto);
         log.info("Output dates AdminController.updateReport: result: {}", result);
         return result;
     }

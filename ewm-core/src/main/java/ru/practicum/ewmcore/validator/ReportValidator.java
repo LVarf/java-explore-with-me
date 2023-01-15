@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.ewmcore.converter.TimeUtils;
-import ru.practicum.ewmcore.model.commentReports.ReportEntityEnum;
+import ru.practicum.ewmcore.model.reports.ReportEntityEnum;
 import ru.practicum.ewmcore.repository.ReportRepository;
 
 @Component

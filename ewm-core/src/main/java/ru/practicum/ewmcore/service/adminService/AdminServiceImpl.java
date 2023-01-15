@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.comment.CommentDto;
-import ru.practicum.ewmcore.model.commentReports.ReportDto;
+import ru.practicum.ewmcore.model.reports.ReportDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.user.UserFullDto;
@@ -40,12 +40,12 @@ public class AdminServiceImpl implements AdminPublicService {
 
     @Override
     public Optional<ReportDto> readReport(Long reportId) {
-        return Optional.empty();
+        return reportInternalService.readReport(reportId);
     }
 
     @Override
     public Optional<ReportDto> updateReport(Long reportId, ReportDto reportDto) {
-        return Optional.empty();
+        return reportInternalService.updateReport(reportId, reportDto);
     }
 
     @Override

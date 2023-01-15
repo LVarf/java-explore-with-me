@@ -7,14 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.converter.ReportDtoConverter;
 import ru.practicum.ewmcore.converter.TimeUtils;
-import ru.practicum.ewmcore.model.commentReports.Report;
-import ru.practicum.ewmcore.model.commentReports.ReportDto;
-import ru.practicum.ewmcore.model.commentReports.ReportEntityEnum;
+import ru.practicum.ewmcore.model.reports.Report;
+import ru.practicum.ewmcore.model.reports.ReportDto;
+import ru.practicum.ewmcore.model.reports.ReportEntityEnum;
 import ru.practicum.ewmcore.repository.CommentRepository;
 import ru.practicum.ewmcore.repository.EventRepository;
 import ru.practicum.ewmcore.repository.ReportRepository;
-import ru.practicum.ewmcore.service.commentService.CommentInternalService;
-import ru.practicum.ewmcore.service.eventService.EventInternalService;
 import ru.practicum.ewmcore.service.userService.UserServiceImpl;
 import ru.practicum.ewmcore.specification.ReportSpecification;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
@@ -22,6 +20,8 @@ import ru.practicum.ewmcore.validator.CommentValidator;
 import ru.practicum.ewmcore.validator.EventDtoValidator;
 import ru.practicum.ewmcore.validator.ReportValidator;
 import ru.practicum.ewmcore.validator.UserValidator;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,16 +36,34 @@ public class ReportsServiceImpl implements ReportInternalService, ReportPublicSe
     private final TimeUtils timeUtils;
     private final CommentValidator commentValidator;
     private final CommentRepository commentRepository;
-    private final CommentInternalService commentInternalService;
     private final EventDtoValidator eventDtoValidator;
     private final EventRepository eventRepository;
-    private final EventInternalService eventInternalService;
     private final ReportSpecification specification;
 
     @Override
     public Page<ReportDto> readAllReports(ClientFilter filter, Pageable pageable) {
         final var reportsFromDb = repository.findAll(specification.findAllSpecification(filter), pageable);
         return reportsFromDb.map(converter::convertFromEntity);
+    }
+
+    @Override
+    public Optional<ReportDto> readReport(Long reportId) {
+        return repository.findById(reportId).map(converter::convertFromEntity);
+    }
+
+    @Override
+    public Optional<ReportDto> updateReport(Long reportId, ReportDto reportDto) {
+        final var reportFromDb = repository.findById(reportId);
+        userValidator.assertValidator(reportFromDb.isEmpty(), this.getClass().getSimpleName(),
+                "Report is not found");
+        final var reportForSave = converter.mergeToEntity(reportDto, reportFromDb.orElseThrow());
+        reportForSave.setUpdateDate(timeUtils.now());
+        if (reportDto.getActual() != null) {
+            reportForSave.setActual(reportDto.getActual());
+        } else {
+            reportForSave.setActual(false);
+        }
+        return Optional.of(repository.save(reportForSave)).map(converter::convertFromEntity);
     }
 
     @Override

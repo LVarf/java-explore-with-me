@@ -1,4 +1,4 @@
-package ru.practicum.ewmcore.model.commentReports;
+package ru.practicum.ewmcore.model.reports;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -3,9 +3,9 @@ package ru.practicum.ewmcore.converter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
-import ru.practicum.ewmcore.model.commentReports.Report;
-import ru.practicum.ewmcore.model.commentReports.ReportDto;
-import ru.practicum.ewmcore.model.commentReports.ReportEntityEnum;
+import ru.practicum.ewmcore.model.reports.Report;
+import ru.practicum.ewmcore.model.reports.ReportDto;
+import ru.practicum.ewmcore.model.reports.ReportEntityEnum;
 import ru.practicum.ewmcore.service.commentService.CommentInternalService;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
 import ru.practicum.ewmcore.service.userService.UserInternalService;
@@ -32,6 +32,7 @@ public class ReportDtoConverter implements RootModelConverter<ReportDto, Report>
         model.setObjectType(entity.getEntity());
         model.setReportOwner(userShortDtoConverter.convertFromEntity(entity.getReportOwner()));
         model.setReportGoalUser(userShortDtoConverter.convertFromEntity(entity.getReportGoalUser()));
+        model.setCommentAdmin(entity.getCommentAdmin());
         return model;
     }
 
@@ -59,7 +60,7 @@ public class ReportDtoConverter implements RootModelConverter<ReportDto, Report>
 
     @Override
     public Report mergeToEntity(final ReportDto model, final Report entity) {
-        BeanUtils.copyProperties(model, entity);
+        entity.setCommentAdmin(model.getCommentAdmin());
         return entity;
     }
 }

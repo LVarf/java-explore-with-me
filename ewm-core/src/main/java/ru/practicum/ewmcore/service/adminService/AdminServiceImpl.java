@@ -15,6 +15,7 @@ import ru.practicum.ewmcore.service.categoryService.CategoryInternalService;
 import ru.practicum.ewmcore.service.commentService.CommentServiceImpl;
 import ru.practicum.ewmcore.service.compilationService.CompilationInternalService;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
+import ru.practicum.ewmcore.service.reportService.ReportInternalService;
 import ru.practicum.ewmcore.service.userService.UserInternalService;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 
@@ -30,9 +31,11 @@ public class AdminServiceImpl implements AdminPublicService {
     private final CompilationInternalService compilationService;
     private final CommentServiceImpl commentService;
 
+    private final ReportInternalService reportInternalService;
+
     @Override
     public Page<ReportDto> readAllReports(ClientFilter filter, Pageable pageable) {
-        return null;
+        return reportInternalService.readAllReports(filter, pageable);
     }
 
     @Override

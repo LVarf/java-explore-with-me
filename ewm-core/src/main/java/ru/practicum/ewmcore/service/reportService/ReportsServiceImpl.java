@@ -2,13 +2,22 @@ package ru.practicum.ewmcore.service.reportService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmcore.converter.ReportDtoConverter;
 import ru.practicum.ewmcore.converter.TimeUtils;
 import ru.practicum.ewmcore.model.commentReports.Report;
+import ru.practicum.ewmcore.model.commentReports.ReportDto;
 import ru.practicum.ewmcore.model.commentReports.ReportEntityEnum;
+import ru.practicum.ewmcore.repository.CommentRepository;
+import ru.practicum.ewmcore.repository.EventRepository;
 import ru.practicum.ewmcore.repository.ReportRepository;
+import ru.practicum.ewmcore.service.commentService.CommentInternalService;
+import ru.practicum.ewmcore.service.eventService.EventInternalService;
 import ru.practicum.ewmcore.service.userService.UserServiceImpl;
+import ru.practicum.ewmcore.specification.ReportSpecification;
+import ru.practicum.ewmcore.specification.filter.ClientFilter;
 import ru.practicum.ewmcore.validator.CommentValidator;
 import ru.practicum.ewmcore.validator.EventDtoValidator;
 import ru.practicum.ewmcore.validator.ReportValidator;
@@ -26,7 +35,18 @@ public class ReportsServiceImpl implements ReportInternalService, ReportPublicSe
     private final UserServiceImpl userService;
     private final TimeUtils timeUtils;
     private final CommentValidator commentValidator;
+    private final CommentRepository commentRepository;
+    private final CommentInternalService commentInternalService;
     private final EventDtoValidator eventDtoValidator;
+    private final EventRepository eventRepository;
+    private final EventInternalService eventInternalService;
+    private final ReportSpecification specification;
+
+    @Override
+    public Page<ReportDto> readAllReports(ClientFilter filter, Pageable pageable) {
+        final var reportsFromDb = repository.findAll(specification.findAllSpecification(filter), pageable);
+        return reportsFromDb.map(converter::convertFromEntity);
+    }
 
     @Override
     public String createCommentReportPublic(Long userId, Long comId, String text) {
@@ -58,20 +78,22 @@ public class ReportsServiceImpl implements ReportInternalService, ReportPublicSe
         if (comId != null) {
             commentValidator.validationOnExist(comId);
             reportForSave.setEntity(ReportEntityEnum.COMMENT);
+            reportForSave.setReportGoalUser(commentRepository.findById(comId).orElseThrow().getCommentOwner());
             reportForSave.setEntityId(comId);
         }
         if (eventId != null ) {
             eventDtoValidator.validationOnExistById(eventId);
             reportForSave.setEntity(ReportEntityEnum.EVENT);
+            reportForSave.setReportGoalUser(eventRepository.findById(eventId).orElseThrow().getInitiator());
             reportForSave.setEntityId(eventId);
         }
         if (goalId != null) {
-            final var userGoal = userService.findUserByIdInternalImpl(userId);
+            final var userGoal = userService.findUserByIdInternalImpl(goalId);
             userValidator.assertValidator(userGoal.isEmpty(), this.getClass().getSimpleName(),
                     "Report user goal is not registered.");
-
             reportForSave.setEntity(ReportEntityEnum.USER);
             reportForSave.setEntityId(userGoal.orElseThrow().getId());
+            reportForSave.setReportGoalUser(userGoal.orElseThrow());
         }
         validator.validateOnDuplicates(reportForSave.getEntity(), reportForSave.getEntityId());
         return repository.save(reportForSave);

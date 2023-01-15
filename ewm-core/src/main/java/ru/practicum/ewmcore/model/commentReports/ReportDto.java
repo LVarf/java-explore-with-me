@@ -9,11 +9,12 @@ import java.sql.Timestamp;
 public class ReportDto {
     private Long id;
     private String text;
+    private ReportEntityEnum objectType;
     private Object entity;
     private UserShortDto reportOwner;
     private UserShortDto reportGoalUser;
     private String createDate;
-    private Timestamp updateDate;
+    private String updateDate;
     private Boolean actual;
     private String commentAdmin;
 }

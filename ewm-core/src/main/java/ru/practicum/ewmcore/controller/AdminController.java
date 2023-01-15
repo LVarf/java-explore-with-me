@@ -81,13 +81,15 @@ public class AdminController {
                     .setOperator(Comparison.EQ).setMainValue(goalUserId));
         }
         if (rangeStart != null) {
-            params.add(new ClientFilterParam().setProperty("rangeStart").setOperator(Comparison.GE).setMainValue(rangeStart));
+            params.add(new ClientFilterParam().setProperty("rangeStartReport").setOperator(Comparison.GE)
+                    .setMainValue(rangeStart));
         }
         if (rangeEnd != null) {
-            params.add(new ClientFilterParam().setProperty("rangeEnd").setOperator(Comparison.LE).setMainValue(rangeEnd));
+            params.add(new ClientFilterParam().setProperty("rangeEndReport").setOperator(Comparison.LE)
+                    .setMainValue(rangeEnd));
         }
         final ClientFilter filters = new ClientFilter(params);
-        final List<ReportDto> result = null;
+        final List<ReportDto> result = adminService.readAllReports(filters, pageable).toList();
         log.info("Output dates AdminController.readAllReports: result: {}", result);
         return result;
     }

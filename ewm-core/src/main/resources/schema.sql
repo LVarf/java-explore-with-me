@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS ewm_core.reports
     update_date     timestamp,
     actual          boolean DEFAULT (true),
     comment_admin text,
-    CONSTRAINT comment_pkey PRIMARY KEY (id)
+    CONSTRAINT report_pkey PRIMARY KEY (id)
 );
 COMMENT ON TABLE ewm_core.reports IS 'Жалоба';
 COMMENT ON COLUMN ewm_core.reports.id IS 'Уникальный идентификатор жалобы';

@@ -8,6 +8,7 @@ import ru.practicum.ewmcore.specification.filter.ClientFilter;
 
 import java.util.Optional;
 
+@Transactional
 public interface CommentInternalService {
 
     @Transactional(readOnly = true)
@@ -16,6 +17,5 @@ public interface CommentInternalService {
     @Transactional(readOnly = true)
     Page<CommentDto> readAllByFiltersInternal(ClientFilter filter, Pageable pageable);
 
-    @Transactional
     String deleteCommentInternal(Long comId);
 }

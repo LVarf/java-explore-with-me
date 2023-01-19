@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+@Transactional
 public interface EventInternalService {
     @Transactional(readOnly = true)
     Page<EventShortDto> readAllByInitiatorId(Long id, Pageable pageable);
@@ -22,10 +23,8 @@ public interface EventInternalService {
     @Transactional(readOnly = true)
     Page<EventFullDto> readAllEventsByFilters(ClientFilter filters, Pageable pageable);
 
-    @Transactional
     Optional<EventFullDto> updateEventByUser(Long userId, EventFullDto event);
 
-    @Transactional
     Optional<EventFullDto> createEvent(EventFullDto event);
 
     @Transactional(readOnly = true)
@@ -34,19 +33,14 @@ public interface EventInternalService {
     @Transactional(readOnly = true)
     Optional<EventFullDto> readEvent(Long eventId);
 
-    @Transactional
     Optional<EventFullDto> updateEventOnCancel(Long userId, Long eventId);
 
-    @Transactional
     Optional<Event> updateEvent(Event event);
 
-    @Transactional
     Optional<EventFullDto> updateEventById(Long eventId, EventFullDto eventFullDto);
 
-    @Transactional
     Optional<EventFullDto> updateEventOnPublish(Long eventId);
 
-    @Transactional
     Optional<EventFullDto> updateEventToReject(Long eventId);
 
     @Transactional(readOnly = true)

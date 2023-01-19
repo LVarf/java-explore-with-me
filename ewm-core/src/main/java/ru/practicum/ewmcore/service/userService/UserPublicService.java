@@ -10,6 +10,7 @@ import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public interface UserPublicService {
     @Transactional(readOnly = true)
     Page<EventShortDto> readAllEventsPublic(Long userId, Pageable pageable);
@@ -17,23 +18,20 @@ public interface UserPublicService {
     @Transactional(readOnly = true)
     Optional<EventFullDto> readEventPublic(Long userId, Long eventId);
 
-    @Transactional
     Optional<EventFullDto> updateEventPublic(Long id, EventFullDto event);
 
-    @Transactional
     Optional<EventFullDto> createEventPublic(Long userId, EventFullDto event);
 
-    @Transactional
     Optional<EventFullDto> updateEventOnCancel(Long userId, Long eventId);
 
     @Transactional(readOnly = true)
     List<ParticipationRequestDto> readRequestPublic(Long userId, Long eventId);
 
-    @Transactional
     Optional<ParticipationRequestDto> confirmRequestPublic(Long userId, Long eventId, Long reqId);
 
     Optional<ParticipationRequestDto> rejectRequestPublic(Long userId, Long eventId, Long reqId);
 
+    @Transactional(readOnly = true)
     Optional<List<ParticipationRequestDto>> readRequests(Long userId);
 
     Optional<ParticipationRequestDto> createRequestPublic(Long userId, Long eventId);

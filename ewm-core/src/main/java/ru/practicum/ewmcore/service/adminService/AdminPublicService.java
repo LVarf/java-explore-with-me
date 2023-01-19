@@ -13,6 +13,7 @@ import ru.practicum.ewmcore.specification.filter.ClientFilter;
 
 import java.util.Optional;
 
+@Transactional
 public interface AdminPublicService {
 
     @Transactional(readOnly = true)
@@ -21,7 +22,6 @@ public interface AdminPublicService {
     @Transactional(readOnly = true)
     Optional<ReportDto> readReport(Long reportId);
 
-    @Transactional
     Optional<ReportDto> updateReport(Long reportId, ReportDto reportDto);
 
     Page<EventFullDto> readAllByFilters(ClientFilter filters, Pageable pageable);

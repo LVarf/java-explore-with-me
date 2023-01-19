@@ -3,6 +3,7 @@ package ru.practicum.ewmstat.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmstat.model.EndpointHitDto;
 import ru.practicum.ewmstat.model.ViewStats;
 import ru.practicum.ewmstat.repository.StatRepository;
@@ -14,6 +15,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class StatService {
 
     private static final String ADD_SUCCESS = "Информация добалена";
@@ -30,6 +32,7 @@ public class StatService {
         return ADD_FAIL;
     }
 
+    @Transactional(readOnly = true)
     public List<ViewStats> readStats(String start, String end, String uris, Boolean unique) {
         final List<ViewStats> result;
         if (unique) {

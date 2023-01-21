@@ -50,7 +50,9 @@ CREATE TABLE IF NOT EXISTS ewm_core.events
     "views"            int4      NULL,
     category_id        int8      NULL,
     initiator_id       int8      NULL,
-    CONSTRAINT events_pkey PRIMARY KEY (id)
+    CONSTRAINT events_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_to_user FOREIGN KEY (initiator_id) REFERENCES ewm_core.users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_to_category FOREIGN KEY (category_id) REFERENCES ewm_core.categories (id)
 );
 COMMENT ON TABLE ewm_core.events IS 'Информация о событии';
 COMMENT ON COLUMN ewm_core.events.annotation IS 'Краткое описание';
@@ -70,35 +72,19 @@ COMMENT ON COLUMN ewm_core.events."views" IS 'Количество просмо�
 COMMENT ON COLUMN ewm_core.events.category_id IS 'Категория';
 COMMENT ON COLUMN ewm_core.events.initiator_id IS 'Идентификатор пользователя';
 
-ALTER TABLE ewm_core.events
-    DROP CONSTRAINT IF EXISTS fk_to_user;
-ALTER TABLE ewm_core.events
-    ADD CONSTRAINT fk_to_user FOREIGN KEY (initiator_id) REFERENCES ewm_core.users (id) ON DELETE CASCADE;
-ALTER TABLE ewm_core.events
-    DROP CONSTRAINT IF EXISTS fk_to_category;
-ALTER TABLE ewm_core.events
-    ADD CONSTRAINT fk_to_category FOREIGN KEY (category_id) REFERENCES ewm_core.categories (id);
-
 CREATE TABLE IF NOT EXISTS ewm_core.event_to_compilation
 (
     compilation_id int8 NOT NULL,
     event_id       int8 NOT NULL,
-    CONSTRAINT event_to_compilation_pkey PRIMARY KEY (compilation_id, event_id)
+    CONSTRAINT event_to_compilation_pkey PRIMARY KEY (compilation_id, event_id),
+    CONSTRAINT fk_to_event_from_event_to_compilation FOREIGN KEY (event_id)
+            REFERENCES ewm_core.events (id) ON DELETE CASCADE,
+    CONSTRAINT fk_to_compilation_from_event_to_compilation FOREIGN KEY (compilation_id)
+            REFERENCES ewm_core.compilation (id) ON DELETE CASCADE
 );
 COMMENT ON TABLE ewm_core.event_to_compilation IS 'Связь сущностей event и compilation';
 COMMENT ON COLUMN ewm_core.event_to_compilation.compilation_id IS 'Ссылка на запись в таблице compilation';
 COMMENT ON COLUMN ewm_core.event_to_compilation.event_id IS 'Ссылка на запись в таблице event';
-
-ALTER TABLE ewm_core.event_to_compilation
-    DROP CONSTRAINT IF EXISTS fk_to_event_from_event_to_compilation;
-ALTER TABLE ewm_core.event_to_compilation
-    ADD CONSTRAINT fk_to_event_from_event_to_compilation FOREIGN KEY (event_id)
-        REFERENCES ewm_core.events (id) ON DELETE CASCADE;
-ALTER TABLE ewm_core.event_to_compilation
-    DROP CONSTRAINT IF EXISTS fk_to_compilation_from_event_to_compilation;
-ALTER TABLE ewm_core.event_to_compilation
-    ADD CONSTRAINT fk_to_compilation_from_event_to_compilation FOREIGN KEY (compilation_id)
-        REFERENCES ewm_core.compilation (id) ON DELETE CASCADE;
 
 CREATE TABLE IF NOT EXISTS ewm_core.participation_request
 (
@@ -107,24 +93,17 @@ CREATE TABLE IF NOT EXISTS ewm_core.participation_request
     status       text CHECK (status IN ('CONFIRMED', 'PENDING', 'REJECTED', 'CANCELED')),
     event_id     int8      NULL,
     requester_id int8      NULL,
-    CONSTRAINT participation_request_pkey PRIMARY KEY (id)
+    CONSTRAINT participation_request_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_to_event_from_participation_request FOREIGN KEY (event_id)
+            REFERENCES ewm_core.events (id) ON DELETE CASCADE,
+    CONSTRAINT fk_to_user_from_participation_request FOREIGN KEY (requester_id)
+            REFERENCES ewm_core.users (id) ON DELETE CASCADE
 );
 COMMENT ON TABLE ewm_core.participation_request IS 'Заявка на участие в событии';
 COMMENT ON COLUMN ewm_core.participation_request.created IS 'Дата и время создания заявки';
 COMMENT ON COLUMN ewm_core.participation_request.event_id IS 'Идентификатор события';
 COMMENT ON COLUMN ewm_core.participation_request.requester_id IS 'Идентификатор пользователя, отправившего заявку';
 COMMENT ON COLUMN ewm_core.participation_request.status IS 'Статус заявки';
-
-ALTER TABLE ewm_core.participation_request
-    DROP CONSTRAINT IF EXISTS fk_to_event_from_participation_request;
-ALTER TABLE ewm_core.participation_request
-    ADD CONSTRAINT fk_to_event_from_participation_request FOREIGN KEY (event_id)
-        REFERENCES ewm_core.events (id) ON DELETE CASCADE;
-ALTER TABLE ewm_core.participation_request
-    DROP CONSTRAINT IF EXISTS fk_to_user_from_participation_request;
-ALTER TABLE ewm_core.participation_request
-    ADD CONSTRAINT fk_to_user_from_participation_request FOREIGN KEY (requester_id)
-        REFERENCES ewm_core.users (id) ON DELETE CASCADE;
 
 CREATE TABLE IF NOT EXISTS ewm_core.comments
 (
@@ -136,7 +115,13 @@ CREATE TABLE IF NOT EXISTS ewm_core.comments
     event_id         int8         NOT NULL,
     event_owner_id   int8         NOT NULL,
     comment_owner_id int8         NOT NULL,
-    CONSTRAINT comment_pkey PRIMARY KEY (id)
+    CONSTRAINT comment_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_to_event_from_comments FOREIGN KEY (event_id)
+            REFERENCES ewm_core.events (id) ON DELETE CASCADE,
+    CONSTRAINT fk_to_event_owner_user_from_comments FOREIGN KEY (event_owner_id)
+            REFERENCES ewm_core.users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_to_comment_owner_user_from_comments FOREIGN KEY (comment_owner_id)
+            REFERENCES ewm_core.users (id) ON DELETE CASCADE
 );
 COMMENT ON TABLE ewm_core.comments IS 'Комментарии к событиям';
 COMMENT ON COLUMN ewm_core.comments."text" IS 'Текст комментария';
@@ -146,23 +131,6 @@ COMMENT ON COLUMN ewm_core.comments.delete_date IS 'Дата и время уд�
 COMMENT ON COLUMN ewm_core.comments.event_id IS 'Идентификатор события';
 COMMENT ON COLUMN ewm_core.comments.event_owner_id IS 'Идентификатор инициатора события';
 COMMENT ON COLUMN ewm_core.comments.comment_owner_id IS 'Идентификатор создателя комментария';
-
-ALTER TABLE ewm_core.comments
-    DROP CONSTRAINT IF EXISTS fk_to_event_from_comments;
-ALTER TABLE ewm_core.comments
-    ADD CONSTRAINT fk_to_event_from_comments FOREIGN KEY (event_id)
-        REFERENCES ewm_core.events (id) ON DELETE CASCADE;
-ALTER TABLE ewm_core.comments
-    DROP CONSTRAINT IF EXISTS fk_to_event_owner_user_from_comments;
-ALTER TABLE ewm_core.comments
-    ADD CONSTRAINT fk_to_event_owner_user_from_comments FOREIGN KEY (event_owner_id)
-        REFERENCES ewm_core.users (id) ON DELETE CASCADE;
-ALTER TABLE ewm_core.comments
-    DROP CONSTRAINT IF EXISTS fk_to_comment_owner_user_from_comments;
-ALTER TABLE ewm_core.comments
-    ADD CONSTRAINT fk_to_comment_owner_user_from_comments FOREIGN KEY (comment_owner_id)
-        REFERENCES ewm_core.users (id) ON DELETE CASCADE;
-
 
 CREATE TABLE IF NOT EXISTS ewm_core.reports
 (
@@ -176,7 +144,11 @@ CREATE TABLE IF NOT EXISTS ewm_core.reports
     update_date     timestamp,
     actual          boolean DEFAULT (true),
     comment_admin text,
-    CONSTRAINT report_pkey PRIMARY KEY (id)
+    CONSTRAINT report_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_to_user_owner_from_report FOREIGN KEY (report_owner_id)
+            REFERENCES ewm_core.users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_to_user_goal_from_report FOREIGN KEY (report_goal_user_id)
+            REFERENCES ewm_core.users (id) ON DELETE CASCADE
 );
 COMMENT ON TABLE ewm_core.reports IS 'Жалоба';
 COMMENT ON COLUMN ewm_core.reports.id IS 'Уникальный идентификатор жалобы';
@@ -188,14 +160,3 @@ COMMENT ON COLUMN ewm_core.reports.entity_id IS 'Id сущности, на ко�
 COMMENT ON COLUMN ewm_core.reports.report_owner_id IS 'Идентификатор инициатора жалобы';
 COMMENT ON COLUMN ewm_core.reports.report_goal_user_id IS 'Идентификатор, пользователя, на которого подана жалобы';
 COMMENT ON COLUMN ewm_core.reports.actual IS 'Метка актуальности жалобы. True - жалоба не обработана администратром';
-
-ALTER TABLE ewm_core.reports
-    DROP CONSTRAINT IF EXISTS fk_to_user_owner_from_report;
-ALTER TABLE ewm_core.reports
-    ADD CONSTRAINT fk_to_user_owner_from_report FOREIGN KEY (report_owner_id)
-        REFERENCES ewm_core.users (id) ON DELETE CASCADE;
-ALTER TABLE ewm_core.reports
-    DROP CONSTRAINT IF EXISTS fk_to_user_goal_from_report;
-ALTER TABLE ewm_core.reports
-    ADD CONSTRAINT fk_to_user_goal_from_report FOREIGN KEY (report_goal_user_id)
-        REFERENCES ewm_core.users (id) ON DELETE CASCADE;

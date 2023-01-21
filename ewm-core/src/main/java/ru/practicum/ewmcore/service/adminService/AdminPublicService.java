@@ -3,14 +3,23 @@ package ru.practicum.ewmcore.service.adminService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.ewmcore.model.category.CategoryDto;
+import ru.practicum.ewmcore.model.comment.CommentDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
+import ru.practicum.ewmcore.model.reports.ReportDto;
 import ru.practicum.ewmcore.model.user.UserFullDto;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 
 import java.util.Optional;
 
 public interface AdminPublicService {
+
+    Page<ReportDto> readAllReports(ClientFilter filter, Pageable pageable);
+
+    Optional<ReportDto> readReport(Long reportId);
+
+    Optional<ReportDto> updateReport(Long reportId, ReportDto reportDto);
+
     Page<EventFullDto> readAllByFilters(ClientFilter filters, Pageable pageable);
 
     Optional<EventFullDto> updateEventById(Long eventId, EventFullDto event);
@@ -44,4 +53,10 @@ public interface AdminPublicService {
     String deleteCompilationFromHeadPage(Long compId);
 
     String addCompilationToHeadPage(Long compId);
+
+    Page<CommentDto> readAllCommentsPublic(ClientFilter filter, Pageable pageable);
+
+    Optional<CommentDto> readCommentPublic(Long comId);
+
+    String deleteCommentPublic(Long comId);
 }

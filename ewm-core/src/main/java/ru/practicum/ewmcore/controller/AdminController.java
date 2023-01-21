@@ -3,6 +3,8 @@ package ru.practicum.ewmcore.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,11 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewmcore.converter.CompilationDtoResponseConverter;
 import ru.practicum.ewmcore.converter.EventFullDtoResponseConverter;
 import ru.practicum.ewmcore.model.category.CategoryDto;
+import ru.practicum.ewmcore.model.comment.CommentDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDtoResponse;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventFullDtoResponse;
 import ru.practicum.ewmcore.model.event.EventStateEnum;
+import ru.practicum.ewmcore.model.reports.ReportDto;
+import ru.practicum.ewmcore.model.reports.ReportEntityEnum;
 import ru.practicum.ewmcore.model.user.UserFullDto;
 import ru.practicum.ewmcore.service.adminService.AdminPublicService;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
@@ -40,6 +45,70 @@ public class AdminController {
     private final AdminPublicService adminService;
     private final EventFullDtoResponseConverter eventResponseConverter;
     private final CompilationDtoResponseConverter compilationResponseConverter;
+
+    @GetMapping("/reports")
+    public List<ReportDto> readAllReports(@RequestParam(value = "entity", required = false) ReportEntityEnum entity,
+                                          @RequestParam(value = "entityId", required = false) Long entityId,
+                                          @RequestParam(value = "reportOwner", required = false) Long reportOwnerId,
+                                          @RequestParam(value = "actual", defaultValue = "true") Boolean actual,
+                                          @RequestParam(value = "goalUser", required = false) Long goalUserId,
+                                          @RequestParam(value = "rangeStart", required = false) String rangeStart,
+                                          @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
+                                          @PageableDefault(sort = {"createDate"}, direction = Sort.Direction.ASC)
+                                          Pageable pageable) {
+        log.info("Input dates AdminController.readAllReports: entity: {}, entityId: {}, reportOwner: {}, " +
+                        "actual: {}, goalUser: {}, rangeStart: {}, " +
+                        "rangeEnd: {}, pageable: {}",
+                entity, entityId, reportOwnerId, actual, goalUserId, rangeStart, rangeEnd, pageable);
+        final List<ClientFilterParam> params = new ArrayList<>();
+        if (entity != null) {
+            params.add(new ClientFilterParam().setProperty("entity")
+                    .setOperator(Comparison.EQ).setMainValue(entity));
+        }
+        if (entityId != null) {
+            params.add(new ClientFilterParam().setProperty("entityId")
+                    .setOperator(Comparison.EQ).setMainValue(entityId));
+        }
+        if (reportOwnerId != null) {
+            params.add(new ClientFilterParam().setProperty("reportOwner")
+                    .setOperator(Comparison.EQ).setMainValue(reportOwnerId));
+        }
+        params.add(new ClientFilterParam().setProperty("actual")
+                .setOperator(Comparison.EQ).setMainValue(actual));
+        if (goalUserId != null) {
+            params.add(new ClientFilterParam().setProperty("reportGoalUser")
+                    .setOperator(Comparison.EQ).setMainValue(goalUserId));
+        }
+        if (rangeStart != null) {
+            params.add(new ClientFilterParam().setProperty("rangeStartReport").setOperator(Comparison.GE)
+                    .setMainValue(rangeStart));
+        }
+        if (rangeEnd != null) {
+            params.add(new ClientFilterParam().setProperty("rangeEndReport").setOperator(Comparison.LE)
+                    .setMainValue(rangeEnd));
+        }
+        final ClientFilter filters = new ClientFilter(params);
+        final List<ReportDto> result = adminService.readAllReports(filters, pageable).toList();
+        log.info("Output dates AdminController.readAllReports: result: {}", result);
+        return result;
+    }
+
+    @GetMapping("/reports/{reportId}")
+    public Optional<ReportDto> readReport(@PathVariable Long reportId) {
+        log.info("Input dates AdminController.readReport: reportId: {}", reportId);
+        final var result = adminService.readReport(reportId);
+        log.info("Output dates AdminController.readReport: result: {}", result);
+        return result;
+    }
+
+    @PatchMapping("reports/{reportId}")
+    public Optional<ReportDto> updateReport(@PathVariable Long reportId,
+                                            @RequestBody ReportDto reportDto) {
+        log.info("Input dates AdminController.updateReport: reportId: {}, ReportDto: {}", reportId, reportDto);
+        final var result = adminService.updateReport(reportId, reportDto);
+        log.info("Output dates AdminController.updateReport: result: {}", result);
+        return result;
+    }
 
     @GetMapping("/events")
     public List<EventFullDto> readAllEvents(@RequestParam(value = "users", required = false) Long[] users,
@@ -215,6 +284,53 @@ public class AdminController {
         log.info("Input dates AdminController.addCompilationToHeadPage: compId: {}", compId);
         final var result = adminService.addCompilationToHeadPage(compId);
         log.info("Output dates AdminController.addCompilationToHeadPage: result: {}", result);
+        return result;
+    }
+
+    @GetMapping("/comments")
+    public List<CommentDto> readAllComments(@RequestParam(value = "eventId", required = false) Long eventId,
+                                            @RequestParam(value = "commentOwner", required = false) Long commentOwner,
+                                            @RequestParam(value = "isDeleted", defaultValue = "false")
+                                            Boolean isDeleted,
+                                            @PageableDefault(sort = {"createDate"}, direction = Sort.Direction.ASC)
+                                            Pageable pageable) {
+        log.info("Input dates AdminController.readAllComments: eventId: {}, commentOwner: {}, pageable: {}",
+                eventId, commentOwner, pageable);
+        final var filterParams = new ArrayList<ClientFilterParam>();
+        if (eventId != null) {
+            final var filterParam = new ClientFilterParam().setOperator(Comparison.EQ)
+                    .setProperty("event").setMainValue(eventId);
+            filterParams.add(filterParam);
+        }
+        if (commentOwner != null) {
+            final var filterParam = new ClientFilterParam().setOperator(Comparison.EQ)
+                    .setProperty("commentOwner").setMainValue(commentOwner);
+            filterParams.add(filterParam);
+        }
+        if (!isDeleted) {
+            final var filterParam = new ClientFilterParam().setOperator(Comparison.IS_NULL)
+                    .setProperty("deleteDate");
+            filterParams.add(filterParam);
+        }
+        final var filter = new ClientFilter(filterParams);
+        final var result = adminService.readAllCommentsPublic(filter, pageable).toList();
+        log.info("Output dates AdminController.readAllComments: result: {}", result);
+        return result;
+    }
+
+    @GetMapping("/comments/{comId}")
+    public Optional<CommentDto> readComment(@PathVariable Long comId) {
+        log.info("Input dates AdminController.readComment: comId: {}", comId);
+        final var result = adminService.readCommentPublic(comId);
+        log.info("Output dates AdminController.readComment: result: {}", result);
+        return result;
+    }
+
+    @DeleteMapping("/comments/{comId}")
+    public String deleteComment(@PathVariable Long comId) {
+        log.info("Input dates AdminController.deleteComment: comId: {}", comId);
+        final var result = adminService.deleteCommentPublic(comId);
+        log.info("Output dates AdminController.deleteComment: result: {}", result);
         return result;
     }
 

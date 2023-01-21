@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmcore.converter.UserDtoConverter;
 import ru.practicum.ewmcore.converter.UserShortDtoConverter;
 import ru.practicum.ewmcore.model.event.EventFullDto;
@@ -14,7 +15,7 @@ import ru.practicum.ewmcore.model.user.User;
 import ru.practicum.ewmcore.model.user.UserFullDto;
 import ru.practicum.ewmcore.repository.UserRepository;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
-import ru.practicum.ewmcore.service.participationRequest.ParticipationRequestInternalService;
+import ru.practicum.ewmcore.service.participationRequestService.ParticipationRequestInternalService;
 import ru.practicum.ewmcore.specification.UserSpecification;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 import ru.practicum.ewmcore.validator.UserValidator;
@@ -26,6 +27,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserInternalService, UserPublicService {
     private static final String USER_IS_DELETED = "Пользователь удалён";
     private final UserRepository repository;
@@ -37,6 +39,7 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
     private final UserSpecification specification;
 
     @Override
+    @Transactional(readOnly = true)
     public Page<EventShortDto> readAllEventsPublic(Long userId, Pageable pageable) {
         log.debug("Public read all events by user id {}", userId);
         validator.validateOnRead(userId, ValidationMode.DEFAULT);
@@ -62,6 +65,7 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<EventFullDto> readEventPublic(Long userId, Long eventId) {
         validator.validateOnRead(userId, ValidationMode.DEFAULT);
         return eventInternalService.readEventByInitiator(userId, eventId);
@@ -75,6 +79,7 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ParticipationRequestDto> readRequestPublic(Long userId, Long eventId) {
         validator.validateOnRead(userId, ValidationMode.DEFAULT);
         final var event = eventInternalService.readById(eventId).orElseThrow();
@@ -96,6 +101,7 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<List<ParticipationRequestDto>> readRequests(Long userId) {
         validator.validateOnRead(userId, ValidationMode.DEFAULT);
         return requestInternalService.readRequestsByRequesterId(userId);
@@ -114,17 +120,20 @@ public class UserServiceImpl implements UserInternalService, UserPublicService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<UserFullDto> findAllUsersInternal(ClientFilter filter, Pageable pageable) {
         final var usersFromDb = repository.findAll(specification.findAllSpecification(filter), pageable);
         return usersFromDb.map(userFullDtoConverter::convertFromEntity);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<UserFullDto> findUserByIdInternal(Long ids) {
         return findUserByIdInternalImpl(ids).map(userFullDtoConverter::convertFromEntity);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<User> findUserByIdInternalImpl(Long ids) {
         return repository.findUserById(ids);
     }

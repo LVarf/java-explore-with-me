@@ -23,10 +23,21 @@ public abstract class AbstractSpecification<T> {
     private static final String STATE = "state";
     private static final String CATEGORY = "category";
     private static final String RANGE_START = "rangeStart";
+    private static final String RANGE_START_REPORT = "rangeStartReport";
     private static final String RANGE_END = "rangeEnd";
+    private static final String RANGE_END_REPORT = "rangeEndReport";
     private static final String PAID = "paid";
     private static final String CONFIRMED_REQUESTS = "confirmedRequests";
     private static final String EVENT_DATE = "eventDate";
+    private static final String EVENT = "event";
+    private static final String DELETE_DATE = "deleteDate";
+    private static final String COMMENT_OWNER = "commentOwner";
+    private static final String ENTITY = "entity";
+    private static final String ENTITY_ID = "entityId";
+    private static final String REPORT_OWNER = "reportOwner";
+    private static final String ACTUAL = "actual";
+    private static final String REPORT_GOAL_USER = "reportGoalUser";
+    private static final String CREATE_DATE = "createDate";
 
     @Autowired
     private TimeUtils timeUtils;
@@ -55,15 +66,26 @@ public abstract class AbstractSpecification<T> {
                                                     final CriteriaBuilder criteriaBuilder) {
         switch (clientFilterParam.getProperty()) {
             case ID:
+            case EVENT:
             case STATE:
             case CATEGORY:
             case INITIATOR:
             case CONFIRMED_REQUESTS:
+            case DELETE_DATE:
             case PAID:
+            case ENTITY:
+            case ENTITY_ID:
+            case REPORT_OWNER:
+            case REPORT_GOAL_USER:
+            case ACTUAL:
+            case COMMENT_OWNER:
                 return buildPredicate(clientFilterParam, root, criteriaBuilder);
             case RANGE_START:
             case RANGE_END:
                 return createTimestampPredicate(clientFilterParam, root, criteriaBuilder);
+            case RANGE_START_REPORT:
+            case RANGE_END_REPORT:
+                return createTimestampPredicateForReports(clientFilterParam, root, criteriaBuilder);
             default:
                 return null;
         }
@@ -79,6 +101,21 @@ public abstract class AbstractSpecification<T> {
                 return criteriaBuilder.greaterThanOrEqualTo(root.get(EVENT_DATE), rangeStart);
             case LE:
                 return criteriaBuilder.lessThanOrEqualTo(root.get(EVENT_DATE), rangeEnd);
+            default:
+                return null;
+        }
+    }
+
+    private Predicate createTimestampPredicateForReports(final ClientFilterParam clientFilterParam, final Root<T> root,
+                                               final CriteriaBuilder criteriaBuilder) {
+        final var mainValue = (String) clientFilterParam.getMainValue();
+        final Timestamp rangeStart = timeUtils.stringToTimestamp(mainValue);
+        final Timestamp rangeEnd = timeUtils.stringToTimestamp((String) clientFilterParam.getMainValue());
+        switch (clientFilterParam.getOperator()) {
+            case GE:
+                return criteriaBuilder.greaterThanOrEqualTo(root.get(CREATE_DATE), rangeStart);
+            case LE:
+                return criteriaBuilder.lessThanOrEqualTo(root.get(CREATE_DATE), rangeEnd);
             default:
                 return null;
         }
@@ -122,6 +159,8 @@ public abstract class AbstractSpecification<T> {
             case LE:
                 return criteriaBuilder.lessThanOrEqualTo(root.get(clientFilterParam.getProperty()),
                         mainValue.toString());
+            case IS_NULL:
+                return criteriaBuilder.isNull(root.get(clientFilterParam.getProperty()));
             case EQ:
                 final var getRoot = root.get(clientFilterParam.getProperty());
                 return criteriaBuilder.equal(getRoot,

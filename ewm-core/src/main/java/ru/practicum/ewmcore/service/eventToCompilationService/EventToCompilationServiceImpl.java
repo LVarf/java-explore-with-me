@@ -3,6 +3,7 @@ package ru.practicum.ewmcore.service.eventToCompilationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmcore.model.compilation.Compilation;
 import ru.practicum.ewmcore.model.event.Event;
 import ru.practicum.ewmcore.model.records.EventToCompilation;
@@ -14,6 +15,7 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class EventToCompilationServiceImpl implements EventToCompilationInternalService {
 
     private static final String EVENT_FROM_COMPILATION_IS_DELETED = "Событие удалено из подборки";
@@ -40,6 +42,7 @@ public class EventToCompilationServiceImpl implements EventToCompilationInternal
         return EVENT_FROM_COMPILATION_IS_NOT_DELETED;
     }
 
+    @Transactional(readOnly = true)
     public Set<EventToCompilation> readEventToCompilation(Long comId) {
         log.info("Запрос в репозиторий за подборкой с id {}", comId);
         return repository.findByCompilationId(comId);

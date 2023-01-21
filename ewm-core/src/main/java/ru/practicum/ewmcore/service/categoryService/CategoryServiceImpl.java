@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmcore.converter.CategoryDtoConverter;
 import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.repository.CategoryRepository;
@@ -16,6 +17,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class CategoryServiceImpl implements CategoryInternalService, CategoryPublicService {
     private static final String CATEGORY_IS_DELETED = "Категория удалена";
     private static final String CATEGORY_IS_NOT_DELETED = "Категория не удалена";
@@ -25,16 +27,19 @@ public class CategoryServiceImpl implements CategoryInternalService, CategoryPub
     private final EventInternalService eventService;
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<CategoryDto> readInternal(Long id) {
         return repository.findById(id).map(converter::convertFromEntity);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CategoryDto> readAllCategoriesPublic(Pageable pageable) {
         return repository.findAll(pageable).map(converter::convertFromEntity).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<CategoryDto> readCategoryPublic(Long catId) {
         final var categoryFromDb = repository.findById(catId).map(converter::convertFromEntity);
         validator.validationOnResponse(categoryFromDb.orElse(null));

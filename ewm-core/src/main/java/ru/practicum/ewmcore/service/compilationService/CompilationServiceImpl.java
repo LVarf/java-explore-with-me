@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmcore.converter.CompilationDtoConverter;
 import ru.practicum.ewmcore.converter.EventFullDtoConverter;
 import ru.practicum.ewmcore.converter.EventShortDtoConverter;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class CompilationServiceImpl implements CompilationInternalService, CompilationPublicService {
     private static final String COMPILATION_IS_DELETED = "Подборка удалена";
     private static final String COMPILATION_IS_NOT_DELETED = "Подборка не удалена";
@@ -43,12 +45,14 @@ public class CompilationServiceImpl implements CompilationInternalService, Compi
     private final CompilationValidator validator;
 
     @Override
+    @Transactional(readOnly = true)
     public List<CompilationDto> readAllCompilationsPublic(Boolean pinned, Pageable pageable) {
         return repository.findCompilationByPinnedIs(pinned, pageable).map(converter::convertFromEntity)
                 .map(this::enrichEventToCompilationImpl).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<CompilationDto> readCompilationPublic(Long compId) {
         return repository.findById(compId).map(converter::convertFromEntity).map(this::enrichEventToCompilationImpl);
     }

@@ -5,13 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmcore.model.category.CategoryDto;
+import ru.practicum.ewmcore.model.comment.CommentDto;
+import ru.practicum.ewmcore.model.reports.ReportDto;
 import ru.practicum.ewmcore.model.compilation.CompilationDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.user.UserFullDto;
 import ru.practicum.ewmcore.service.categoryService.CategoryInternalService;
+import ru.practicum.ewmcore.service.commentService.CommentServiceImpl;
 import ru.practicum.ewmcore.service.compilationService.CompilationInternalService;
 import ru.practicum.ewmcore.service.eventService.EventInternalService;
+import ru.practicum.ewmcore.service.reportService.ReportInternalService;
 import ru.practicum.ewmcore.service.userService.UserInternalService;
 import ru.practicum.ewmcore.specification.filter.ClientFilter;
 
@@ -20,13 +25,35 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class AdminServiceImpl implements AdminPublicService {
     private final EventInternalService eventService;
     private final CategoryInternalService categoryService;
     private final UserInternalService userService;
     private final CompilationInternalService compilationService;
+    private final CommentServiceImpl commentService;
+
+    private final ReportInternalService reportInternalService;
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<ReportDto> readAllReports(ClientFilter filter, Pageable pageable) {
+        return reportInternalService.readAllReports(filter, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<ReportDto> readReport(Long reportId) {
+        return reportInternalService.readReport(reportId);
+    }
+
+    @Override
+    public Optional<ReportDto> updateReport(Long reportId, ReportDto reportDto) {
+        return reportInternalService.updateReport(reportId, reportDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Page<EventFullDto> readAllByFilters(ClientFilter filters, Pageable pageable) {
         return eventService.readAllEventsByFilters(filters, pageable);
     }
@@ -62,11 +89,13 @@ public class AdminServiceImpl implements AdminPublicService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<UserFullDto> findAllUsers(ClientFilter filter, Pageable pageable) {
         return userService.findAllUsersInternal(filter, pageable);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<UserFullDto> findUserById(Long ids) {
         return userService.findUserByIdInternal(ids);
     }
@@ -108,5 +137,22 @@ public class AdminServiceImpl implements AdminPublicService {
     @Override
     public String addCompilationToHeadPage(Long compId) {
         return compilationService.addCompilationToHeadPageInternal(compId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<CommentDto> readAllCommentsPublic(ClientFilter filter, Pageable pageable) {
+        return commentService.readAllByFiltersInternal(filter, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<CommentDto> readCommentPublic(Long comId) {
+        return commentService.readCommentInternal(comId);
+    }
+
+    @Override
+    public String deleteCommentPublic(Long comId) {
+        return commentService.deleteCommentInternal(comId);
     }
 }

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,10 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewmcore.converter.EventFullDtoResponseConverter;
+import ru.practicum.ewmcore.model.comment.CommentDto;
 import ru.practicum.ewmcore.model.event.EventFullDto;
 import ru.practicum.ewmcore.model.event.EventFullDtoResponse;
 import ru.practicum.ewmcore.model.event.EventShortDto;
 import ru.practicum.ewmcore.model.participationRequest.ParticipationRequestDto;
+import ru.practicum.ewmcore.service.commentService.CommentPublicService;
+import ru.practicum.ewmcore.service.reportService.ReportsServiceImpl;
 import ru.practicum.ewmcore.service.userService.UserPublicService;
 
 import java.util.List;
@@ -30,6 +34,72 @@ import java.util.Optional;
 public class UserController {
     private final UserPublicService userService;
     private final EventFullDtoResponseConverter eventResponseConverter;
+    private final CommentPublicService commentService;
+    private final ReportsServiceImpl reportsService;
+
+    @PostMapping("/reports/comment/{comId}")
+    public String createCommentReport(@PathVariable Long userId,
+                                      @PathVariable Long comId,
+                                      @RequestParam(value = "text") String text) {
+        log.info("Input dates UserController.createCommentReport: userId: {}, comId: {}, text: {}",
+                userId, comId, text);
+        final var result = reportsService.createCommentReportPublic(userId, comId, text);
+        log.info("Output dates UserController.createCommentReport: result: {}", result);
+        return result;
+    }
+
+    @PostMapping("/reports/event/{eventId}")
+    public String createEventReport(@PathVariable Long userId,
+                                    @PathVariable Long eventId,
+                                    @RequestParam(value = "text") String text) {
+        log.info("Input dates UserController.createEventReport: userId: {}, eventId: {}, text: {}",
+                userId, eventId, text);
+        final var result = reportsService.createEventReportPublic(userId, eventId, text);
+        log.info("Output dates UserController.createEventReport: result: {}", result);
+        return result;
+    }
+
+    @PostMapping("/reports/user/{goalId}")
+    public String createUserReport(@PathVariable Long userId,
+                                   @PathVariable Long goalId,
+                                   @RequestParam(value = "text") String text) {
+        log.info("Input dates UserController.createUserReport: userId: {}, goalId: {}, text: {}",
+                userId, goalId, text);
+        final var result = reportsService.createUserReportPublic(userId, goalId, text);
+        log.info("Output dates UserController.createUserReport: result: {}", result);
+        return result;
+    }
+
+    @PostMapping("/comments/{eventId}")
+    public Optional<CommentDto> createComment(@PathVariable Long eventId,
+                                              @PathVariable Long userId,
+                                              @RequestBody CommentDto comment) {
+        log.info("Input dates UserController.createComment: eventId: {}, userId: {}, CommentDto: {}",
+                eventId, userId, comment);
+        final var result = commentService.createCommentPublic(eventId, userId, comment);
+        log.info("Output dates UserController.createComment: result: {}", result);
+        return result;
+    }
+
+    @PatchMapping("/comments/{comId}")
+    public Optional<CommentDto> updateComment(@PathVariable Long comId,
+                                              @PathVariable Long userId,
+                                              @RequestBody CommentDto comment) {
+        log.info("Input dates UserController.updateComment: comId: {}, userId: {}, CommentDto: {}",
+                comId, userId, comment);
+        final var result = commentService.updateCommentPublic(comId, userId, comment);
+        log.info("Output dates UserController.updateComment: result: {}", result);
+        return result;
+    }
+
+    @DeleteMapping("/comments/{comId}")
+    public String deleteComment(@PathVariable Long comId,
+                                @PathVariable Long userId) {
+        log.info("Input dates UserController.deleteComment: comId: {}, userId: {}", comId, userId);
+        final var result = commentService.deleteCommentPublic(comId, userId);
+        log.info("Output dates UserController.deleteComment: result: {}", result);
+        return result;
+    }
 
     @GetMapping("/events")
     public List<EventShortDto> readAllEvents(@PathVariable Long userId,

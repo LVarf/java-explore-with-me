@@ -3,6 +3,7 @@ package ru.practicum.ewmcore.service.participationRequestService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmcore.converter.EventFullDtoConverter;
 import ru.practicum.ewmcore.converter.ParticipationRequestDtoConverter;
 import ru.practicum.ewmcore.model.event.EventFullDto;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ParticipationRequestServiceImpl implements ParticipationRequestInternalService {
     private final ParticipationRequestRepository requestRepository;
     private final ParticipationRequestDtoConverter requestConverter;
@@ -31,11 +33,13 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
     private final UserRepository userRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<ParticipationRequestDto> findRequestRequesterOnEvent(Long userId, Long eventId) {
         return requestRepository.findByRequesterIdAndEventId(userId, eventId).map(requestConverter::convertFromEntity);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ParticipationRequestDto> findRequestsByUserAndEvent(Long eventId) {
         return requestRepository.findByEventId(eventId)
                 .stream().map(requestConverter::convertFromEntity).collect(Collectors.toList());
@@ -72,6 +76,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<List<ParticipationRequestDto>> readRequestsByRequesterId(Long requesterId) {
         final var requests = requestRepository.findAllByRequesterId(requesterId);
         return Optional.of(requests.stream().map(requestConverter::convertFromEntity).collect(Collectors.toList()));
@@ -109,6 +114,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestInte
         eventService.updateEvent(eventFullDtoConverter.convertToEntity(eventFromDb));
     }
 
+    @Transactional(readOnly = true)
     private Optional<ParticipationRequest> readParticipationRequestImpl(Long eventId, Long reqId) {
         final var requestFromDb = requestRepository.findById(reqId);
         requestValidator.validationOnConfirm(eventId, requestFromDb.orElse(null));

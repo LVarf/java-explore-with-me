@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmcore.converter.CommentDtoConverter;
 import ru.practicum.ewmcore.converter.TimeUtils;
 import ru.practicum.ewmcore.model.comment.Comment;
@@ -29,6 +30,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class CommentServiceImpl implements CommentPublicService, CommentInternalService {
     private static final String EVENT_CONST = "event";
     private static final String DELETE_DATE_CONST = "deleteDate";
@@ -45,6 +47,7 @@ public class CommentServiceImpl implements CommentPublicService, CommentInternal
     private final TimeUtils timeUtils;
 
     @Override
+    @Transactional(readOnly = true)
     public List<CommentDto> readAllCommentsPublic(Long eventId, Pageable pageable) {
         final var eventFromDb = eventRepository.findById(eventId);
         eventDtoValidator.validationOnExist(eventFromDb.orElse(null));
@@ -59,21 +62,25 @@ public class CommentServiceImpl implements CommentPublicService, CommentInternal
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<CommentDto> readAllByFiltersInternal(ClientFilter filter, Pageable pageable) {
         final var specifications = commentSpecification.findAllSpecification(filter);
         return readAllByFiltersImpl(specifications, pageable);
     }
 
+    @Transactional(readOnly = true)
     private Page<CommentDto> readAllByFiltersImpl(Specification<Comment> specifications, Pageable pageable) {
         final var commentsFromDb = commentRepository.findAll(specifications, pageable);
         return commentsFromDb.map(converter::convertFromEntity);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<CommentDto> readCommentPublic(Long comId) {
         return readCommentImpl(comId).map(converter::convertFromEntity);
     }
 
+    @Transactional(readOnly = true)
     private Optional<Comment> readCommentImpl(Long comId) {
         final var commentFromDb = commentRepository.findById(comId);
         validator.assertValidator(commentFromDb.isEmpty() ||
@@ -83,6 +90,7 @@ public class CommentServiceImpl implements CommentPublicService, CommentInternal
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<CommentDto> readCommentInternal(Long comId) {
         final var commentFromDb = commentRepository.findById(comId);
         validator.assertValidator(commentFromDb.isEmpty(), this.getClass().getName(), "Комментарий не найден");

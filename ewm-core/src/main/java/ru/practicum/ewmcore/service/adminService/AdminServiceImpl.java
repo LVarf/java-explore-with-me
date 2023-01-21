@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmcore.model.category.CategoryDto;
 import ru.practicum.ewmcore.model.comment.CommentDto;
 import ru.practicum.ewmcore.model.reports.ReportDto;
@@ -24,6 +25,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class AdminServiceImpl implements AdminPublicService {
     private final EventInternalService eventService;
     private final CategoryInternalService categoryService;
@@ -34,11 +36,13 @@ public class AdminServiceImpl implements AdminPublicService {
     private final ReportInternalService reportInternalService;
 
     @Override
+    @Transactional(readOnly = true)
     public Page<ReportDto> readAllReports(ClientFilter filter, Pageable pageable) {
         return reportInternalService.readAllReports(filter, pageable);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<ReportDto> readReport(Long reportId) {
         return reportInternalService.readReport(reportId);
     }
@@ -49,6 +53,7 @@ public class AdminServiceImpl implements AdminPublicService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<EventFullDto> readAllByFilters(ClientFilter filters, Pageable pageable) {
         return eventService.readAllEventsByFilters(filters, pageable);
     }
@@ -84,11 +89,13 @@ public class AdminServiceImpl implements AdminPublicService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<UserFullDto> findAllUsers(ClientFilter filter, Pageable pageable) {
         return userService.findAllUsersInternal(filter, pageable);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<UserFullDto> findUserById(Long ids) {
         return userService.findUserByIdInternal(ids);
     }
@@ -133,11 +140,13 @@ public class AdminServiceImpl implements AdminPublicService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<CommentDto> readAllCommentsPublic(ClientFilter filter, Pageable pageable) {
         return commentService.readAllByFiltersInternal(filter, pageable);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<CommentDto> readCommentPublic(Long comId) {
         return commentService.readCommentInternal(comId);
     }

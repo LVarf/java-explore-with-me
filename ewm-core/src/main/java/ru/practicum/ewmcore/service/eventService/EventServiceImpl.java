@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmcore.converter.EventFullDtoConverter;
 import ru.practicum.ewmcore.converter.EventShortDtoConverter;
 import ru.practicum.ewmcore.converter.TimeUtils;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class EventServiceImpl implements EventInternalService, EventPublicService {
     private static final String SORT_VIEWS = "VIEWS";
     private final EventRepository repository;
@@ -38,6 +40,7 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
     private final CategoryRepository categoryRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<EventShortDto> readAllEventsPublic(ClientFilter filter, String sort, Pageable pageable) {
         final var eventsFromDb = repository.findAll(specification.findAllSpecificationForPublic(filter), pageable);
         if (sort != null && sort.equals(SORT_VIEWS)) {
@@ -51,17 +54,20 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<EventFullDto> readEventPublic(Long eventId) {
         return repository.findById(eventId).filter(event -> event.getState() == EventStateEnum.PUBLISHED)
                 .map(eventFullDtoConverter::convertFromEntity);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<EventShortDto> readAllByInitiatorId(Long id, Pageable pageable) {
         return repository.findAllByInitiatorId(id, pageable).map(eventShortDtoConverter::convertFromEntity);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Event> readById(Long eventId) {
         return readEventImpl(eventId);
     }
@@ -81,6 +87,7 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<EventFullDto> readAllEventsByFilters(ClientFilter filters, Pageable pageable) {
         return repository.findAll(specification.findAllSpecification(filters), pageable)
                 .map(eventFullDtoConverter::convertFromEntity);
@@ -98,6 +105,7 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<EventFullDto> readEventByInitiator(Long userId, Long eventId) {
         final var eventFromDb = readEventImpl(eventId);
         validator.validationOnRead(userId, eventFullDtoConverter.convertFromEntity(eventFromDb.orElseThrow()));
@@ -105,6 +113,7 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<EventFullDto> readEvent(Long eventId) {
         return readEventImpl(eventId).map(eventFullDtoConverter::convertFromEntity);
     }
@@ -149,11 +158,13 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EventFullDto> readAllByCategoryId(Long catId) {
         return repository.findByCategoryId(catId).stream()
                 .map(eventFullDtoConverter::convertFromEntity).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     private Optional<Event> readEventImpl(Long eventId) {
         final var eventFromDb = repository.findById(eventId);
         validator.validationOnExist(eventFromDb.orElse(null));
@@ -161,6 +172,7 @@ public class EventServiceImpl implements EventInternalService, EventPublicServic
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Event> readAllByIds(Set<Long> eventIds) {
         return repository.findAllById(eventIds);
     }

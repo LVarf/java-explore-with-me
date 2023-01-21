@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmcore.converter.ReportDtoConverter;
 import ru.practicum.ewmcore.converter.TimeUtils;
 import ru.practicum.ewmcore.model.reports.Report;
@@ -26,6 +27,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class ReportsServiceImpl implements ReportInternalService, ReportPublicService{
     private static final String REPORT_CREATE = "Жалоба создана.";
     private final ReportRepository repository;
@@ -41,12 +43,14 @@ public class ReportsServiceImpl implements ReportInternalService, ReportPublicSe
     private final ReportSpecification specification;
 
     @Override
+    @Transactional(readOnly = true)
     public Page<ReportDto> readAllReports(ClientFilter filter, Pageable pageable) {
         final var reportsFromDb = repository.findAll(specification.findAllSpecification(filter), pageable);
         return reportsFromDb.map(converter::convertFromEntity);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<ReportDto> readReport(Long reportId) {
         return repository.findById(reportId).map(converter::convertFromEntity);
     }

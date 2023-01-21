@@ -9,16 +9,12 @@ import ru.practicum.ewmcore.specification.filter.ClientFilter;
 
 import java.util.Optional;
 
-@Transactional
 public interface UserInternalService {
 
-    @Transactional(readOnly = true)
     Page<UserFullDto> findAllUsersInternal(ClientFilter filter, Pageable pageable);
 
-    @Transactional(readOnly = true)
     Optional<UserFullDto> findUserByIdInternal(Long ids);
 
-    @Transactional(readOnly = true)
     Optional<User> findUserByIdInternalImpl(Long ids);
 
     Optional<UserFullDto> createUserInternal(UserFullDto userFullDto);
